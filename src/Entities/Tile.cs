@@ -15,7 +15,7 @@ namespace BOTB64.Entities
     {
         public int Q;
         public int R;
-        public RL.Color Color;
+        public RL.Color BaseColor;
         public TileType Type;
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using RL = Raylib_cs;
 using RB = Raylib_cs.Raylib;
-using System.Collections.Generic;
+using BOTB64.Core;
 
 namespace BOTB64.Entities
 {
@@ -16,7 +16,7 @@ namespace BOTB64.Entities
         {
         }
 
-        void Generate(string fileName)
+        public void Generate(DataFile file)
         {
             Tiles.Clear();
 
