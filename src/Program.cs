@@ -1,6 +1,6 @@
 ﻿using RL = Raylib_cs;
 using RB = Raylib_cs.Raylib;
-using RM = Raylib_cs.Raymath;
+using BOTB64.Entities;
 
 using System.Diagnostics;
 using System.Numerics;
@@ -11,21 +11,15 @@ RB.SetTargetFPS(60);
 Stopwatch clock = new Stopwatch();
 clock.Start();
 
-RL.Model playerModel = RB.LoadModel("G:\\Dev\\BOTB64\\data\\tizio.obj");
-
-Vector3 playerPos = new Vector3(0, 1, 0);
-float playerRot = 0;
-
-RL.Shader shader = RB.LoadShader(
-    "G:\\Dev\\BOTB64\\data\\inverse_square.vs",
-    "G:\\Dev\\BOTB64\\data\\inverse_square.fs"
-);
+RL.Model board = RB.LoadModel("C:\\Users\\cafol\\Documents\\Development\\BOTB64\\data\\Models\\Board\\Board.gltf");
+RL.Shader shader = RB.LoadShader("C:\\Users\\cafol\\Documents\\Development\\BOTB64\\data\\Shaders\\shader.vs", "C:\\Users\\cafol\\Documents\\Development\\BOTB64\\data\\Shaders\\shader.fs");
+Board gameBoard = new Board(6);
 
 unsafe
 {
-    for (int i = 0; i < playerModel.MaterialCount; i++)
+    for (int i = 0; i < board.MaterialCount; i++)
     {
-        playerModel.Materials[i].Shader = shader;
+        board.Materials[i].Shader = shader;
     }
 }
 
@@ -34,12 +28,20 @@ camera.Up = new Vector3(0, 1, 0);
 camera.FovY = 45.0f;
 camera.Projection = RL.CameraProjection.Perspective;
 
-int lightPosLoc = RB.GetShaderLocation(shader, "lightPos");
-int lightColorLoc = RB.GetShaderLocation(shader, "lightColor");
-int viewPosLoc = RB.GetShaderLocation(shader, "viewPos");
+Vector3 cameraPos = new Vector3(0, 1, 0);
+Vector3 cameraTarget = new Vector3(12.1243f, 7.0f, 0);
+float cameraDistance = 10.0f;
+float yaw = 45.0f;
+float pitch = 30.0f;
 
-Vector3 lightPos = new Vector3(2, 4, 2);
-Vector3 lightColor = new Vector3(0, 1, 1);
+int lightDirLoc = RB.GetShaderLocation(shader, "lightDir");
+int lightColorLoc = RB.GetShaderLocation(shader, "lightColor");
+
+Vector3 lightDir = Vector3.Normalize(new Vector3(0, -1, 0));
+Vector3 lightColor = new Vector3(1.5f, 1.5f, 1.5f);
+
+RL.BoundingBox bb = RB.GetModelBoundingBox(board);
+Vector3 center = new Vector3((bb.Max.X + bb.Min.X) / 2, (bb.Max.Y + bb.Min.Y) / 2 +5, (bb.Max.Z + bb.Min.Z) /  2);
 
 Random rng = new Random();
 
@@ -48,53 +50,101 @@ while (!RB.WindowShouldClose())
     float dt = (float)clock.Elapsed.TotalSeconds;
     clock.Restart();
 
-    //InputManager.HandleInput();
+    float panSpeed = 10.0f * dt;
+
+    Vector3 forward = Vector3.Normalize(
+        new Vector3(
+            MathF.Sin(yaw * MathF.PI / 180f),
+            0,
+            MathF.Cos(yaw * MathF.PI / 180f)
+        )
+    );
+
+    Vector3 right = Vector3.Normalize(
+        Vector3.Cross(forward, Vector3.UnitY)
+    );
+
     if (RB.IsKeyDown(RL.KeyboardKey.W))
-        playerPos.Z -= 0.2f;
+        cameraTarget -= forward * panSpeed;
+
     if (RB.IsKeyDown(RL.KeyboardKey.S))
-        playerPos.Z += 0.2f;
-    if (RB.IsKeyDown(RL.KeyboardKey.Q))
-        playerPos.X -= 0.2f;
-    if (RB.IsKeyDown(RL.KeyboardKey.E))
-        playerPos.X += 0.2f;
+        cameraTarget += forward * panSpeed;
+
     if (RB.IsKeyDown(RL.KeyboardKey.A))
-        playerRot -= 2f;
+        cameraTarget += right * panSpeed;
+
     if (RB.IsKeyDown(RL.KeyboardKey.D))
-        playerRot += 2f;
+        cameraTarget -= right * panSpeed;
+
+    cameraDistance -= RB.GetMouseWheelMove();
+
+    cameraDistance = Math.Clamp(
+        cameraDistance,
+        2.0f,
+        50.0f
+    );
+
+    if (RB.IsMouseButtonDown(RL.MouseButton.Right))
+    {
+        Vector2 delta = RB.GetMouseDelta();
+
+        yaw -= delta.X * 0.25f;
+        pitch += delta.Y * 0.25f;
+
+        pitch = Math.Clamp(
+            pitch,
+            0.0f,
+            85.0f
+        );
+    }
+
+    RL.Ray ray = RB.GetScreenToWorldRay(
+        RB.GetMousePosition(),
+        camera
+    );
+
+    Vector3 mouseWorld = Vector3.Zero;
+
+    if (MathF.Abs(ray.Direction.Y) > 0.0001f)
+    {
+        float t = -ray.Position.Y / ray.Direction.Y;
+
+        mouseWorld = ray.Position + ray.Direction * t;
+    }
 
     //Engine.Update(InputManager.CommandQueue, dt);
-    camera.Position = playerPos + new Vector3(5, 5, 5);
-    camera.Target = playerPos;
-    lightPos = camera.Position;
+    float yawRad = yaw * MathF.PI / 180f;
+    float pitchRad = pitch * MathF.PI / 180f;
+
+    Vector3 offset = new Vector3(
+        cameraDistance * MathF.Cos(pitchRad) * MathF.Sin(yawRad),
+        cameraDistance * MathF.Sin(pitchRad),
+        cameraDistance * MathF.Cos(pitchRad) * MathF.Cos(yawRad)
+    );
+
+    camera.Position = cameraTarget + offset;
+    camera.Target = cameraTarget;
+    camera.Up = Vector3.UnitY;
 
     //Graphics.Draw(Engine.GameState);
-    RB.SetShaderValue(shader, lightPosLoc, lightPos, RL.ShaderUniformDataType.Vec3);
+    RB.SetShaderValue(shader, lightDirLoc, lightDir, RL.ShaderUniformDataType.Vec3);
     RB.SetShaderValue(shader, lightColorLoc, lightColor, RL.ShaderUniformDataType.Vec3);
-    RB.SetShaderValue(shader, viewPosLoc, camera.Position, RL.ShaderUniformDataType.Vec3);
 
     RB.BeginDrawing();
-    RB.ClearBackground(RL.Color.White);
+    RB.ClearBackground(RL.Color.SkyBlue);
     RB.BeginMode3D(camera);
-
-    RB.DrawPlane(
-        new Vector3(0, 0, 0),
-        new Vector2(10, 10),
-        RL.Color.LightGray
-    );
-    RB.DrawModelEx(
-        playerModel,
-        playerPos,
-        new Vector3(0, 1, 0),
-        playerRot,
-        new Vector3(0.1f, 0.1f, 0.1f),
-        RL.Color.White
-    );
-
+    RB.BeginShaderMode(shader);
+    RB.DrawModelEx(board, new Vector3(0, 0, 0), new Vector3(0, 1, 0), 0, new Vector3(1, 1, 1), RL.Color.White);
+    gameBoard.Draw();
+    RB.DrawSphere(center, 1, RL.Color.Red);
+    RB.EndShaderMode();
     RB.EndMode3D();
+
+    RB.DrawText($"World: {mouseWorld.X:F2}, {mouseWorld.Z:F2}", 10, 40, 20, RL.Color.Black);
     RB.DrawFPS(10, 10);
     RB.EndDrawing();
 }
 
 RB.UnloadShader(shader);
-RB.UnloadModel(playerModel);
+RB.UnloadModel(board);
 RB.CloseWindow();
