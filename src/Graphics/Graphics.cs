@@ -1,5 +1,4 @@
 ﻿using BOTB64.Core;
-using Raylib_cs;
 using System.Numerics;
 using RB = Raylib_cs.Raylib;
 using RL = Raylib_cs;
@@ -29,7 +28,7 @@ namespace BOTB64.Graphics
         {
             DataFile vertex = new DataFile(vertexPath);
             DataFile fragment = new DataFile(fragmentPath);
-            GlobalShader = RB.LoadShader(vertex.ToString(), fragment.ToString());
+            GlobalShader = RB.LoadShader(vertex.Path, fragment.Path);
 
             if(GlobalShader == null)
                 return false;
@@ -70,7 +69,7 @@ namespace BOTB64.Graphics
             Camera.CreateNewCamera();
         }
 
-        public static void Update(double dt)
+        public static void Update(float dt)
         {
             if(Camera != null)
                 Camera.UpdateCamera(dt);

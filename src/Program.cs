@@ -13,7 +13,7 @@ namespace BOTB64
         {
             Engine.Engine.Initialize();
             Graphics.Graphics.Initialize();
-            if (!Graphics.Graphics.CompileShader("shaders\\vertex.glsl", "shaders\\fragment.glsl"))
+            if (!Graphics.Graphics.CompileShader("Shaders\\shader.vs", "Shaders\\shader.fs"))
             {
                 Console.WriteLine("Failed to compile shader.");
             }

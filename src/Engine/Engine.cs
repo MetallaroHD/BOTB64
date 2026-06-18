@@ -1,10 +1,14 @@
 ﻿using System.Diagnostics;
+using System.Runtime.Versioning;
 
 namespace BOTB64.Engine
 {
     public static class Engine
     {
-        public static double Elapsed() => Clock.Elapsed.TotalSeconds;
+        private static TimeSpan CurrentTime;
+        private static TimeSpan PreviousTime;
+
+        public static float Elapsed() => (float) (CurrentTime - PreviousTime).TotalSeconds;
 
         private static Stopwatch Clock = new Stopwatch();
 
@@ -15,8 +19,10 @@ namespace BOTB64.Engine
 
         public static void Update()
         {
-            float dt = (float)Clock.Elapsed.TotalSeconds;
-            Clock.Restart();
+            PreviousTime = CurrentTime;
+            CurrentTime = Clock.Elapsed;
+
+            //rest if the update
         }
     }
 }

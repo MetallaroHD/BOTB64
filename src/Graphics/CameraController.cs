@@ -40,10 +40,10 @@ namespace BOTB64.Graphics
             UpdateOffset();
         }
 
-        public void UpdateCamera(double dt)
+        public void UpdateCamera(float dt)
         {
             Vector3 offset = new();
-            float panDistance = PanSpeed * (float) dt;
+            float panDistance = PanSpeed * dt;
 
             if (InputManager.IsMouseButtonDown(RL.MouseButton.Right))
             {
@@ -51,6 +51,7 @@ namespace BOTB64.Graphics
                 Pitch = Math.Clamp(Pitch + InputManager.MouseDelta.Y * RotSpeed, 0, 85.0f);
 
                 UpdateVectors();
+                UpdateOffset();
             }
 
             if (InputManager.ScrollDelta != 0)
@@ -84,9 +85,9 @@ namespace BOTB64.Graphics
 
         private void UpdateOffset()
         {
-            Offset.X = MathF.Cos(Pitch * PIO180) * MathF.Sin(Yaw * PIO180);
-            Offset.Y = MathF.Sin(Pitch * PIO180);
-            Offset.Z = MathF.Cos(Pitch * PIO180) * MathF.Cos(Yaw * PIO180);
+            Offset.X = Distance * MathF.Cos(Pitch * PIO180) * MathF.Sin(Yaw * PIO180);
+            Offset.Y = Distance * MathF.Sin(Pitch * PIO180);
+            Offset.Z = Distance * MathF.Cos(Pitch * PIO180) * MathF.Cos(Yaw * PIO180);
         }
     }
 }
