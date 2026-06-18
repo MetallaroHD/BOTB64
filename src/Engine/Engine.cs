@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Runtime.Versioning;
 
 namespace BOTB64.Engine
 {

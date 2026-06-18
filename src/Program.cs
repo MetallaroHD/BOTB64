@@ -1,9 +1,4 @@
-﻿using BOTB64.Core;
-using BOTB64.Graphics;
-using BOTB64.Engine;
-using System.Numerics;
-using RB = Raylib_cs.Raylib;
-using RL = Raylib_cs;
+﻿using BOTB64.Runtime;
 
 namespace BOTB64
 {
@@ -18,7 +13,7 @@ namespace BOTB64
                 Console.WriteLine("Failed to compile shader.");
             }
             if (!Loop()) ;
-                //Handle error codes
+            //Handle error codes
             Close();
         }
 

@@ -1,4 +1,4 @@
-﻿using RL = Raylib_cs;
+﻿using BOTB64.Graphics;
 
 namespace BOTB64.Entities
 {
@@ -15,7 +15,15 @@ namespace BOTB64.Entities
     {
         public int Q;
         public int R;
-        public RL.Color BaseColor;
+        public Color BaseColor;
         public TileType Type;
+
+        public Tile(int q, int r, Color col, TileType type)
+        {
+            Q = q;
+            R = r;
+            BaseColor = col;
+            Type = type;
+        }
     }
 }

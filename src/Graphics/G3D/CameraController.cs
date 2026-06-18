@@ -1,9 +1,8 @@
-﻿using BOTB64.Core;
+﻿using BOTB64.Runtime;
 using System.Numerics;
-using RB = Raylib_cs.Raylib;
 using RL = Raylib_cs;
 
-namespace BOTB64.Graphics
+namespace BOTB64.Graphics.G3D
 {
     public class CameraController
     {
@@ -42,7 +41,6 @@ namespace BOTB64.Graphics
 
         public void UpdateCamera(float dt)
         {
-            Vector3 offset = new();
             float panDistance = PanSpeed * dt;
 
             if (InputManager.IsMouseButtonDown(RL.MouseButton.Right))

@@ -2,7 +2,7 @@
 using System.Numerics;
 using RB = Raylib_cs.Raylib;
 
-namespace BOTB64.Core
+namespace BOTB64.Runtime
 {
     public static class InputManager
     {

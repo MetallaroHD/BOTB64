@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
-using RL = Raylib_cs;
-using BOTB64.Core;
+using BOTB64.Runtime;
+using BOTB64.Graphics;
 
 namespace BOTB64.Entities
 {
@@ -21,7 +21,7 @@ namespace BOTB64.Entities
 
         }
 
-        public void SetTile(int q, int r, TileType type, RL.Color color)
+        public void SetTile(int q, int r, TileType type, Color color)
         {
 
         }
