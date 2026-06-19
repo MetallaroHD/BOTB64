@@ -6,14 +6,15 @@ namespace BOTB64.Engine
     {
         private static TimeSpan CurrentTime;
         private static TimeSpan PreviousTime;
-
-        public static float Elapsed() => (float) (CurrentTime - PreviousTime).TotalSeconds;
-
         private static Stopwatch Clock = new Stopwatch();
+
+        public static float DeltaTime => (float) (CurrentTime - PreviousTime).TotalSeconds;
+
 
         public static void Initialize()
         {
             Clock.Start();
+            StateManager.ChangeState(new States.MainMenuState());
         }
 
         public static void Update()
@@ -21,7 +22,9 @@ namespace BOTB64.Engine
             PreviousTime = CurrentTime;
             CurrentTime = Clock.Elapsed;
 
-            //rest if the update
+            StateManager.FlushPendingState();
+            StateManager.Update(DeltaTime);
+            Graphics.Graphics.RenderFrame(StateManager.Render);
         }
     }
 }

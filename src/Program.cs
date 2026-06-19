@@ -1,4 +1,5 @@
 ﻿using BOTB64.Runtime;
+using BOTB64.Graphics;
 
 namespace BOTB64
 {
@@ -6,29 +7,15 @@ namespace BOTB64
     {
         public static void Main()
         {
+            Graphics.Graphics.Initialize(1280, 720, "BOTB64");
             Engine.Engine.Initialize();
-            Graphics.Graphics.Initialize();
+
             if (!Graphics.Graphics.CompileShader("Shaders\\shader.vs", "Shaders\\shader.fs"))
-            {
-                Console.WriteLine("Failed to compile shader.");
-            }
-            if (!Loop()) ;
-            //Handle error codes
-            Close();
-        }
+                Console.WriteLine("Warning: shader compilation failed, using default.");
 
-        public static bool Loop()
-        {
             while (!InputManager.ShouldClose())
-            {
                 Engine.Engine.Update();
-                Graphics.Graphics.Update(Engine.Engine.Elapsed());
-            }
-            return true;
-        }
 
-        public static void Close()
-        {
             Graphics.Graphics.Unload();
         }
     }
