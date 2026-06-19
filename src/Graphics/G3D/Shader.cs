@@ -1,10 +1,11 @@
 ﻿using BOTB64.Runtime;
 using RL = Raylib_cs;
 using RB = Raylib_cs.Raylib;
+using System.Security.Cryptography.X509Certificates;
 
 namespace BOTB64.Graphics.G3D
 {
-    internal class Shader : IDisposable
+    public class Shader : IDisposable
     {
         private RL.Shader RLShader;
         private bool Valid;
@@ -12,6 +13,8 @@ namespace BOTB64.Graphics.G3D
 
         public string VertexPath { get; }
         public string FragmentPath { get; }
+
+        public RL.Shader Handle => RLShader;
 
         public Shader(string vertexFile, string fragmentFile)
         {
@@ -53,15 +56,6 @@ namespace BOTB64.Graphics.G3D
             return IsValid();
         }
 
-        // Only call after checking IsValid() or TryGet()
-        public RL.Shader Get()
-        {
-            if (!IsValid())
-                throw new InvalidOperationException(
-                    $"[Shader] Attempted to use invalid or disposed shader ({VertexPath})");
-            return RLShader;
-        }
-
         public void Unload()
         {
             if (Valid && !Disposed)
@@ -70,7 +64,22 @@ namespace BOTB64.Graphics.G3D
             Valid = false;
         }
 
-        // IDisposable so it works in using() blocks if you ever want that
-        public void Dispose() => Unload();
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (Disposed)
+                return;
+
+            if (Valid)
+                RB.UnloadShader(RLShader);
+
+            Disposed = true;
+            Valid = false;
+        }
     }
 }

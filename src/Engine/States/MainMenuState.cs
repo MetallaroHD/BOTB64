@@ -1,28 +1,29 @@
-﻿using BOTB64.Runtime;
+﻿using BOTB64.Graphics.UI;
 
 namespace BOTB64.Engine.States
 {
     public class MainMenuState : IGameState
     {
+        private readonly MainMenuScreen Screen = new();
+
         public void OnEnter()
         {
+            Screen.Enter();
         }
 
         public void OnExit()
         {
-            
+            Screen.Exit();
         }
 
         public void Update(float dt)
         {
+            Screen.Update(dt);
         }
 
         public void Render()
         {
-            Graphics.Graphics.DrawUI(() =>
-            {
-                RB.DrawText("Press Enter to Start", 500, 350, 20, Color.White);
-            });
+            Screen.Draw();
         }
     }
 }

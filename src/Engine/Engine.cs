@@ -8,7 +8,7 @@ namespace BOTB64.Engine
         private static TimeSpan PreviousTime;
         private static Stopwatch Clock = new Stopwatch();
 
-        public static float DeltaTime => (float) (CurrentTime - PreviousTime).TotalSeconds;
+        public static float DeltaTime => (float)(CurrentTime - PreviousTime).TotalSeconds;
 
 
         public static void Initialize()
@@ -24,7 +24,15 @@ namespace BOTB64.Engine
 
             StateManager.FlushPendingState();
             StateManager.Update(DeltaTime);
-            Graphics.Graphics.RenderFrame(StateManager.Render);
+        }
+
+        public static void Render()
+        {
+            Graphics.Graphics.BeginFrame();
+
+            StateManager.Render();
+
+            Graphics.Graphics.EndFrame();
         }
     }
 }
