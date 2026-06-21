@@ -22,7 +22,7 @@ namespace BOTB64.Engine.States
         {
             Game.Initialize();
             Level = Level.Load("Levels\\Level1\\board.b64m");
-            ModelAsset bro = AssetManager.GetModel("Characters\\Dummy\\character.gltf");
+            ModelAsset bro = AssetManager.GetModel("Characters\\Dummy\\GenericCharacter.gltf");
             charac = new ModelInstance(bro);
         }
 
@@ -45,10 +45,9 @@ namespace BOTB64.Engine.States
 
             Game.Render();
             Level.LevelBoard.Draw();
+            charac.Draw();
 
             Viewport.End();
-
-            charac.Draw();
 
             //RL.Ray ray = RB.GetScreenToWorldRay(RB.GetMousePosition(),Viewport.Camera.Camera);
             //Vector3 mouseWorld = Vector3.Zero;

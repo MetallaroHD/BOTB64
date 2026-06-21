@@ -17,8 +17,13 @@
 		{
 			"mesh":0,
 			"name":"B\u00e9zierCurve",
+			"scale":[
+				0.5,
+				0.5,
+				0.5
+			],
 			"translation":[
-				0.8999999761581421,
+				0.44999998807907104,
 				0,
 				0
 			]
@@ -27,13 +32,13 @@
 			"mesh":1,
 			"name":"Chibi_Object",
 			"scale":[
-				1.5,
-				1.5,
-				1.5
+				0.75,
+				0.75,
+				0.75
 			],
 			"translation":[
 				0,
-				0.30000001192092896,
+				0.15000000596046448,
 				0
 			]
 		}
@@ -43,6 +48,9 @@
 			"doubleSided":true,
 			"name":"Wood",
 			"pbrMetallicRoughness":{
+				"baseColorTexture":{
+					"index":0
+				},
 				"metallicFactor":0
 			}
 		}
@@ -55,10 +63,9 @@
 					"attributes":{
 						"POSITION":0,
 						"NORMAL":1,
-						"TEXCOORD_0":2,
-						"TEXCOORD_1":3
+						"TEXCOORD_0":2
 					},
-					"indices":4,
+					"indices":3,
 					"material":0
 				}
 			]
@@ -68,20 +75,33 @@
 			"primitives":[
 				{
 					"attributes":{
-						"POSITION":5,
-						"NORMAL":6,
-						"TEXCOORD_0":7
+						"POSITION":4,
+						"NORMAL":5,
+						"TEXCOORD_0":6
 					},
-					"indices":8
+					"indices":7
 				}
 			]
+		}
+	],
+	"textures":[
+		{
+			"sampler":0,
+			"source":0
+		}
+	],
+	"images":[
+		{
+			"mimeType":"image/png",
+			"name":"woodSmall",
+			"uri":"woodSmall.png"
 		}
 	],
 	"accessors":[
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":5088,
+			"count":5080,
 			"max":[
 				0.06939821690320969,
 				0.30000001192092896,
@@ -97,29 +117,23 @@
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":5088,
+			"count":5080,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":5088,
+			"count":5080,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
-			"componentType":5126,
-			"count":5088,
-			"type":"VEC2"
-		},
-		{
-			"bufferView":4,
 			"componentType":5123,
 			"count":8682,
 			"type":"SCALAR"
 		},
 		{
-			"bufferView":5,
+			"bufferView":4,
 			"componentType":5126,
 			"count":6296,
 			"max":[
@@ -135,19 +149,19 @@
 			"type":"VEC3"
 		},
 		{
-			"bufferView":6,
+			"bufferView":5,
 			"componentType":5126,
 			"count":6296,
 			"type":"VEC3"
 		},
 		{
-			"bufferView":7,
+			"bufferView":6,
 			"componentType":5126,
 			"count":6296,
 			"type":"VEC2"
 		},
 		{
-			"bufferView":8,
+			"bufferView":7,
 			"componentType":5123,
 			"count":9480,
 			"type":"SCALAR"
@@ -156,63 +170,63 @@
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":61056,
+			"byteLength":60960,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":61056,
-			"byteOffset":61056,
+			"byteLength":60960,
+			"byteOffset":60960,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":40704,
-			"byteOffset":122112,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":40704,
-			"byteOffset":162816,
+			"byteLength":40640,
+			"byteOffset":121920,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":17364,
-			"byteOffset":203520,
+			"byteOffset":162560,
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":75552,
-			"byteOffset":220884,
+			"byteOffset":179924,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":75552,
-			"byteOffset":296436,
+			"byteOffset":255476,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":50368,
-			"byteOffset":371988,
+			"byteOffset":331028,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":18960,
-			"byteOffset":422356,
+			"byteOffset":381396,
 			"target":34963
+		}
+	],
+	"samplers":[
+		{
+			"magFilter":9729,
+			"minFilter":9987
 		}
 	],
 	"buffers":[
 		{
-			"byteLength":441316,
-			"uri":"character.bin"
+			"byteLength":400356,
+			"uri":"GenericCharacter.bin"
 		}
 	]
 }

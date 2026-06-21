@@ -1,0 +1,38 @@
+:BOTB64AURA Dummy
+
+:DURATION 3
+:MAXSTACKS 99
+
+:PARAM CasterID INT
+:PARAM Snapshot HP
+:PARAM Snapshotted BOOL
+
+:EFFECT ONAPPLY
+move Snapshotted False
+
+:EFFECT ONDAMAGEDONE
+skipif Snapshotted
+move Snapshot DamageDone
+move Snapshotted True
+
+:EFFECT ONDAMAGETAKEN
+
+:EFFECT ONHEALINGDONE
+
+:EFFECT ONHEALINGTAKEN
+
+:EFFECT ONMOVE
+
+:EFFECT ONSTARTTURN
+# "My"X means "of the character that has the aura"
+skipif [MyHP > 500]
+heal MyHP 50
+
+:EFFECT ONENDTURN
+
+:EFFECT ONDROPSTACK
+
+:EFFECT ONDROP
+heal CasterID Snapshot
+
+:TOOLTIP ciao

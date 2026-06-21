@@ -6,18 +6,18 @@ namespace BOTB64.Graphics.G3D
 {
     public class CameraController
     {
-        private float Distance = 10.0f;
+        private float Distance = 15.0f;
         private float Yaw = 45.0f;
         private float Pitch = 30.0f;
 
         private float PanSpeed = 10.0f;
         private float RotSpeed = 0.25f;
-
+        
         private Vector3 Forward = new Vector3();
         private Vector3 Right = new Vector3();
 
-        Vector3 DefaultCameraPos = new Vector3(0, 0.5f, 0);
-        Vector3 DefaultCameraTarget = new Vector3(12.1243f, 7.0f, 0);
+        Vector3 DefaultCameraPos = new Vector3(0, 1f, 0);
+        Vector3 DefaultCameraTarget = new Vector3(0, 1f, 0);
 
         Vector3 Offset = new Vector3();
 
