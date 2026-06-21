@@ -1,8 +1,11 @@
 ﻿using BOTB64.Graphics.G3D;
 using BOTB64.Runtime;
+using BOTB64.Entities;
 using System.Numerics;
 using RB = Raylib_cs.Raylib;
 using RL = Raylib_cs;
+using BOTB64.Graphics.UI;
+using System.Security.AccessControl;
 
 namespace BOTB64.Engine.States
 {
@@ -10,27 +13,22 @@ namespace BOTB64.Engine.States
     {
         private Game Game = new();
         private Viewport Viewport = new();
-        private RL.Model board;
+        private Level Level;
+        private DebugGameOverlayScreen Screen = new();
+
+        private ModelInstance charac;
 
         public void OnEnter()
         {
             Game.Initialize();
-
-            DataFile df = new DataFile("Levels\\Level1\\board.gltf");
-            board = RB.LoadModel(df.Path);
-            for (int i = 0; i < board.MaterialCount; i++)
-            {
-                unsafe
-                {
-                    board.Materials[i].Shader = ShaderManager.WS.GetShader();
-                }
-            }
+            Level = Level.Load("Levels\\Level1\\board.b64m");
+            ModelAsset bro = AssetManager.GetModel("Characters\\Dummy\\character.gltf");
+            charac = new ModelInstance(bro);
         }
 
         public void OnExit()
         {
             Game.Unload();
-            RB.UnloadModel(board);
         }
 
         public void Update(float dt)
@@ -44,16 +42,27 @@ namespace BOTB64.Engine.States
             Viewport.Begin();
 
             ShaderManager.Update();
-            RB.BeginShaderMode(ShaderManager.WS.GetShader());
 
             Game.Render();
-            RB.DrawModel(board, Vector3.Zero, 1.0f, RL.Color.White);
-
-            RB.EndShaderMode();
+            Level.LevelBoard.Draw();
 
             Viewport.End();
 
-            //Screen.Draw(); //update the ui
+            charac.Draw();
+
+            //RL.Ray ray = RB.GetScreenToWorldRay(RB.GetMousePosition(),Viewport.Camera.Camera);
+            //Vector3 mouseWorld = Vector3.Zero;
+            //if (MathF.Abs(ray.Direction.Y) > 0.0001f)
+            //{
+            //    float t = -ray.Position.Y / ray.Direction.Y;
+
+            //    mouseWorld = ray.Position + ray.Direction * t;
+            //}
+            //Screen.FPSLabel.Text = mouseWorld.X.ToString() + ", " + mouseWorld.Y.ToString() + ", " + mouseWorld.Z.ToString();
+
+            Screen.FPSLabel.Text = RB.GetFPS().ToString();
+
+            Screen.Draw();
         }
     }
 }

@@ -6,8 +6,6 @@ namespace BOTB64.Graphics.G3D
 {
     public class CameraController
     {
-        public float PIO180 = MathF.PI / 180;
-
         private float Distance = 10.0f;
         private float Yaw = 45.0f;
         private float Pitch = 30.0f;
@@ -18,7 +16,7 @@ namespace BOTB64.Graphics.G3D
         private Vector3 Forward = new Vector3();
         private Vector3 Right = new Vector3();
 
-        Vector3 DefaultCameraPos = new Vector3(0, 1, 0);
+        Vector3 DefaultCameraPos = new Vector3(0, 0.5f, 0);
         Vector3 DefaultCameraTarget = new Vector3(12.1243f, 7.0f, 0);
 
         Vector3 Offset = new Vector3();
@@ -55,7 +53,7 @@ namespace BOTB64.Graphics.G3D
             if (InputManager.ScrollDelta != 0)
             {
                 Distance -= InputManager.ScrollDelta;
-                Distance = Math.Clamp(Distance, 2.0f, 50.0f);
+                Distance = Math.Clamp(Distance, 0.5f, 30.0f);
 
                 UpdateOffset();
             }
@@ -74,8 +72,8 @@ namespace BOTB64.Graphics.G3D
 
         private void UpdateVectors()
         {
-            Forward.X = MathF.Sin(Yaw * PIO180);
-            Forward.Z = MathF.Cos(Yaw * PIO180);
+            Forward.X = MathF.Sin(Yaw * Transform.PIO180);
+            Forward.Z = MathF.Cos(Yaw * Transform.PIO180);
             Forward = Vector3.Normalize(Forward);
 
             Right = Vector3.Normalize(Vector3.Cross(Forward, Vector3.UnitY));
@@ -83,9 +81,9 @@ namespace BOTB64.Graphics.G3D
 
         private void UpdateOffset()
         {
-            Offset.X = Distance * MathF.Cos(Pitch * PIO180) * MathF.Sin(Yaw * PIO180);
-            Offset.Y = Distance * MathF.Sin(Pitch * PIO180);
-            Offset.Z = Distance * MathF.Cos(Pitch * PIO180) * MathF.Cos(Yaw * PIO180);
+            Offset.X = Distance * MathF.Cos(Pitch * Transform.PIO180) * MathF.Sin(Yaw * Transform.PIO180);
+            Offset.Y = Distance * MathF.Sin(Pitch * Transform.PIO180);
+            Offset.Z = Distance * MathF.Cos(Pitch * Transform.PIO180) * MathF.Cos(Yaw * Transform.PIO180);
         }
     }
 }

@@ -27,10 +27,5 @@ namespace BOTB64.Graphics
         {
             RB.CloseWindow();
         }
-
-        public static void DrawModel(RL.Model model, Vector3 position, float scale, RL.Color tint)
-        {
-            RB.DrawModel(model, position, scale, tint);
-        }
     }
 }

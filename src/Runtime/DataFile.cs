@@ -5,7 +5,7 @@ namespace BOTB64.Runtime
     public class DataFile
     {
 #if DEVELOPMENT
-        public static string DataDir = "C:\\Users\\caffetti.enrico\\Documents\\BOTB64\\data\\";
+        public static string DataDir = "G:\\Dev\\BOTB64\\data\\";
 #else
         public static string DataDir = System.Environment.ProcessPath;
 #endif
@@ -20,6 +20,38 @@ namespace BOTB64.Runtime
         public bool Exists()
         {
             return File.Exists(Path);
+        }
+
+        public bool WriteAll(string text)
+        {
+            if (!Exists())
+                return false;
+
+            File.WriteAllText(Path, text);
+            return true;
+        }
+
+        public string ReadAll()
+        {
+            if (!Exists())
+                return "";
+
+            return File.ReadAllText(Path);
+        }
+
+        public bool WriteLines(string[] lines)
+        {
+            if (!Exists())
+                return false;
+            File.WriteAllLines(Path, lines);
+            return true;
+        }
+
+        public string[] ReadLines()
+        { 
+            if (!Exists())
+                return [];
+            return File.ReadAllLines(Path);
         }
 
         // Casting to string
