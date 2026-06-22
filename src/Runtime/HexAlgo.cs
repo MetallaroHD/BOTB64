@@ -8,6 +8,8 @@ namespace BOTB64.Runtime
     {
         public static readonly float Apothem = 0.5f;
         public static readonly float HexSize = 0.57735f; // derived from apothem = 0.5
+        private static readonly (int q, int r)[] Directions = { (1, 0), (1, -1), (0, -1), (-1, 0), (-1, 1), (0, 1) };
+        private static readonly int MaxCircleRadius = 50;
 
         /* The 6 corner offsets relative to the center */
         public static Vector3[] BuildHexOffsets()
@@ -76,6 +78,35 @@ namespace BOTB64.Runtime
                 var h = HexLerp(q1, r1, q2, r2, t);
                 var rounded = HexRound(h.q, h.r);
                 result.Add(rounded);
+            }
+
+            return result;
+        }
+
+        public static List<(int, int)> Circle(int centerQ, int centerR, int rad)
+        {
+            int radius = Math.Min(rad, MaxCircleRadius); //clamp the radius as to avoid lag
+
+            List<(int, int)> result = new();
+
+            if (radius == 0)
+            {
+                result.Add((centerQ, centerR));
+                return result;
+            }
+
+            int q = centerQ + Directions[4].q * radius;
+            int r = centerR + Directions[4].r * radius;
+
+            for (int side = 0; side < 6; side++)
+            {
+                for (int step = 0; step < radius; step++)
+                {
+                    result.Add((q, r));
+
+                    q += Directions[side].q;
+                    r += Directions[side].r;
+                }
             }
 
             return result;

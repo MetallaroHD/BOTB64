@@ -5,7 +5,6 @@ using System.Numerics;
 using RB = Raylib_cs.Raylib;
 using RL = Raylib_cs;
 using BOTB64.Graphics.UI;
-using System.Security.AccessControl;
 
 namespace BOTB64.Engine.States
 {
@@ -56,7 +55,8 @@ namespace BOTB64.Engine.States
             }
 
             (int q, int r) = HexAlgo.WorldToHex(Viewport.GetMouseXZ());
-            List<(int, int)> ls = HexAlgo.Beam(0, 0, q, r);
+            //List<(int, int)> ls = HexAlgo.Beam(0, 0, q, r);
+            List<(int, int)> ls = HexAlgo.Circle(0, 0, HexAlgo.HexDistance(0,0,q,r));
             foreach (var p in ls)
             {
                 (int x, int y) = HexAlgo.HexToIndex(p.Item1, p.Item2, Level.LevelBoard.TileCountRow, Level.LevelBoard.TileCountCol);
