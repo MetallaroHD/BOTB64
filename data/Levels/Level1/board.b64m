@@ -1,4 +1,4 @@
-:BOTB64LEVEL Board
+:BOTB64LEVEL
 # reader should ignore lines starting with # and empty lines
 
 :CENTER 12.124 -7

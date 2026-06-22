@@ -162,7 +162,7 @@ namespace BOTB64.Entities
 
         public bool IsValidIndex(int row, int col)
         {
-            return (row >= 0 && row < TileCountRow) && (col >= 0 && col <= TileCountCol);
+            return (row >= 0 && row < TileCountRow) && (col >= 0 && col < TileCountCol);
         }
 
         public void LoadModel(string gltfPath)

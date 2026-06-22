@@ -14,14 +14,13 @@ namespace BOTB64.Runtime
             string[] lines = df.ReadLines();
             int i = SkipBlankAndComments(lines, 0);
 
-            if (i >= lines.Length || !TryParseHeader(lines[i], out string name))
+            if (i >= lines.Length || !TryParseHeader(lines[i]))
                 throw new FormatException($"'{(string)df}' is missing a valid header.");
             i++;
 
             var board = new Board();
             var level = new Level
             {
-                Name = name,
                 LevelBoard = board
             };
 
@@ -96,18 +95,11 @@ namespace BOTB64.Runtime
             File.WriteAllText((string)file, sb.ToString());
         }
 
-        private static bool TryParseHeader(string line, out string name)
+        private static bool TryParseHeader(string line)
         {
-            name = null;
-
             if (!line.StartsWith(HeaderTag, StringComparison.Ordinal))
                 return false;
 
-            string[] parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length < 2)
-                return false;
-
-            name = parts[1];
             return true;
         }
 
