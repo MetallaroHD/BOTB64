@@ -12,7 +12,7 @@ namespace BOTB64.Entities
         RedBase = 4,
     }
 
-    public struct Tile
+    public class Tile
     {
         public int Q;
         public int R;
@@ -21,6 +21,7 @@ namespace BOTB64.Entities
 
         public RL.Color Color = RL.Color.White;
         public TileType Type;
+        public List<TileEffect> Effects = new();
 
         public Tile(int q, int r, TileType type)
         {
@@ -29,9 +30,19 @@ namespace BOTB64.Entities
             Type = type;
         }
 
-        public void SetColor (RL.Color col)
+        public void SetColor(RL.Color col)
         {
             Color = col;
+        }
+
+        public void AddEffect(TileEffect effect)
+        {
+            Effects.Add(effect);
+        }
+
+        public void RemoveEffect(TileEffect effect)
+        {
+            Effects.Remove(effect);
         }
     }
 }

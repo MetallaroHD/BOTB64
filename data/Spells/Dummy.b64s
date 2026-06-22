@@ -20,6 +20,5 @@ apply Caster 0
 
 :TOOLTIP Dummy spell
 
-#:VISUALTYPE STATIC
 #:VISUAL 0
 #:AUDIO 0

@@ -16,14 +16,12 @@ namespace BOTB64.Engine.States
         private Level Level;
         private DebugGameOverlayScreen Screen = new();
 
-        private ModelInstance charac;
+        ModelInstance dude = new ModelInstance(AssetManager.GetModel("Characters\\Dummy\\GenericCharacter.gltf"));
 
         public void OnEnter()
         {
             Game.Initialize();
             Level = Level.Load("Levels\\Level1\\board.b64m");
-            ModelAsset bro = AssetManager.GetModel("Characters\\Dummy\\GenericCharacter.gltf");
-            charac = new ModelInstance(bro);
         }
 
         public void OnExit()
@@ -45,20 +43,32 @@ namespace BOTB64.Engine.States
 
             Game.Render();
             Level.LevelBoard.Draw();
-            charac.Draw();
+            dude.Draw();
 
             Viewport.End();
 
-            //RL.Ray ray = RB.GetScreenToWorldRay(RB.GetMousePosition(),Viewport.Camera.Camera);
-            //Vector3 mouseWorld = Vector3.Zero;
-            //if (MathF.Abs(ray.Direction.Y) > 0.0001f)
-            //{
-            //    float t = -ray.Position.Y / ray.Direction.Y;
+            for (int i = 0; i < Level.LevelBoard.TileCountRow; i++)
+            {
+                for (int j = 0; j < Level.LevelBoard.TileCountCol; j++)
+                {
+                    Level.LevelBoard.RestoreColor(i, j);
+                }
+            }
 
-            //    mouseWorld = ray.Position + ray.Direction * t;
-            //}
-            //Screen.FPSLabel.Text = mouseWorld.X.ToString() + ", " + mouseWorld.Y.ToString() + ", " + mouseWorld.Z.ToString();
+            (int q, int r) = HexAlgo.WorldToHex(Viewport.GetMouseXZ());
+            List<(int, int)> ls = HexAlgo.Beam(0, 0, q, r);
+            foreach (var p in ls)
+            {
+                (int x, int y) = HexAlgo.HexToIndex(p.Item1, p.Item2, Level.LevelBoard.TileCountRow, Level.LevelBoard.TileCountCol);
+                if(Level.LevelBoard.IsValidIndex(x, y))
+                    Level.LevelBoard.Tiles[x][y].SetColor(RL.Color.Yellow);
+            }
 
+            //(int row, int col) = Level.LevelBoard.HexToIndex(q, r);
+            //if (Level.LevelBoard.IsValidIndex(row, col))
+            //    Level.LevelBoard.Tiles[row][col].SetColor(RL.Color.Yellow);
+
+            Screen.PosLabel.Text = q.ToString() + ", " + r.ToString();
             Screen.FPSLabel.Text = RB.GetFPS().ToString();
 
             Screen.Draw();

@@ -1,12 +1,13 @@
 ﻿using RL = Raylib_cs;
 using RB = Raylib_cs.Raylib;
+using BOTB64.Runtime;
 
 namespace BOTB64.Graphics.G3D
 {
     public class ModelInstance
     {
         public ModelAsset Asset { get; }
-        public Transform Transform { get; } = new();
+        public Transform3D Transform { get; } = new();
 
         public RL.Color Tint = RL.Color.White;
 

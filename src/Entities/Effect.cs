@@ -38,7 +38,7 @@
 
     public class Effect
     {
-        EffectTrigger Trigger;
+        EffectTrigger Trigger = 0;
 
         bool IsDirect => Trigger == 0;
     }

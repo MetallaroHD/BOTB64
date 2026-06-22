@@ -2,23 +2,20 @@
 using RL = Raylib_cs;
 using RB = Raylib_cs.Raylib;
 using BOTB64.Graphics.G3D;
+using BOTB64.Runtime;
 
 namespace BOTB64.Entities
 {
     public class Board
     {
-        // Loaded from the .gltf file in the same folder as the .b64m
         public ModelInstance Model;
-
-        // Tiles are flat-top hexagons!
         public List<List<Tile>> Tiles = new();
-
-        public float HexSize = 0.57735f; // derived from apothem = 0.5
-        public float Apothem = 0.5f;
-
         public Vector2 Center = new();
 
-        private readonly Vector3[] HexOffsets = new Vector3[6];
+        public int TileCountRow = 0;
+        public int TileCountCol = 0;
+
+        private Vector3[] HexOffsets = new Vector3[6];
 
         private static readonly RL.Color[] FloorColors =
         {
@@ -27,11 +24,21 @@ namespace BOTB64.Entities
             new RL.Color(0xA0, 0xA0, 0xA0, 0xFF),
         };
 
+        private static readonly RL.Color[] BlueBaseColors =
+        {
+            new RL.Color(0x64, 0x8F, 0xFF, 0xFF),
+            new RL.Color(0x84, 0xAF, 0xFF, 0xFF),
+            new RL.Color(0xA4, 0xCF, 0xFF, 0xFF),
+        };
+
+        private static readonly RL.Color[] RedBaseColors =
+        {
+            new RL.Color(0xFF, 0x61, 0x00, 0xFF),
+            new RL.Color(0xFF, 0x81, 0x20, 0xFF),
+            new RL.Color(0xFF, 0xA1, 0x40, 0xFF),
+        };
+
         private static readonly RL.Color WallColor = new RL.Color(0x00, 0x00, 0x00, 0xFF);
-
-        private static readonly RL.Color BlueBaseColor = new RL.Color(0x9F, 0xD3, 0xFF, 0xFF);
-
-        private static readonly RL.Color RedBaseColor = new RL.Color(0xFF, 0x9F, 0x9F, 0xFF);
 
         public Board()
         {
@@ -39,29 +46,17 @@ namespace BOTB64.Entities
 
         public void Init()
         {
-            BuildHexOffsets();
+            HexOffsets = HexAlgo.BuildHexOffsets();
+            TileCountRow = Tiles.Count();
+            TileCountCol = Tiles[0].Count();
         }
 
-        private void BuildHexOffsets()
-        {
-            for (int i = 0; i < 6; i++)
-            {
-                float angle = Transform.PIO180 * (60 * i);
-
-                HexOffsets[i] = new Vector3(HexSize * MathF.Cos(angle), 0f, HexSize * MathF.Sin(angle));
-            }
-        }
+        public (int row, int col) HexToIndex(int q, int r) => HexAlgo.HexToIndex(q, r, TileCountRow, TileCountCol);
 
         public Tile CreateTile(int q, int r, TileType type)
         {
-            Tile tile = new Tile
-            {
-                Q = q,
-                R = r,
-                Type = type,
-                WorldPosition = HexToWorld(q, r)
-            };
-
+            Tile tile = new Tile(q, r, type);
+            tile.WorldPosition = HexAlgo.HexToWorld(q, r);
             ApplyDefaultColor(ref tile);
 
             return tile;
@@ -69,7 +64,7 @@ namespace BOTB64.Entities
 
         public void SetTile(int q, int r, TileType type)
         {
-            (int row, int col) = HexToIndex(q, r);
+            (int row, int col) = HexAlgo.HexToIndex(q, r, TileCountRow, TileCountCol);
 
             if (row < 0 || row >= Tiles.Count || col < 0 || col >= Tiles[row].Count)
             {
@@ -107,6 +102,13 @@ namespace BOTB64.Entities
             }
         }
 
+        public void RestoreColor(int row, int col)
+        {
+            Tile tile = Tiles[row][col];
+
+            ApplyDefaultColor(ref tile);
+        }
+
         private static void ApplyDefaultColor(ref Tile tile)
         {
             switch (tile.Type)
@@ -116,11 +118,11 @@ namespace BOTB64.Entities
                     break;
 
                 case TileType.BlueBase:
-                    tile.Color = BlueBaseColor;
+                    tile.Color = BlueBaseColors[FloorColorIndex(tile.Q, tile.R)];
                     break;
 
                 case TileType.RedBase:
-                    tile.Color = RedBaseColor;
+                    tile.Color = RedBaseColors[FloorColorIndex(tile.Q, tile.R)];
                     break;
 
                 case TileType.Floor:
@@ -158,27 +160,9 @@ namespace BOTB64.Entities
             }
         }
 
-        public Vector3 HexToWorld(int q, int r)
+        public bool IsValidIndex(int row, int col)
         {
-            float x = HexSize * 1.5f * q;
-            float z = HexSize * MathF.Sqrt(3) * (r + q * 0.5f);
-
-            return new Vector3(x, 0f, z);
-        }
-
-        public (int q, int r) WorldToHex(Vector3 p)
-        {
-            float q = (2f / 3 * p.X) / HexSize;
-            float r = (-1f / 3 * p.X + MathF.Sqrt(3) / 3 * p.Z) / HexSize;
-
-            return ((int)MathF.Round(q), (int)MathF.Round(r));
-        }
-
-        private (int row, int col) HexToIndex(int q, int r)
-        {
-            int rOffset = Tiles.Count / 2;
-            int qOffset = Tiles.Count > 0 ? Tiles[0].Count / 2 : 0;
-            return (r + rOffset, q + qOffset);
+            return (row >= 0 && row < TileCountRow) && (col >= 0 && col <= TileCountCol);
         }
 
         public void LoadModel(string gltfPath)

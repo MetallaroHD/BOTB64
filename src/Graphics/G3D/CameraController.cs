@@ -1,6 +1,8 @@
 ﻿using BOTB64.Runtime;
+using Raylib_cs;
 using System.Numerics;
 using RL = Raylib_cs;
+using RB = Raylib_cs.Raylib;
 
 namespace BOTB64.Graphics.G3D
 {
@@ -72,8 +74,8 @@ namespace BOTB64.Graphics.G3D
 
         private void UpdateVectors()
         {
-            Forward.X = MathF.Sin(Yaw * Transform.PIO180);
-            Forward.Z = MathF.Cos(Yaw * Transform.PIO180);
+            Forward.X = MathF.Sin(Yaw * Transform3D.PIO180);
+            Forward.Z = MathF.Cos(Yaw * Transform3D.PIO180);
             Forward = Vector3.Normalize(Forward);
 
             Right = Vector3.Normalize(Vector3.Cross(Forward, Vector3.UnitY));
@@ -81,9 +83,22 @@ namespace BOTB64.Graphics.G3D
 
         private void UpdateOffset()
         {
-            Offset.X = Distance * MathF.Cos(Pitch * Transform.PIO180) * MathF.Sin(Yaw * Transform.PIO180);
-            Offset.Y = Distance * MathF.Sin(Pitch * Transform.PIO180);
-            Offset.Z = Distance * MathF.Cos(Pitch * Transform.PIO180) * MathF.Cos(Yaw * Transform.PIO180);
+            Offset.X = Distance * MathF.Cos(Pitch * Transform3D.PIO180) * MathF.Sin(Yaw * Transform3D.PIO180);
+            Offset.Y = Distance * MathF.Sin(Pitch * Transform3D.PIO180);
+            Offset.Z = Distance * MathF.Cos(Pitch * Transform3D.PIO180) * MathF.Cos(Yaw * Transform3D.PIO180);
+        }
+
+        public Vector3 GetMouseXZ()
+        {
+            Ray ray = RB.GetScreenToWorldRay(InputManager.MousePosition, Camera);
+
+            if(MathF.Abs(ray.Direction.Y) > 0.0001f)
+            {
+                float t = -ray.Position.Y / ray.Direction.Y;
+                return ray.Position + ray.Direction * t;
+            }
+
+            return Vector3.Zero;
         }
     }
 }

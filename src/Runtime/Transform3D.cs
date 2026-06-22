@@ -1,8 +1,8 @@
 ﻿using System.Numerics;
 
-namespace BOTB64.Graphics.G3D
+namespace BOTB64.Runtime
 {
-    public class Transform
+    public class Transform3D
     {
         public static float PIO180 = MathF.PI / 180;
 

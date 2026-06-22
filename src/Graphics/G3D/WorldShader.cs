@@ -18,8 +18,7 @@ namespace BOTB64.Graphics.G3D
             if (!Shader.IsValid())
                 throw new Exception("Failed to load world shader");
 
-            LightDirLoc =
-                RB.GetShaderLocation(Shader.Handle, "lightDir");
+            LightDirLoc = RB.GetShaderLocation(Shader.Handle, "lightDir");
 
             LightColorLoc =RB.GetShaderLocation(Shader.Handle, "lightColor");
         }
