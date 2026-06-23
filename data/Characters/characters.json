@@ -1,7 +1,10 @@
-{
-    "Dummy" :
+[
     {
         "ID" : 0,
-        "Model" : "GenericCharacter.gltf"
+        "Enabled" : true,
+        "Name" : "Dummy",
+        "ModelURI" : "Characters\\Dummy\\GenericCharacter.gltf",
+        "ScriptURI" : "Characters\\Dummy\\character.b64c",
+        "IconURI" : "Characters\\Dummy\\dummy.png"
     }
-}
+]

@@ -1,30 +1,51 @@
-using RB = Raylib_cs.Raylib;
+﻿using BOTB64.Runtime;
 using RL = Raylib_cs;
-using BOTB64.Runtime;
+using RB = Raylib_cs.Raylib;
 
-namespace BOTB64.Graphics.UI;
-
-public class Button : UIElement
+namespace BOTB64.Graphics.UI
 {
-    public RL.Rectangle Bounds;
-    public string Text = "";
-
-    public Action? OnClick;
-
-    public override void Update(float dt)
+    public abstract class Button :UIElement
     {
-        if(!Visible) return;
+        public RL.Rectangle Bounds;
 
-        if (InputManager.IsMouseButtonPressed(RL.MouseButton.Left))
-            if(RB.CheckCollisionPointRec(InputManager.MousePosition, Bounds))
-                OnClick?.Invoke();
-    }
+        public Action? OnClick;
+        public Action? OnHover;
 
-    public override void Draw()
-    {
-        if (!Visible) return;
+        protected bool IsHovered;
+        protected bool WasHovered;
 
-        RB.DrawRectangleRec(Bounds, RL.Color.LightGray);
-        RB.DrawText(Text, (int)Bounds.X + 10, (int)Bounds.Y + 10, 20, RL.Color.Black);
+        protected RL.Color BackgroundColor = RL.Color.LightGray;
+        protected RL.Color HoverOutlineColor = RL.Color.Gold;
+        protected float HoverOutlineThickness = 4f;
+
+        public override void Update(float dt)
+        {
+            if (!Visible) return;
+
+            IsHovered = RB.CheckCollisionPointRec(InputManager.MousePosition, Bounds);
+
+            if (!WasHovered && IsHovered)
+                OnHover?.Invoke();
+
+            WasHovered = IsHovered;
+
+            if (InputManager.IsLMP && IsHovered)
+                    OnClick?.Invoke();
+        }
+
+        public override void Draw()
+        {
+            if (!Visible) return;
+        }
+
+        protected void DrawHoverOutline()
+        {
+            if (!IsHovered) return;
+
+            RB.DrawRectangleLinesEx(
+                Bounds,
+                HoverOutlineThickness,
+                HoverOutlineColor);
+        }
     }
 }

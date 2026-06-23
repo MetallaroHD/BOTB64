@@ -42,5 +42,11 @@ namespace BOTB64.Runtime
             string json = JsonSerializer.Serialize(data, Options);
             df.WriteAll(json);
         }
+
+        public List<T> DeserializeAll(DataFile df)
+        {
+            string json = df.ReadAll();
+            return JsonSerializer.Deserialize<List<T>>(json, Options);
+        }
     }
 }

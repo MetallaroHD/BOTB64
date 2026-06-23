@@ -10,24 +10,15 @@ namespace BOTB64.Engine.States
 {
     public class GameplayState : IGameState
     {
+        public GameInitializer Initer;
+
         private Game Game = new();
         private Viewport Viewport = new();
         private DebugGameOverlayScreen Screen = new();
 
-        ModelInstance dude = new ModelInstance(AssetManager.GetModel("Characters\\Dummy\\GenericCharacter.gltf"));
-
         public void OnEnter()
         {
-            Game.Initialize(new GameInitializer
-            {
-                LevelInfo = new LevelDTO //we would read these from the json
-                {
-                    ModelURI = "Levels\\Level1\\Board.gltf",
-                    ScriptURI = "Levels\\Level1\\board.b64m"
-                },
-                BlueTeam = new List<CharacterDTO>(),
-                RedTeam = new List<CharacterDTO>()
-            });
+            Game.Initialize(Initer);
         }
 
         public void OnExit()
@@ -48,8 +39,6 @@ namespace BOTB64.Engine.States
             ShaderManager.Update();
 
             Game.Render();
-
-            dude.Draw();
 
             Viewport.End();
 

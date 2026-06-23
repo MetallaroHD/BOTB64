@@ -23,11 +23,11 @@ namespace BOTB64.Graphics.UI
                 Color = RL.Color.White
             };
 
-            var startButton = new Button
+            var startButton = new TextButton
             {
                 Bounds = new RL.Rectangle(540, 360, 200, 60),
                 Text = "Start",
-                OnClick = () => StateManager.ChangeState(new GameplayState())
+                OnClick = () => StateManager.ChangeState(new CharacterSelectState())
             };
 
             AddElement(background);

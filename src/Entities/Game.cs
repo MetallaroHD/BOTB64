@@ -6,7 +6,7 @@ namespace BOTB64.Entities
 {
     public struct GameInitializer
     {
-        public LevelDTO LevelInfo;
+        public LevelDTO Level;
         public List<CharacterDTO> BlueTeam;
         public List<CharacterDTO> RedTeam;
     }
@@ -17,7 +17,7 @@ namespace BOTB64.Entities
         
         public void Initialize(GameInitializer lI)
         {
-            Level = Level.Load(lI.LevelInfo.ScriptURI, lI.LevelInfo.ModelURI);
+            Level = Level.Load(lI.Level.ScriptURI, lI.Level.ModelURI);
         }
 
         public void Update(float dt)

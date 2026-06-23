@@ -25,7 +25,7 @@ public abstract class UIScreen : IUIScreen
         }
     }
 
-    protected void AddElement(IUIElement element) => Elements.Add(element);
+    public void AddElement(IUIElement element) => Elements.Add(element);
 
     protected void RemoveElement(IUIElement element) => Elements.Remove(element);
 }
