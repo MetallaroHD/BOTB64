@@ -1,10 +1,12 @@
 ﻿using BOTB64.Runtime;
+using BOTB64.Entities.Effects;
 
 namespace BOTB64.Entities
 {
     public class Spell
     {
         //add visuals and sound later
+        public Character? Owner;
 
         public int ID = 0;
         public string Name = "";

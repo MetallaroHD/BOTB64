@@ -1,18 +1,24 @@
-﻿using System.Reflection.Metadata;
+﻿using BOTB64.Entities.Effects;
+using System.Reflection.Metadata;
 
 namespace BOTB64.Entities
 {
+    [Flags]
     public enum DispelType
     {
         None = 0,
-        Magic = 1,
-        Poison = 2,
-        Bleed = 3,
+        Magic = 1 << 0,
+        Poison = 1 << 1,
+        Bleed = 1 << 2,
+        Root = 1 << 3,
+        Slow = 1 << 4
     }
 
     public class Aura
     {
         // add visuals later 
+        public Character? Owner;
+        public Character? Wearer;
 
         public int ID = 0;
         public string Name = "";

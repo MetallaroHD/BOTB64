@@ -1,8 +1,19 @@
 ﻿using System.Numerics;
-using System.Xml.XPath;
 
 namespace BOTB64.Runtime
 {
+    public readonly struct Hex
+    {
+        public int Q { get; }
+        public int R { get; }
+
+        public Hex(int q, int r)
+        {
+            Q = q;
+            R = r;
+        }
+    }
+
     /* Hex grid algorithm class, based on https://www.redblobgames.com/grids/hexagons/#line-drawing */
     public static class HexAlgo
     {
@@ -26,15 +37,15 @@ namespace BOTB64.Runtime
             return offsets;
         }
 
-        public static Vector3 HexToWorld(int q, int r)
+        public static Vector3 HexToWorld(Hex h)
         {
-            float x = HexSize * 1.5f * q;
-            float z = HexSize * MathF.Sqrt(3) * (r + q * 0.5f);
+            float x = HexSize * 1.5f * h.Q;
+            float z = HexSize * MathF.Sqrt(3) * (h.R + h.Q * 0.5f);
 
             return new Vector3(x, 0f, z);
         }
 
-        public static (int q, int r) WorldToHex(Vector3 p)
+        public static Hex WorldToHex(Vector3 p)
         {
             float q = (2f / 3f * p.X) / HexSize;
             float r = (-1f / 3f * p.X + MathF.Sqrt(3f) / 3f * p.Z) / HexSize;
@@ -42,40 +53,40 @@ namespace BOTB64.Runtime
             return HexRound(q, r);
         }
 
-        public static (int row, int col) HexToIndex(int q, int r, int rowCount, int colCount)
+        public static (int row, int col) HexToIndex(Hex h, int rowCount, int colCount)
         {
             int rOffset = rowCount / 2;
             int qOffset = colCount / 2;
 
-            return (r + rOffset, q + qOffset);
+            return (h.R + rOffset, h.Q + qOffset);
         }
 
-        public static (int q, int r) HexSubtract(int q1, int r1, int q2, int r2)
+        public static Hex HexSubtract(Hex h1, Hex h2)
         {
-            return (q2 - q1, r2 - r1);
+            return new Hex(h2.Q - h1.Q, h2.R - h1.R);
         }
 
-        public static int HexDistance(int q1, int r1, int q2, int r2)
+        public static int HexDistance(Hex h1, Hex h2)
         {
-            (int q3, int r3) = HexSubtract(q1, r1, q2, r2);
-            return (int)((MathF.Abs(q3) + MathF.Abs(r3) + MathF.Abs(q3 + r3)) / 2);
+            Hex h3 = HexSubtract(h1, h2);
+            return (int)((MathF.Abs(h3.Q) + MathF.Abs(h3.R) + MathF.Abs(h3.Q + h3.R)) / 2);
         }
 
-        public static List<(int, int)> Beam(int q1, int r1, int q2, int r2)
+        public static List<Hex> Beam(Hex src, Hex dst)
         {
-            int dist = HexDistance(q1, r1, q2, r2);
-            List<(int, int)> result = new List<(int, int)>();
+            int dist = HexDistance(src, dst);
+            List<Hex> result = new List<Hex>();
 
             if (dist == 0)
             {
-                result.Add((q1, r1));
+                result.Add(new Hex(src.Q, src.R));
                 return result;
             }
 
             for (int i = 0; i <= dist; i++)
             {
                 float t = (float)i / dist;
-                var h = HexLerp(q1, r1, q2, r2, t);
+                var h = HexLerp(src.Q, src.R, dst.Q, dst.R, t);
                 var rounded = HexRound(h.q, h.r);
                 result.Add(rounded);
             }
@@ -83,26 +94,26 @@ namespace BOTB64.Runtime
             return result;
         }
 
-        public static List<(int, int)> Circle(int centerQ, int centerR, int rad)
+        public static List<Hex> Circle(Hex center, int rad)
         {
             int radius = Math.Min(rad, MaxCircleRadius); //clamp the radius as to avoid lag
 
-            List<(int, int)> result = new();
+            List<Hex> result = new();
 
             if (radius == 0)
             {
-                result.Add((centerQ, centerR));
+                result.Add(new Hex(center.Q, center.R));
                 return result;
             }
 
-            int q = centerQ + Directions[4].q * radius;
-            int r = centerR + Directions[4].r * radius;
+            int q = center.Q + Directions[4].q * radius;
+            int r = center.R + Directions[4].r * radius;
 
             for (int side = 0; side < 6; side++)
             {
                 for (int step = 0; step < radius; step++)
                 {
-                    result.Add((q, r));
+                    result.Add(new Hex(q, r));
 
                     q += Directions[side].q;
                     r += Directions[side].r;
@@ -117,7 +128,7 @@ namespace BOTB64.Runtime
             return (q1 + (q2 - q1) * t, r1 + (r2 - r1) * t);
         }
 
-        private static (int q, int r) HexRound(float qf, float rf)
+        private static Hex HexRound(float qf, float rf)
         {
             float x = qf;
             float z = rf;
@@ -138,7 +149,7 @@ namespace BOTB64.Runtime
             else
                 rz = -rx - ry;
 
-            return (rx, rz);
+            return new Hex(rx, rz);
         }
     }
 }

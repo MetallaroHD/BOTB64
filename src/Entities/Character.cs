@@ -21,12 +21,15 @@ namespace BOTB64.Entities
     {
         public ModelInstance Model;
 
+        public bool Alive = true;
+
         public int ID = 0;
         public string Name = "";
 
+        public Hex Position;
+
         public int MaxHP = 0;
         public int MaxRes = 0;
-        public ResourceType ResType = ResourceType.Mana;
         public int ResRegen = 0;
         public int StartRes = 0;
         public int AttackPower = 0;
@@ -47,6 +50,7 @@ namespace BOTB64.Entities
         public int RemainAction = 0;
         public int RemainFastAction = 0;
 
+        public ResourceType ResType = ResourceType.Mana;
         public Faction Faction = Faction.Neutral;
 
         Dictionary<int, Spell> ActiveSpells = new();

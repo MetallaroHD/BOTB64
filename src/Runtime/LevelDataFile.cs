@@ -164,7 +164,7 @@ namespace BOTB64.Runtime
                 {
                     int q = qi - qOffset;
                     var type = (TileType)(trimmed[qi] - '0');
-                    tileRow.Add(board.CreateTile(q, r, type));
+                    tileRow.Add(board.CreateTile(new Hex(q, r), type));
                 }
 
                 board.Tiles.Add(tileRow);

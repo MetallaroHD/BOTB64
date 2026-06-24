@@ -5,6 +5,7 @@ using RB = Raylib_cs.Raylib;
 using RL = Raylib_cs;
 using BOTB64.Graphics.UI;
 using BOTB64.Entities.DTOs;
+using BOTB64.Engine.Actions;
 
 namespace BOTB64.Engine.States
 {
@@ -16,9 +17,12 @@ namespace BOTB64.Engine.States
         private Viewport Viewport = new();
         private DebugGameOverlayScreen Screen = new();
 
+        private IAction? CurrentAction;
+
         public void OnEnter()
         {
             Game.Initialize(Initer);
+            ChangeAction(new DefaultAction(this));
         }
 
         public void OnExit()
@@ -28,25 +32,35 @@ namespace BOTB64.Engine.States
 
         public void Update(float dt)
         {
+            CurrentAction?.Update();
             Game.Update(dt);
             Viewport.Update(dt);
+            Screen.Update(dt);
+            FloatingTextManager.Update(dt);
         }
 
         public void Render()
         {
             Viewport.Begin();
-
             ShaderManager.Update();
-
             Game.Render();
-
             Viewport.End();
 
-            (int q, int r) = HexAlgo.WorldToHex(Viewport.GetMouseXZ());
-            Screen.PosLabel.Text = q.ToString() + ", " + r.ToString();
+            // DEBUG
+            Hex mouseCast = HexAlgo.WorldToHex(Viewport.GetMouseXZ());
+            Screen.PosLabel.Text = mouseCast.Q.ToString() + ", " + mouseCast.R.ToString();
             Screen.FPSLabel.Text = RB.GetFPS().ToString();
+            ////////
 
+            FloatingTextManager.Draw(Viewport);
             Screen.Draw();
+        }
+
+        public void ChangeAction(IAction action)
+        {
+            CurrentAction?.Exit();
+            CurrentAction = action;
+            CurrentAction?.Enter();
         }
     }
 }

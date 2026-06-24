@@ -44,6 +44,34 @@ namespace BOTB64.Entities
         {
         }
 
+        public Tile? GetTile(Hex h)
+        { 
+            (int x, int y) = HexToIndex(h);
+            if(IsValidIndex (x, y))
+                return Tiles[x][y];
+            return null;
+        }
+
+        public List<Tile> GetTiles(List<Hex> hexes)
+        {
+            List<Tile> result = new(hexes.Count());
+            foreach (Hex h in hexes)
+            {
+                Tile? t = GetTile(h);
+                if(t != null)
+                    result.Add(t);
+            }
+            return result;
+        }
+
+        public bool IsPassable(Hex h)
+        {
+            Tile? t = GetTile(h);
+            if (t == null)
+                return false;
+            return t.IsPassable();
+        }
+
         public void Init()
         {
             HexOffsets = HexAlgo.BuildHexOffsets();
@@ -51,20 +79,20 @@ namespace BOTB64.Entities
             TileCountCol = Tiles[0].Count();
         }
 
-        public (int row, int col) HexToIndex(int q, int r) => HexAlgo.HexToIndex(q, r, TileCountRow, TileCountCol);
+        public (int row, int col) HexToIndex(Hex h) => HexAlgo.HexToIndex(h, TileCountRow, TileCountCol);
 
-        public Tile CreateTile(int q, int r, TileType type)
+        public Tile CreateTile(Hex h, TileType type)
         {
-            Tile tile = new Tile(q, r, type);
-            tile.WorldPosition = HexAlgo.HexToWorld(q, r);
+            Tile tile = new Tile(h, type);
+            tile.WorldPosition = HexAlgo.HexToWorld(h);
             ApplyDefaultColor(ref tile);
 
             return tile;
         }
 
-        public void SetTile(int q, int r, TileType type)
+        public void SetTile(Hex h, TileType type)
         {
-            (int row, int col) = HexAlgo.HexToIndex(q, r, TileCountRow, TileCountCol);
+            (int row, int col) = HexAlgo.HexToIndex(h, TileCountRow, TileCountCol);
 
             if (row < 0 || row >= Tiles.Count || col < 0 || col >= Tiles[row].Count)
             {
@@ -172,6 +200,17 @@ namespace BOTB64.Entities
             Model = new ModelInstance(asset);
 
             Model.Transform.Position = new Vector3(-Center.X, 0f, -Center.Y);
+        }
+
+        public void MoveCharacter(Character character, Tile tile)
+        {
+            Tile? oldTile = GetTile(character.Position);
+            if (oldTile == null)
+                return;
+
+            oldTile.Character = null;
+            tile.Character = character;
+            character.Position = new Hex(tile.Q, tile.R);
         }
     }
 }

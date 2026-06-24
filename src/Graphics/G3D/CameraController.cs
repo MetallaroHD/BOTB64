@@ -8,6 +8,8 @@ namespace BOTB64.Graphics.G3D
 {
     public class CameraController
     {
+        private bool Enabled = true;
+
         private float Distance = 15.0f;
         private float Yaw = 45.0f;
         private float Pitch = 30.0f;
@@ -24,6 +26,10 @@ namespace BOTB64.Graphics.G3D
         Vector3 Offset = new Vector3();
 
         public RL.Camera3D Camera;
+
+        public void Enable() => Enabled = true;
+        public void Disable() => Enabled = false;
+        public bool IsEnabled() => Enabled;
 
         public void CreateNewCamera()
         {
@@ -43,31 +49,34 @@ namespace BOTB64.Graphics.G3D
         {
             float panDistance = PanSpeed * dt;
 
-            if (InputManager.IsMouseButtonDown(RL.MouseButton.Right))
+            if(Enabled)
             {
-                Yaw -= InputManager.MouseDelta.X * RotSpeed;
-                Pitch = Math.Clamp(Pitch + InputManager.MouseDelta.Y * RotSpeed, 0, 85.0f);
+                if (InputManager.IsMouseButtonDown(RL.MouseButton.Right))
+                {
+                    Yaw -= InputManager.MouseDelta.X * RotSpeed;
+                    Pitch = Math.Clamp(Pitch + InputManager.MouseDelta.Y * RotSpeed, 0, 85.0f);
 
-                UpdateVectors();
-                UpdateOffset();
+                    UpdateVectors();
+                    UpdateOffset();
+                }
+
+                if (InputManager.ScrollDelta != 0)
+                {
+                    Distance -= InputManager.ScrollDelta;
+                    Distance = Math.Clamp(Distance, 0.5f, 30.0f);
+
+                    UpdateOffset();
+                }
+
+                if (InputManager.IsKeyDown(RL.KeyboardKey.W))
+                    Camera.Target -= Forward * panDistance;
+                if (InputManager.IsKeyDown(RL.KeyboardKey.S))
+                    Camera.Target += Forward * panDistance;
+                if (InputManager.IsKeyDown(RL.KeyboardKey.A))
+                    Camera.Target += Right * panDistance;
+                if (InputManager.IsKeyDown(RL.KeyboardKey.D))
+                    Camera.Target -= Right * panDistance;
             }
-
-            if (InputManager.ScrollDelta != 0)
-            {
-                Distance -= InputManager.ScrollDelta;
-                Distance = Math.Clamp(Distance, 0.5f, 30.0f);
-
-                UpdateOffset();
-            }
-
-            if (InputManager.IsKeyDown(RL.KeyboardKey.W))
-                Camera.Target -= Forward * panDistance;
-            if (InputManager.IsKeyDown(RL.KeyboardKey.S))
-                Camera.Target += Forward * panDistance;
-            if (InputManager.IsKeyDown(RL.KeyboardKey.A))
-                Camera.Target += Right * panDistance;
-            if (InputManager.IsKeyDown(RL.KeyboardKey.D))
-                Camera.Target -= Right * panDistance;
 
             Camera.Position = Camera.Target + Offset;
         }
