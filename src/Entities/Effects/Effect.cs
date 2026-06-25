@@ -6,7 +6,6 @@
         // Only affects spells when cast (always true)
         Direct = 0,
 
-        /* AFFECT AURAS AND TILEEFFECTS */
         // Activates as soon as the aura is applied or dropped
         OnApply = 1 << 0,
         OnDrop = 1 << 1,
@@ -18,7 +17,6 @@
         // Activates when the wearer dies or the character on the tile dies
         OnDeath = 1 << 4,
 
-        /* ONLY AFFECT AURAS */
         // Activates when the wearer deals any damage
         OnDamageDone = 1 << 5,
 
@@ -44,15 +42,18 @@
         // The wearer has another aura applied
         OnOtherAuraApplied = 1 << 14,
 
+        // The wearer has moved for the first time in a turn
+        OnMoveFirstTime = 1 << 15,
+
         All = -0,
     }
 
     public class EffectContext
     {
         public Character? Caster;
-        public Character? Target;
 
-        public Tile? TargetTile;
+        public List<Character>? Targets;
+        public List<Tile>? TargetTiles;
 
         public Game Game;
     }

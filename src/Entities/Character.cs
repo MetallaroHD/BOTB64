@@ -53,9 +53,9 @@ namespace BOTB64.Entities
         public ResourceType ResType = ResourceType.Mana;
         public Faction Faction = Faction.Neutral;
 
-        Dictionary<int, Spell> ActiveSpells = new();
-        List<Aura> Auras = new();
-        List<Parameter> CustomParameters = new();
+        public Dictionary<int, Spell> ActiveSpells = new();
+        public List<Aura> Auras = new();
+        public List<Parameter> CustomParameters = new();
 
         public void Draw()
         {

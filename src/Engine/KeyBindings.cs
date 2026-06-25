@@ -33,6 +33,8 @@ namespace BOTB64.Engine
 
     public class KeyBindings
     {
+        private Action? LMAction;
+        private Action? RMAction; // Usually leave empty since right mouse is reserved to camera
         private List<KeyBinding> Bindings = new List<KeyBinding>();
 
         public void Add(RL.KeyboardKey key, Action action, KeyBindingType type)
@@ -49,8 +51,29 @@ namespace BOTB64.Engine
             }
         }
 
+        public void SetLMAction(Action action)    
+        { 
+            LMAction = action; 
+        }
+
+        public void SetRMAction(Action action)
+        {
+            RMAction = action;
+        }
+
+        public void Clear()
+        {
+            Bindings.Clear();
+        }
+
         public void Check() 
         {
+            if(LMAction != null && InputManager.IsLMP)
+                LMAction.Invoke();
+
+            if(RMAction != null && InputManager.IsRMP) 
+                RMAction.Invoke();
+
             foreach (var binding in Bindings)
             {
                 if (binding.Key == null)

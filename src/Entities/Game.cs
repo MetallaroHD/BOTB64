@@ -1,4 +1,5 @@
 ﻿using BOTB64.Entities.DTOs;
+using BOTB64.Graphics.G3D;
 using BOTB64.Runtime;
 using System.Numerics;
 
@@ -14,6 +15,7 @@ namespace BOTB64.Entities
     public class Game
     {
         private Level Level = new Level();
+        private List<Character> Characters = new();
         
         public Board GetBoard() => Level.LevelBoard;
 
@@ -25,17 +27,18 @@ namespace BOTB64.Entities
         public void Update(float dt)
         {
 
-            // collision, spawning, etc.
         }
 
         public void Render()
         {
             Level.LevelBoard.Draw();
+            foreach (var character in Characters) 
+                character.Draw();
         }
 
         public void Unload() 
         {
-            /* free any loaded assets */ 
+            AssetManager.UnloadAll();
         }
     }
 }
