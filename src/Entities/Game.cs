@@ -15,6 +15,8 @@ namespace BOTB64.Entities
     {
         private Level Level = new Level();
         
+        public Board GetBoard() => Level.LevelBoard;
+
         public void Initialize(GameInitializer lI)
         {
             Level = Level.Load(lI.Level.ScriptURI, lI.Level.ModelURI);

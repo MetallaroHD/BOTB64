@@ -22,6 +22,7 @@ namespace BOTB64.Engine.States
         public void OnEnter()
         {
             Game.Initialize(Initer);
+            Targeter.SetBoard(Game.GetBoard());
             ChangeAction(new DefaultAction(this));
         }
 
@@ -61,6 +62,11 @@ namespace BOTB64.Engine.States
             CurrentAction?.Exit();
             CurrentAction = action;
             CurrentAction?.Enter();
+        }
+
+        public Hex GetMouseAxial()
+        {             
+            return HexAlgo.WorldToHex(Viewport.GetMouseXZ());
         }
     }
 }
