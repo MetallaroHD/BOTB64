@@ -1,34 +1,21 @@
 ﻿using BOTB64.Engine.States;
-using BOTB64.Runtime;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BOTB64.Engine.Actions
 {
-    public class DefaultAction : IAction
+    public class DefaultAction : TargetingAction
     {
-        private GameplayState Parent;
-
-        public DefaultAction(GameplayState parent)
-        { 
-            this.Parent = parent; 
-        }
-
-        public void Enter()
+        public DefaultAction(GameplayState parent) : base(parent)
         {
-
         }
 
-        public void Exit()
+        public override void Enter()
         {
-
+            
         }
 
-        public void Update() 
-        { 
+        public override void Update()
+        {
+            base.Update();
         }
     }
 }

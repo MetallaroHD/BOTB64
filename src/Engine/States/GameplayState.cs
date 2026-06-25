@@ -15,7 +15,10 @@ namespace BOTB64.Engine.States
 
         private Game Game = new();
         private Viewport Viewport = new();
+        
         private DebugGameOverlayScreen Screen = new();
+
+        private DefaultAction Idle;
 
         private IAction? CurrentAction;
 
@@ -23,7 +26,7 @@ namespace BOTB64.Engine.States
         {
             Game.Initialize(Initer);
             Targeter.SetBoard(Game.GetBoard());
-            ChangeAction(new DefaultAction(this));
+            InitActions();
         }
 
         public void OnExit()
@@ -48,8 +51,10 @@ namespace BOTB64.Engine.States
             Viewport.End();
 
             // DEBUG
-            Hex mouseCast = HexAlgo.WorldToHex(Viewport.GetMouseXZ());
-            Screen.PosLabel.Text = mouseCast.Q.ToString() + ", " + mouseCast.R.ToString();
+            bool valid;
+            Hex mouseCast = GetMouseAxial(out valid);
+            if(valid)
+                Screen.PosLabel.Text = mouseCast.Q.ToString() + ", " + mouseCast.R.ToString();
             Screen.FPSLabel.Text = RB.GetFPS().ToString();
             ////////
 
@@ -64,9 +69,33 @@ namespace BOTB64.Engine.States
             CurrentAction?.Enter();
         }
 
-        public Hex GetMouseAxial()
+        private void InitActions()
+        {
+            Idle = new DefaultAction(this);
+            //other actions
+            InitBindings();
+            CurrentAction = Idle;
+        }
+
+        private void RegisterBinding(List<ActionBase> addTo, Button btn, RL.KeyboardKey key, Action action, KeyBindingType type)
+        {
+            foreach (var item in addTo)
+            {
+                item.AddBinding(key, action, type);
+            }
+            btn.OnClick = action;
+        }
+
+        private void InitBindings()
+        {
+            RegisterBinding([Idle], Screen.ButtonM, RL.KeyboardKey.M, () => Console.WriteLine("M pressed."), KeyBindingType.Press);
+        }
+
+        public Hex GetMouseAxial(out bool valid)
         {             
-            return HexAlgo.WorldToHex(Viewport.GetMouseXZ());
+            Hex ret = HexAlgo.WorldToHex(Viewport.GetMouseXZ());
+            valid = Game.GetBoard().IsValidHex(ret);
+            return ret;
         }
     }
 }

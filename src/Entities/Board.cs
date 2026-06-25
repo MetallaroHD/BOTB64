@@ -125,7 +125,10 @@ namespace BOTB64.Entities
                     if (tile.Type == TileType.Empty)
                         continue;
 
-                    DrawHex(tile.WorldPosition + shift, tile.Color);
+                    if(!tile.Highlighted)
+                        DrawHex(tile.WorldPosition + shift, tile.DefaultColor);
+                    else
+                        DrawHex(tile.WorldPosition + shift, RL.Color.Yellow);
                 }
             }
         }
@@ -142,20 +145,20 @@ namespace BOTB64.Entities
             switch (tile.Type)
             {
                 case TileType.Wall:
-                    tile.Color = WallColor;
+                    tile.DefaultColor = WallColor;
                     break;
 
                 case TileType.BlueBase:
-                    tile.Color = BlueBaseColors[FloorColorIndex(tile.Q, tile.R)];
+                    tile.DefaultColor = BlueBaseColors[FloorColorIndex(tile.Q, tile.R)];
                     break;
 
                 case TileType.RedBase:
-                    tile.Color = RedBaseColors[FloorColorIndex(tile.Q, tile.R)];
+                    tile.DefaultColor = RedBaseColors[FloorColorIndex(tile.Q, tile.R)];
                     break;
 
                 case TileType.Floor:
                 default:
-                    tile.Color = FloorColors[FloorColorIndex(tile.Q, tile.R)];
+                    tile.DefaultColor = FloorColors[FloorColorIndex(tile.Q, tile.R)];
                     break;
             }
         }
@@ -191,6 +194,12 @@ namespace BOTB64.Entities
         public bool IsValidIndex(int row, int col)
         {
             return (row >= 0 && row < TileCountRow) && (col >= 0 && col < TileCountCol);
+        }
+
+        public bool IsValidHex(Hex h)
+        {
+            (int r, int c) = HexToIndex(h);
+            return IsValidIndex(r, c);
         }
 
         public void LoadModel(string gltfPath)

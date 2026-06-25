@@ -19,8 +19,9 @@ namespace BOTB64.Entities
         public Vector3 WorldPosition;
 
         public Character? Character;
+        public bool Highlighted = false;
 
-        public RL.Color Color = RL.Color.White;
+        public RL.Color DefaultColor = RL.Color.White;
         public TileType Type;
         public List<TileEffect> Effects = new();
 
@@ -35,7 +36,7 @@ namespace BOTB64.Entities
 
         public void SetColor(RL.Color col)
         {
-            Color = col;
+            DefaultColor = col;
         }
 
         public void AddEffect(TileEffect effect)

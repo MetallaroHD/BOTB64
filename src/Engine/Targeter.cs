@@ -16,6 +16,7 @@ namespace BOTB64.Engine
         public TargetingType Type;
         public Hex? Source;
         public int Radius;
+        public bool Secret;
     }
 
     public static class Targeter
@@ -29,6 +30,12 @@ namespace BOTB64.Engine
             Board = board;
         }
 
+        private static void SetHighlightStatus(bool enabled)
+        {
+            foreach (Tile tile in Targeted)
+                tile.Highlighted = enabled;
+        }
+
         public static void Reset()
         {
             Targeted.Clear();
@@ -36,6 +43,7 @@ namespace BOTB64.Engine
 
         public static void UpdateTarget(Hex pickedPoint)
         {
+            SetHighlightStatus(false);
             Reset();
             switch (Data.Type)
             {
@@ -51,6 +59,9 @@ namespace BOTB64.Engine
                 default:
                     break;
             }
+
+            if(!Data.Secret)
+                SetHighlightStatus(true);
         }
 
         public static void TargetBeam(Hex dst, bool lineOfSight)
