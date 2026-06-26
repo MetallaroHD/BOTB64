@@ -1,4 +1,5 @@
 ﻿using BOTB64.Engine.States;
+using BOTB64.Engine;
 
 namespace BOTB64.Engine.Actions
 {
@@ -10,7 +11,14 @@ namespace BOTB64.Engine.Actions
 
         public override void Enter()
         {
-            
+            Targeter.SetTargetingData(new TargetingData
+            {
+                Type = TargetingType.Direct,
+                Secret = false,
+                Radius = 0,
+                Source = null
+            });
+            Update();
         }
 
         public override void Update()

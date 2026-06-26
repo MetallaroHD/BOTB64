@@ -11,7 +11,7 @@ namespace BOTB64.Engine
         Area = 3, //requires radius
     }
 
-    public struct TargetingData
+    public class TargetingData
     {
         public TargetingType Type;
         public Hex? Source;
@@ -28,6 +28,11 @@ namespace BOTB64.Engine
         public static void SetBoard(Board board)
         {
             Board = board;
+        }
+
+        public static void SetTargetingData(TargetingData data)
+        {
+            Data = data;
         }
 
         private static void SetHighlightStatus(bool enabled)

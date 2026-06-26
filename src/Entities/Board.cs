@@ -6,11 +6,27 @@ using BOTB64.Runtime;
 
 namespace BOTB64.Entities
 {
+    public enum SpawnType
+    {
+        Blue = 0,
+        Red = 1,
+        Neutral = 2
+    }
+
+    public struct SpawnPoint
+    {
+        public SpawnType Type;
+        public Hex Position;
+    }
+
     public class Board
     {
         public ModelInstance Model;
         public List<List<Tile>> Tiles = new();
         public Vector2 Center = new();
+
+        public List<SpawnPoint> BlueSpawns { get; set; } = new();
+        public List<SpawnPoint> RedSpawns { get; set; } = new();
 
         public int TileCountRow = 0;
         public int TileCountCol = 0;
@@ -211,15 +227,29 @@ namespace BOTB64.Entities
             Model.Transform.Position = new Vector3(-Center.X, 0f, -Center.Y);
         }
 
-        public void MoveCharacter(Character character, Tile tile)
+        public void MoveCharacter(Character character, List<Tile> path)
         {
+            if (path.Count == 0)
+                return;
+
             Tile? oldTile = GetTile(character.Position);
             if (oldTile == null)
                 return;
 
             oldTile.Character = null;
-            tile.Character = character;
-            character.Position = new Hex(tile.Q, tile.R);
+            path.Last().Character = character;
+            character.Position = new Hex(path.Last().Q, path.Last().R);
+        }
+
+        public void SpawnCharacter(Character character, Hex tile)
+        {
+            var t = GetTile(tile);
+
+            if (t != null && t.Character != null)
+                return;
+            t.Character = character;
+            character.Position = tile;
+            character.Alive = true;
         }
     }
 }

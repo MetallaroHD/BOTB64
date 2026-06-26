@@ -1,12 +1,11 @@
 ﻿using BOTB64.Runtime;
 
 namespace BOTB64.Entities
-{
-    public class Level
+{ 
+    public class Level : IReadable
     {
         public string Name { get; set; }
         public Board LevelBoard { get; set; }
-
         public static Level Load(string scriptPath, string modelPath)
         {
             var reader = new LevelDataFile();

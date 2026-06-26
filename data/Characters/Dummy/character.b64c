@@ -15,5 +15,12 @@
 :LIFESTEAL 0.01
 :HPREGEN 5
 
+:AARANGE 5
+:AAAP 1.0
+:AASP 0.0
+:AADEF 1.0
+:AAMDEF 0.0
+
+#These auras are those always active
 :AURAS
 :SPELLS

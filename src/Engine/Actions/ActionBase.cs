@@ -16,5 +16,13 @@ namespace BOTB64.Engine.Actions
         {
             Bindings.Add(key, action, type);
         }
+        public void SetLMBinding(Action action)
+        {
+            Bindings.SetLMAction(action);
+        }
+        public void SetRMBinding(Action action)
+        {
+            Bindings.SetRMAction(action);
+        }
     }
 }

@@ -17,18 +17,20 @@ namespace BOTB64.Entities
         Mana = 0,
     }
 
-    public class Character
+    public class Character : IReadable
     {
         public ModelInstance Model;
+        public bool IsAnimating = false;
+        public Vector3 VisualPosition;
 
-        public bool Alive = true;
+        public bool Alive = false;
 
         public int ID = 0;
         public string Name = "";
 
         public Hex Position;
 
-        public int MaxHP = 0;
+        public int MaxHP = 1;
         public int MaxRes = 0;
         public int ResRegen = 0;
         public int StartRes = 0;
@@ -50,15 +52,26 @@ namespace BOTB64.Entities
         public int RemainAction = 0;
         public int RemainFastAction = 0;
 
+        public int AutoAttackRange = 0;
+        public float AutoAttackAP = 1f;
+        public float AutoAttackSP = 0f;
+        public float AutoAttackDef = 1f;
+        public float AutoAttackMDef = 0f;
+
         public ResourceType ResType = ResourceType.Mana;
         public Faction Faction = Faction.Neutral;
 
+        public List<int> AuraIDs = new();
+        public List<int> SpellIDs = new();
+
+        // maps spells to keybinds (1-5)
         public Dictionary<int, Spell> ActiveSpells = new();
         public List<Aura> Auras = new();
         public List<Parameter> CustomParameters = new();
 
         public void Draw()
         {
+            Model.Transform.Position = IsAnimating ? VisualPosition : HexAlgo.HexToWorld(Position);
             Model?.Draw();
         }
     }

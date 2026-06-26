@@ -3,7 +3,7 @@ using BOTB64.Entities.Effects;
 
 namespace BOTB64.Entities
 {
-    public class Spell
+    public class Spell : ExecutableBase, IReadable
     {
         //add visuals and sound later
         public Character? Owner;
@@ -22,7 +22,6 @@ namespace BOTB64.Entities
         public int CurrentCD = 0;
 
         public List<Parameter> Parameters = new();
-        public List<Effect> Effects = new();
 
         public string Tooltip = "";
     }

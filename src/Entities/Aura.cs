@@ -14,7 +14,7 @@ namespace BOTB64.Entities
         Slow = 1 << 4
     }
 
-    public class Aura
+    public class Aura : ExecutableBase, IReadable
     {
         // add visuals later 
         public Character? Owner;
@@ -30,7 +30,7 @@ namespace BOTB64.Entities
         public DispelType Dispel = DispelType.None;
 
         public List<Parameter> Parameters = new();
-        public List<Effect> Effects = new();
+        private List<Effect> Effects = new();
 
         public string Tooltip = "";
     }

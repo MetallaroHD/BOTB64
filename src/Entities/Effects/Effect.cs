@@ -55,7 +55,7 @@
         public List<Character>? Targets;
         public List<Tile>? TargetTiles;
 
-        public Game Game;
+        // add other things later
     }
 
     public abstract class Effect

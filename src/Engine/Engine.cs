@@ -10,7 +10,6 @@ namespace BOTB64.Engine
 
         public static float DeltaTime => (float)(CurrentTime - PreviousTime).TotalSeconds;
 
-
         public static void Initialize()
         {
             Clock.Start();

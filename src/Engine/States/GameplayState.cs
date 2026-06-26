@@ -6,12 +6,13 @@ using RL = Raylib_cs;
 using BOTB64.Graphics.UI;
 using BOTB64.Entities.DTOs;
 using BOTB64.Engine.Actions;
+using BOTB64.Graphics.Animations;
 
 namespace BOTB64.Engine.States
 {
     public class GameplayState : IGameState
     {
-        public GameInitializer Initer;
+        public GameInitializer Initer = new();
 
         private Game Game = new();
         private Viewport Viewport = new();
@@ -19,6 +20,7 @@ namespace BOTB64.Engine.States
         private DebugGameOverlayScreen Screen = new();
 
         private DefaultAction Idle;
+        private CharacterMoveAction Move;
 
         private IAction? CurrentAction;
 
@@ -32,6 +34,7 @@ namespace BOTB64.Engine.States
         public void OnExit()
         {
             Game.Unload();
+            AnimationManager.Clear();
         }
 
         public void Update(float dt)
@@ -41,6 +44,7 @@ namespace BOTB64.Engine.States
             Viewport.Update(dt);
             Screen.Update(dt);
             FloatingTextManager.Update(dt);
+            AnimationManager.Update(dt);
         }
 
         public void Render()
@@ -72,23 +76,27 @@ namespace BOTB64.Engine.States
         private void InitActions()
         {
             Idle = new DefaultAction(this);
+            Move = new CharacterMoveAction(this);
             //other actions
             InitBindings();
-            CurrentAction = Idle;
+            ChangeAction(Idle);
         }
 
-        private void RegisterBinding(List<ActionBase> addTo, Button btn, RL.KeyboardKey key, Action action, KeyBindingType type)
+        private void RegisterBinding(List<ActionBase> addTo, Button? btn, RL.KeyboardKey key, Action action, KeyBindingType type)
         {
             foreach (var item in addTo)
             {
                 item.AddBinding(key, action, type);
             }
-            btn.OnClick = action;
+            if(btn != null)
+                btn.OnClick = action;
         }
 
         private void InitBindings()
         {
-            RegisterBinding([Idle], Screen.ButtonM, RL.KeyboardKey.M, () => Console.WriteLine("M pressed."), KeyBindingType.Press);
+            RegisterBinding([Idle], Screen.ButtonM, RL.KeyboardKey.M, () => { Move.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Move); }, KeyBindingType.Press);
+
+            Move.SetLMBinding(() => { Game.MoveCurrentCharacter(Move.GetPath()); ChangeAction(Idle); });
         }
 
         public Hex GetMouseAxial(out bool valid)

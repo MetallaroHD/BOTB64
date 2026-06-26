@@ -4,6 +4,7 @@ using BOTB64.Graphics.UI;
 using BOTB64.Runtime;
 using RL = Raylib_cs;
 using RB = Raylib_cs.Raylib;
+using System.Runtime.CompilerServices;
 
 namespace BOTB64.Engine.States
 {
@@ -11,12 +12,30 @@ namespace BOTB64.Engine.States
     {
         private CharacterSelectScreen Screen = new();
         private int CurrentSelection = -1;
+        // set using the modes
+        private int TotalCharacters = 6;
+
+        private readonly List<Faction> DefaultFactionOrder = new List<Faction>
+        {
+            Faction.BlueTeam,
+            Faction.RedTeam,
+            Faction.RedTeam,
+            Faction.BlueTeam,
+            Faction.BlueTeam,
+            Faction.RedTeam,
+            Faction.RedTeam,
+            Faction.BlueTeam,
+            Faction.BlueTeam,
+            Faction.RedTeam,
+        };
+
+        private int PickingIndex = 0;
 
         private LevelDTO Level;
         private List<CharacterDTO> AllCharacters;
 
-        private List<CharacterDTO> BlueTeam;
-        private List<CharacterDTO> RedTeam;
+        private List<CharacterDTO> BlueTeam = new();
+        private List<CharacterDTO> RedTeam = new();
 
         public void OnEnter()
         {
@@ -27,10 +46,21 @@ namespace BOTB64.Engine.States
             JsonDataFile<CharacterDTO> cf = new JsonDataFile<CharacterDTO>();
             AllCharacters = cf.DeserializeAll(new DataFile(CommonURIs.CharacterJSON));
 
-            Screen.LockButton.OnClick = () => 
+            Screen.LockButton.OnClick = () =>
             {
-                if (CurrentSelection > -1)
+                if (CurrentSelection < 0)
+                    return;
+                if (PickingIndex >= DefaultFactionOrder.Count)
+                    return;
+                if (PickingIndex >= TotalCharacters)
+                    return;
+
+                if (DefaultFactionOrder[PickingIndex] == Faction.RedTeam)
+                    RedTeam.Add(AllCharacters[CurrentSelection]);
+                else
                     BlueTeam.Add(AllCharacters[CurrentSelection]);
+
+                PickingIndex++;
             };
 
             Screen.StartButton.OnClick = () => StartGame();

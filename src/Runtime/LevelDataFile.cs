@@ -5,11 +5,11 @@ using System.Text;
 
 namespace BOTB64.Runtime
 {
-    public class LevelDataFile : IDataFileRW<Level>
+    public class LevelDataFile : BOTBDatafile<Level>
     {
-        private const string HeaderTag = ":BOTB64LEVEL";
+        protected new const string HeaderTag = ":BOTB64LEVEL";
 
-        public Level Read(DataFile df)
+        public override Level Read(DataFile df)
         {
             string[] lines = df.ReadLines();
             int i = SkipBlankAndComments(lines, 0);
@@ -43,6 +43,16 @@ namespace BOTB64.Runtime
                     i++;
                     i = ParseMap(lines, i, board);
                 }
+                else if (line.StartsWith(":BLUESPAWNS"))
+                {
+                    i++;
+                    i = ParseSpawns(lines, i, board, SpawnType.Blue);
+                }
+                else if (line.StartsWith(":REDSPAWNS"))
+                {
+                    i++;
+                    i = ParseSpawns(lines, i, board, SpawnType.Red);
+                }
                 else
                 {
                     i++;
@@ -52,7 +62,7 @@ namespace BOTB64.Runtime
             return level;
         }
 
-        public bool TryRead(DataFile df, out Level data)
+        public override bool TryRead(DataFile df, out Level data)
         {
             data = null;
 
@@ -70,7 +80,8 @@ namespace BOTB64.Runtime
             }
         }
 
-        public void Write(DataFile file, Level data)
+        // at some point I may make an editor
+        public override void Write(DataFile file, Level data)
         {
             Board board = data.LevelBoard;
             var sb = new StringBuilder();
@@ -95,27 +106,6 @@ namespace BOTB64.Runtime
             File.WriteAllText((string)file, sb.ToString());
         }
 
-        private static bool TryParseHeader(string line)
-        {
-            if (!line.StartsWith(HeaderTag, StringComparison.Ordinal))
-                return false;
-
-            return true;
-        }
-
-        private static int SkipBlankAndComments(string[] lines, int i)
-        {
-            while (i < lines.Length)
-            {
-                string t = lines[i].Trim();
-                if (t.Length > 0 && !t.StartsWith("#", StringComparison.Ordinal))
-                    break;
-                i++;
-            }
-
-            return i;
-        }
-
         private static Vector2 ParseCenter(string line)
         {
             string[] parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -124,9 +114,39 @@ namespace BOTB64.Runtime
             return new Vector2(x, y);
         }
 
+        private static int ParseSpawns(string[] lines, int i, Board board, SpawnType type)
+        {
+            var rawRows = new List<string>();
+            int start = i;
+
+            while (i < lines.Length)
+            {
+                string trimmed = lines[i].Trim();
+
+                if (trimmed.Length == 0 || trimmed.StartsWith("#", StringComparison.Ordinal))
+                {
+                    i++;
+                    continue;
+                }
+
+                if (trimmed.StartsWith(":", StringComparison.Ordinal))
+                    break;
+
+                string[] parts = trimmed.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                int q = int.Parse(parts[0], CultureInfo.InvariantCulture);
+                int r = int.Parse(parts[1], CultureInfo.InvariantCulture);
+                Hex position = new Hex(q, r);
+                if(type == SpawnType.Blue)
+                    board.BlueSpawns.Add(new SpawnPoint { Type = type, Position = position });
+                else if(type == SpawnType.Red)
+                    board.RedSpawns.Add(new SpawnPoint { Type = type, Position = position });
+                i++;
+            }
+            return i;
+        }
+
         private static int ParseMap(string[] lines, int i, Board board)
         {
-            // First pass: collect raw rows
             var rawRows = new List<string>();
             int start = i;
 
@@ -147,12 +167,11 @@ namespace BOTB64.Runtime
                 i++;
             }
 
-            // Second pass: build tiles with centered coordinates
             int totalRows = rawRows.Count;
             int totalCols = rawRows.Count > 0 ? rawRows[0].Length : 0;
 
-            int rOffset = totalRows / 2;  // e.g. 29 for a 59-row matrix
-            int qOffset = totalCols / 2;  // e.g. 14 for a 29-col matrix
+            int rOffset = totalRows / 2;
+            int qOffset = totalCols / 2;
 
             for (int ri = 0; ri < rawRows.Count; ri++)
             {

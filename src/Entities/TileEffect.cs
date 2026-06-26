@@ -12,7 +12,7 @@ namespace BOTB64.Entities
         Impassable = 1 << 0,
     }
 
-    public class TileEffect
+    public class TileEffect : ExecutableBase, IReadable
     {
         public Character? Owner;
 
@@ -25,6 +25,6 @@ namespace BOTB64.Entities
         public TileEffectType Type = TileEffectType.None;
 
         public List<Parameter> Parameters = new();
-        public List<Effect> Effects = new();
+        private List<Effect> Effects = new();
     }
 }
