@@ -4,7 +4,6 @@ public interface IUIScreen
 {
     void Enter();
     void Exit();
-
     void Update(float dt);
     void Draw();
 }

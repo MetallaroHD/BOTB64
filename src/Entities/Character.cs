@@ -1,4 +1,7 @@
-﻿using BOTB64.Graphics.G3D;
+﻿using BOTB64.Engine;
+using BOTB64.Entities.Effects;
+using BOTB64.Graphics.G3D;
+using BOTB64.Graphics.UI;
 using BOTB64.Runtime;
 using System.Numerics;
 
@@ -57,6 +60,7 @@ namespace BOTB64.Entities
         public float AutoAttackSP = 0f;
         public float AutoAttackDef = 1f;
         public float AutoAttackMDef = 0f;
+        public DamageType AutoAttackDamageType = DamageType.Physical;
 
         public ResourceType ResType = ResourceType.Mana;
         public Faction Faction = Faction.Neutral;
@@ -73,6 +77,13 @@ namespace BOTB64.Entities
         {
             Model.Transform.Position = IsAnimating ? VisualPosition : HexAlgo.HexToWorld(Position);
             Model?.Draw();
+        }
+
+        public void TakeDamage(DamageContext ctx)
+        {
+            CurrentHP -= ctx.DamageDone;
+            FloatingTextManager.Add(ctx.DamageDone.ToString(), VisualPosition);
+            AuraTriggerManager.Execute(ctx, EffectTrigger.OnDamageTaken, AuraType.Character | AuraType.Tile);
         }
     }
 }

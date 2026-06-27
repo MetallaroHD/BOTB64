@@ -21,6 +21,7 @@ namespace BOTB64.Engine.States
 
         private DefaultAction Idle;
         private CharacterMoveAction Move;
+        private AutoAttackAction Atk;
 
         private IAction? CurrentAction;
 
@@ -28,6 +29,7 @@ namespace BOTB64.Engine.States
         {
             Game.Initialize(Initer);
             Targeter.SetBoard(Game.GetBoard());
+            AuraTriggerManager.Init(Game);
             InitActions();
         }
 
@@ -77,6 +79,7 @@ namespace BOTB64.Engine.States
         {
             Idle = new DefaultAction(this);
             Move = new CharacterMoveAction(this);
+            Atk = new AutoAttackAction(this);
             //other actions
             InitBindings();
             ChangeAction(Idle);
@@ -95,8 +98,10 @@ namespace BOTB64.Engine.States
         private void InitBindings()
         {
             RegisterBinding([Idle], Screen.ButtonM, RL.KeyboardKey.M, () => { Move.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Move); }, KeyBindingType.Press);
+            RegisterBinding([Idle], null, RL.KeyboardKey.K, () => { Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Atk); }, KeyBindingType.Press);
 
             Move.SetLMBinding(() => { Game.MoveCurrentCharacter(Move.GetPath()); ChangeAction(Idle); });
+            Atk.SetLMBinding(() => { Character? tg = Atk.ConfirmTarget(); if(tg != null) Game.AutoAttack(Game.CurrentCharacter, tg); ChangeAction(Idle); });
         }
 
         public Hex GetMouseAxial(out bool valid)

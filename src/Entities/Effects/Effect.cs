@@ -50,12 +50,12 @@
 
     public class EffectContext
     {
-        public Character? Caster;
+        public Character Invoker;
 
-        public List<Character>? Targets;
-        public List<Tile>? TargetTiles;
-
-        // add other things later
+        public EffectContext(Character inv)
+        {
+            Invoker = inv;
+        }
     }
 
     public abstract class Effect
@@ -65,5 +65,15 @@
         public bool IsDirect => Trigger == 0;
 
         public abstract void Execute(EffectContext context);
+    }
+
+    public abstract class Effect<TContext> : Effect where TContext : EffectContext
+    {
+        public override void Execute(EffectContext context)
+        {
+            if (context is TContext typed)
+                Execute(typed);
+        }
+        protected abstract void Execute(TContext ctx);
     }
 }

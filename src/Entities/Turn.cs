@@ -1,4 +1,5 @@
-﻿using BOTB64.Entities.Effects;
+﻿using BOTB64.Engine;
+using BOTB64.Entities.Effects;
 
 namespace BOTB64.Entities
 {
@@ -22,11 +23,7 @@ namespace BOTB64.Entities
             if (!ActiveCharacter.Alive)
                 return;
 
-            foreach (var aura in ActiveCharacter.Auras)
-                aura.Execute(Parent, new EffectContext(), EffectTrigger.OnStartTurn);
-
-            foreach (var aura in Parent.GetBoard().GetTile(ActiveCharacter.Position).Effects)
-                aura.Execute(Parent, new EffectContext(), EffectTrigger.OnStartTurn);
+            AuraTriggerManager.Execute(new EffectContext(ActiveCharacter), EffectTrigger.OnStartTurn, AuraType.Character | AuraType.Tile);
         }
 
         public void End()
@@ -34,11 +31,7 @@ namespace BOTB64.Entities
             if (!ActiveCharacter.Alive)
                 return;
 
-            foreach (var aura in ActiveCharacter.Auras)
-                aura.Execute(Parent, new EffectContext(), EffectTrigger.OnEndTurn);
-
-            foreach (var aura in Parent.GetBoard().GetTile(ActiveCharacter.Position).Effects)
-                aura.Execute(Parent, new EffectContext(), EffectTrigger.OnEndTurn);
+            AuraTriggerManager.Execute(new EffectContext(ActiveCharacter), EffectTrigger.OnStartTurn, AuraType.Character | AuraType.Tile);
         }
     }
 }

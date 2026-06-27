@@ -3,6 +3,7 @@ using BOTB64.Graphics.G3D;
 using BOTB64.Runtime;
 using BOTB64.Graphics.Animations;
 using BOTB64.Entities.Effects;
+using BOTB64.Engine;
 
 namespace BOTB64.Entities
 {
@@ -105,16 +106,26 @@ namespace BOTB64.Entities
             AnimationManager.Play(anim);
             foreach (var tile in path)
             {
-                foreach (var effect in tile.Effects)
-                    effect.Execute(this, new EffectContext(), EffectTrigger.OnMove);
-                foreach (var aura in character.Auras)
-                    aura.Execute(this, new EffectContext(), EffectTrigger.OnMove);
+                AuraTriggerManager.Execute(new EffectContext(character), EffectTrigger.OnMove, AuraType.Character | AuraType.Tile);
             }
         }
 
         public void MoveCurrentCharacter(List<Tile> path)
         {
             MoveCharacter(CurrentCharacter, path);
+        }
+
+        public void AutoAttack(Character attacker, Character attacked)
+        {
+            //animation
+            DoDamageEffect eff = new DoDamageEffect();
+            DamageContext ctx = new DamageContext(attacker, attacker, attacked)
+            {
+                DamageType = attacker.AutoAttackDamageType,
+                SourceType = DamageSourceType.AutoAttack,
+            };
+            eff.Execute(ctx);
+            AuraTriggerManager.Execute(ctx, EffectTrigger.OnDamageDone, AuraType.Character | AuraType.Tile);
         }
     }
 }
