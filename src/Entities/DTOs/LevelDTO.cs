@@ -6,5 +6,6 @@
         public string Name { get; set; }
         public string ScriptURI { get; set; }
         public string ModelURI { get; set; }
+        public string WallURI { get; set; }
     }
 }

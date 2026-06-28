@@ -99,9 +99,10 @@ namespace BOTB64.Engine.States
         {
             RegisterBinding([Idle], Screen.ButtonM, RL.KeyboardKey.M, () => { Move.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Move); }, KeyBindingType.Press);
             RegisterBinding([Idle], null, RL.KeyboardKey.K, () => { Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Atk); }, KeyBindingType.Press);
+            RegisterBinding([Move], null, RL.KeyboardKey.Tab, () => { Move.CycleToNextPath(); }, KeyBindingType.Press);
 
-            Move.SetLMBinding(() => { Game.MoveCurrentCharacter(Move.GetPath()); ChangeAction(Idle); });
-            Atk.SetLMBinding(() => { Character? tg = Atk.ConfirmTarget(); if(tg != null) Game.AutoAttack(Game.CurrentCharacter, tg); ChangeAction(Idle); });
+            Move.SetLMBinding(() => { if (Screen.IsMouseBlocked()) return; Game.MoveCurrentCharacter(Move.GetPath()); ChangeAction(Idle); });
+            Atk.SetLMBinding(() => { if (Screen.IsMouseBlocked()) return; Character? tg = Atk.ConfirmTarget(); if(tg != null) Game.AutoAttack(Game.CurrentCharacter, tg); ChangeAction(Idle); });
         }
 
         public Hex GetMouseAxial(out bool valid)

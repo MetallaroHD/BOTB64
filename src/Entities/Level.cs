@@ -6,13 +6,13 @@ namespace BOTB64.Entities
     {
         public string Name { get; set; }
         public Board LevelBoard { get; set; }
-        public static Level Load(string scriptPath, string modelPath)
+        public static Level Load(string scriptPath, string modelPath, string wallPath)
         {
             var reader = new LevelDataFile();
             DataFile df = new DataFile(scriptPath);
             Level level = reader.Read(df);
 
-            level.LevelBoard.LoadModel(modelPath);
+            level.LevelBoard.LoadModel(modelPath, wallPath);
             level.LevelBoard.Init();
 
             return level;

@@ -16,11 +16,15 @@ namespace BOTB64.Graphics.G3D
 
             Model = RB.LoadModel(df.Path);
 
-            for (int i=0; i<Model.MaterialCount; i++)
+            for (int i = 0; i < Model.MaterialCount; i++)
             {
                 unsafe
                 {
                     Model.Materials[i].Shader = ShaderManager.WS.GetShader();
+
+                    int loc = Raylib.GetShaderLocation(Model.Materials[i].Shader, "texture0");
+                    Raylib.SetShaderValueTexture(Model.Materials[i].Shader, loc,
+                        Model.Materials[i].Maps[(int)MaterialMapIndex.Albedo].Texture);
                 }
             }
         }

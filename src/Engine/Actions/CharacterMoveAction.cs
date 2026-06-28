@@ -17,10 +17,11 @@ namespace BOTB64.Engine.Actions
             {
                 throw new InvalidOperationException("Character must be set before entering CharacterMoveAction.");
             }
-            //reinit pathfinder(?)
             Targeter.SetTargetingData(new TargetingData
             {
-                Type = TargetingType.BeamNoLos, //change to pathfinding
+                Type = TargetingType.Pathfinding,
+                Radius = Character.RemainMovement,
+                Source = Character.Position,
             });
             Update();
         }
@@ -40,6 +41,17 @@ namespace BOTB64.Engine.Actions
         public List<Tile> GetPath()
         {
             return Targeter.Targeted;
+        }
+
+        public void CycleToNextPath()
+        {
+            Targeter.GetNextPathfinding();
+        }
+
+        public override void Exit()
+        {
+            Targeter.ResetPathfinding();
+            base.Exit();
         }
     }
 }

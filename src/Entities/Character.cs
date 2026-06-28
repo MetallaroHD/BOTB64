@@ -82,8 +82,12 @@ namespace BOTB64.Entities
         public void TakeDamage(DamageContext ctx)
         {
             CurrentHP -= ctx.DamageDone;
-            FloatingTextManager.Add(ctx.DamageDone.ToString(), VisualPosition);
             AuraTriggerManager.Execute(ctx, EffectTrigger.OnDamageTaken, AuraType.Character | AuraType.Tile);
+        }
+
+        public void Die()
+        {
+            Alive = false;
         }
     }
 }

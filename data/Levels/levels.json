@@ -3,6 +3,7 @@
         "ID" : 0,
         "Name" : "Board",
         "ScriptURI" : "Levels\\Level1\\board.b64m",
-        "ModelURI" : "Levels\\Level1\\Board.gltf"
+        "ModelURI" : "Levels\\Level1\\Board.gltf",
+        "WallURI" : "Levels\\Level1\\wall.gltf"
     }
 ]

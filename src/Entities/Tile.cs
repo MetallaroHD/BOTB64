@@ -1,4 +1,5 @@
-﻿using BOTB64.Runtime;
+﻿using BOTB64.Graphics.G3D;
+using BOTB64.Runtime;
 using System.Numerics;
 using RL = Raylib_cs;
 
@@ -16,13 +17,15 @@ namespace BOTB64.Entities
     public class Tile
     {
         public Hex AxialPosition;
+        public TileType Type;
+        public ModelInstance WallModel;
+
         public Vector3 WorldPosition;
+        public List<Tile> Neighbors = new();
+        public RL.Color DefaultColor = RL.Color.White;
 
         public Character? Character;
         public bool Highlighted = false;
-
-        public RL.Color DefaultColor = RL.Color.White;
-        public TileType Type;
         public List<TileEffect> Effects = new();
 
         public int Q => AxialPosition.Q;
@@ -61,6 +64,11 @@ namespace BOTB64.Entities
             }
 
             return true;
+        }
+
+        public List<Tile> GetNeighbors()
+        {
+            return Neighbors;
         }
     }
 }

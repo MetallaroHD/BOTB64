@@ -3,6 +3,7 @@ using RL = Raylib_cs;
 using RB = Raylib_cs.Raylib;
 using BOTB64.Graphics.G3D;
 using BOTB64.Runtime;
+using System.Data;
 
 namespace BOTB64.Entities
 {
@@ -22,6 +23,7 @@ namespace BOTB64.Entities
     public class Board
     {
         public ModelInstance Model;
+        
         public List<List<Tile>> Tiles = new();
         public Vector2 Center = new();
 
@@ -61,9 +63,9 @@ namespace BOTB64.Entities
         }
 
         public Tile? GetTile(Hex h)
-        { 
+        {
             (int x, int y) = HexToIndex(h);
-            if(IsValidIndex (x, y))
+            if (IsValidIndex(x, y))
                 return Tiles[x][y];
             return null;
         }
@@ -74,7 +76,7 @@ namespace BOTB64.Entities
             foreach (Hex h in hexes)
             {
                 Tile? t = GetTile(h);
-                if(t != null)
+                if (t != null)
                     result.Add(t);
             }
             return result;
@@ -93,6 +95,7 @@ namespace BOTB64.Entities
             HexOffsets = HexAlgo.BuildHexOffsets();
             TileCountRow = Tiles.Count();
             TileCountCol = Tiles[0].Count();
+            BakeNeighbors();
         }
 
         public (int row, int col) HexToIndex(Hex h) => HexAlgo.HexToIndex(h, TileCountRow, TileCountCol);
@@ -141,10 +144,13 @@ namespace BOTB64.Entities
                     if (tile.Type == TileType.Empty)
                         continue;
 
-                    if(!tile.Highlighted)
+                    if (!tile.Highlighted)
                         DrawHex(tile.WorldPosition + shift, tile.DefaultColor);
                     else
                         DrawHex(tile.WorldPosition + shift, RL.Color.Yellow);
+
+                    if (tile.Type == TileType.Wall)
+                        tile.WallModel.Draw();
                 }
             }
         }
@@ -218,13 +224,26 @@ namespace BOTB64.Entities
             return IsValidIndex(r, c);
         }
 
-        public void LoadModel(string gltfPath)
+        public void LoadModel(string gltfPath, string wallPath)
         {
             ModelAsset asset = AssetManager.GetModel(gltfPath);
 
             Model = new ModelInstance(asset);
 
             Model.Transform.Position = new Vector3(-Center.X, 0f, -Center.Y);
+
+            if (wallPath == "")
+                return;
+
+            ModelAsset wall = AssetManager.GetModel(wallPath);
+            foreach (var row in Tiles)
+            {
+                foreach (var tile in row)
+                {
+                    tile.WallModel = new ModelInstance(wall);
+                    tile.WallModel.Transform.Position = tile.WorldPosition + new Vector3(0,0, 0.02f);
+                }
+            }
         }
 
         public void MoveCharacter(Character character, List<Tile> path)
@@ -250,6 +269,39 @@ namespace BOTB64.Entities
             t.Character = character;
             character.Position = tile;
             character.Alive = true;
+        }
+
+        public void BakeNeighbors()
+        {
+            // temporary
+            var lookup = new Dictionary<Hex, Tile>();
+            foreach (var row in Tiles)
+                foreach (var tile in row)
+                    lookup[tile.AxialPosition] = tile;
+
+            foreach (var row in Tiles)
+                foreach (var tile in row)
+                    foreach (var dir in HexAlgo.Directions)
+                        if (lookup.TryGetValue(tile.AxialPosition + new Hex(dir.q, dir.r), out var neighbor))
+                            tile.Neighbors.Add(neighbor);
+        }
+
+        public List<Tile> GetNeighbors(Tile tile)
+        {
+            return tile.Neighbors;
+        }
+
+        public List<Tile> GetNeighbors(Hex pos)
+        {
+            Tile? t = GetTile(pos);
+            if (t == null)
+                return new List<Tile>();
+            return t.Neighbors;
+        }
+
+        public IEnumerable<Hex> GetNeighborHexes(Hex h)
+        {
+            return GetTile(h)?.Neighbors.Select(t => t.AxialPosition) ?? Enumerable.Empty<Hex>();
         }
     }
 }

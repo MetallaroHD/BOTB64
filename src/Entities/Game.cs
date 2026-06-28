@@ -1,9 +1,10 @@
-﻿using BOTB64.Entities.DTOs;
-using BOTB64.Graphics.G3D;
-using BOTB64.Runtime;
-using BOTB64.Graphics.Animations;
+﻿using BOTB64.Engine;
+using BOTB64.Entities.DTOs;
 using BOTB64.Entities.Effects;
-using BOTB64.Engine;
+using BOTB64.Graphics.Animations;
+using BOTB64.Graphics.G3D;
+using BOTB64.Graphics.UI;
+using BOTB64.Runtime;
 
 namespace BOTB64.Entities
 {
@@ -28,8 +29,10 @@ namespace BOTB64.Entities
 
         public void Initialize(GameInitializer lI)
         {
-            Level = Level.Load(lI.Level.ScriptURI, lI.Level.ModelURI);
+            Level = Level.Load(lI.Level.ScriptURI, lI.Level.ModelURI, lI.Level.WallURI);
             LoadStartingCharacters(lI);
+            if (Characters.Count < 1)
+                throw new Exception("Must pick at least one character.");
             CurrentTurn = new Turn(0, Characters[0], this);
         }
 
@@ -125,6 +128,7 @@ namespace BOTB64.Entities
                 SourceType = DamageSourceType.AutoAttack,
             };
             eff.Execute(ctx);
+            FloatingTextManager.Add(ctx.DamageDone.ToString(), HexAlgo.HexToWorld(ctx.DamageTaker.Position));
             AuraTriggerManager.Execute(ctx, EffectTrigger.OnDamageDone, AuraType.Character | AuraType.Tile);
         }
     }

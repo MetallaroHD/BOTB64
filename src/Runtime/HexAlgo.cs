@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using BOTB64.Entities;
+using System.Numerics;
 
 namespace BOTB64.Runtime
 {
@@ -12,6 +13,12 @@ namespace BOTB64.Runtime
             Q = q;
             R = r;
         }
+
+        public static Hex operator +(Hex h1, Hex h2) => new Hex(h1.Q + h2.Q, h1.R + h2.R);
+        public static bool operator ==(Hex a, Hex b) => a.Q == b.Q && a.R == b.R;
+        public static bool operator !=(Hex a, Hex b) => !(a == b);
+        public override bool Equals(object? obj) => obj is Hex h && this == h;
+        public override int GetHashCode() => HashCode.Combine(Q, R);
     }
 
     /* Hex grid algorithm class, based on https://www.redblobgames.com/grids/hexagons/#line-drawing */
@@ -19,7 +26,7 @@ namespace BOTB64.Runtime
     {
         public static readonly float Apothem = 0.5f;
         public static readonly float HexSize = 0.57735f; // derived from apothem = 0.5
-        private static readonly (int q, int r)[] Directions = { (1, 0), (1, -1), (0, -1), (-1, 0), (-1, 1), (0, 1) };
+        public static readonly (int q, int r)[] Directions = { (1, 0), (1, -1), (0, -1), (-1, 0), (-1, 1), (0, 1) };
         private static readonly int MaxCircleRadius = 50;
 
         /* The 6 corner offsets relative to the center */
@@ -150,6 +157,126 @@ namespace BOTB64.Runtime
                 rz = -rx - ry;
 
             return new Hex(rx, rz);
+        }
+
+        public static List<Tile>? AStar(Tile start, Tile goal, Func<Tile, bool> isPassable, Func<Tile, IEnumerable<Tile>> neighbors, int maxDepth = int.MaxValue)
+        {
+            var openSet = new PriorityQueue<Tile, int>();
+            var cameFrom = new Dictionary<Tile, Tile>();
+            var gScore = new Dictionary<Tile, int> { [start] = 0 };
+
+            openSet.Enqueue(start, HexDistance(start.AxialPosition, goal.AxialPosition));
+
+            while (openSet.Count > 0)
+            {
+                var current = openSet.Dequeue();
+
+                if (current == goal)
+                    return ReconstructPath(cameFrom, current);
+
+                // Don't expand nodes beyond the movement budget
+                if (gScore[current] >= maxDepth)
+                    continue;
+
+                foreach (var neighbor in neighbors(current))
+                {
+                    if (!isPassable(neighbor))
+                        continue;
+
+                    int tentativeG = gScore.GetValueOrDefault(current, int.MaxValue) + 1;
+
+                    if (tentativeG < gScore.GetValueOrDefault(neighbor, int.MaxValue))
+                    {
+                        cameFrom[neighbor] = current;
+                        gScore[neighbor] = tentativeG;
+                        openSet.Enqueue(neighbor, tentativeG + HexDistance(neighbor.AxialPosition, goal.AxialPosition));
+                    }
+                }
+            }
+
+            // Goal unreachable within maxDepth — find the closest reachable tile to goal
+            return FindFurthestToward(cameFrom, gScore, goal, maxDepth);
+        }
+
+        private static List<Tile> ReconstructPath(Dictionary<Tile, Tile> cameFrom, Tile current)
+        {
+            var path = new List<Tile> { current };
+            while (cameFrom.TryGetValue(current, out var prev))
+            {
+                current = prev;
+                path.Insert(0, current);
+            }
+            return path;
+        }
+
+        public static IEnumerable<List<Tile>> YensKShortest(Tile start, Tile goal, Func<Tile, bool> isPassable, Func<Tile, IEnumerable<Tile>> neighbors, int maxDepth = int.MaxValue)
+        {
+            List<Tile>? first = AStar(start, goal, isPassable, neighbors, maxDepth);
+            if (first == null || first.Count == 0)
+                yield break;
+
+            var candidates = new PriorityQueue<List<Tile>, int>();
+            var confirmed = new List<List<Tile>> { first };
+
+            yield return first;
+
+            for (int k = 1; ; k++)
+            {
+                var prevPath = confirmed[k - 1];
+
+                for (int i = 0; i < prevPath.Count - 1; i++)
+                {
+                    Tile spurNode = prevPath[i];
+                    var rootPath = prevPath.Take(i + 1).ToList();
+
+                    var suppressedEdges = new HashSet<(Tile, Tile)>();
+                    foreach (var p in confirmed)
+                        if (p.Count > i && rootPath.SequenceEqual(p.Take(i + 1)))
+                            suppressedEdges.Add((p[i], p[i + 1]));
+
+                    var suppressedNodes = new HashSet<Tile>(rootPath.Take(rootPath.Count - 1));
+
+                    // Remaining budget for the spur portion
+                    int spurMaxDepth = maxDepth - (rootPath.Count - 1);
+
+                    List<Tile>? spurPath = AStar(
+                        spurNode,
+                        goal,
+                        t => isPassable(t) && !suppressedNodes.Contains(t),
+                        t => neighbors(t).Where(n => !suppressedEdges.Contains((t, n))),
+                        spurMaxDepth  // <-- scoped budget
+                    );
+
+                    if (spurPath != null && spurPath.Count > 0)
+                    {
+                        var candidate = rootPath.Concat(spurPath.Skip(1)).ToList();
+                        if (!candidates.UnorderedItems.Any(x => x.Element.SequenceEqual(candidate)))
+                            candidates.Enqueue(candidate, candidate.Count);
+                    }
+                }
+
+                if (candidates.Count == 0)
+                    yield break;
+
+                var next = candidates.Dequeue();
+                confirmed.Add(next);
+                yield return next;
+            }
+        }
+
+        private static List<Tile> FindFurthestToward(Dictionary<Tile, Tile> cameFrom, Dictionary<Tile, int> gScore, Tile goal, int maxDepth)
+        {
+            // Among all reachable tiles within budget, pick the one closest to goal
+            var best = gScore
+                .Where(kv => kv.Value <= maxDepth)
+                .OrderBy(kv => HexDistance(kv.Key.AxialPosition, goal.AxialPosition))
+                .ThenByDescending(kv => kv.Value) // prefer tiles that used more movement
+                .FirstOrDefault();
+
+            if (best.Key == null)
+                return new List<Tile>();
+
+            return ReconstructPath(cameFrom, best.Key);
         }
     }
 }
