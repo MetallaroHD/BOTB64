@@ -7,9 +7,9 @@ namespace BOTB64.Engine
     {
         None = 0,
         Direct = 1,
-        BeamNoLos = 2, //requires source
-        Area = 3, //requires radius
-        Pathfinding = 4 //requires radius and source
+        BeamNoLos = 2,
+        Area = 3,
+        Pathfinding = 4
     }
 
     public class TargetingData
@@ -84,7 +84,13 @@ namespace BOTB64.Engine
 
             if (!lineOfSight)
             {
-                Targeted = Board.GetTiles(line);
+                List<Tile> tiles = Board.GetTiles(line);
+                for (int i = 0; i <= Data.Radius; i++)
+                {
+                    if (i >= tiles.Count())
+                        break;
+                    Targeted.Add(tiles[i]);
+                }
                 return;
             }
 
