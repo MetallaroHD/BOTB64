@@ -1,19 +1,36 @@
 #version 330
+
 in vec3 vertexPosition;
 in vec3 vertexNormal;
-in vec2 vertexTexCoord;       
+in vec2 vertexTexCoord;
 
 uniform mat4 mvp;
 uniform mat4 matModel;
 
-out vec3 fragPos;
-out vec3 normal;
-out vec2 fragTexCoord;     
+uniform vec3 lightDir;     // key light
+uniform vec3 lightColor;
+uniform vec3 fillDir;      // secondary fill light (symmetric, low intensity)
+uniform vec3 fillColor;
+
+out vec2 fragTexCoord;
+out vec3 vertColor;        // pre-lit color, just like N64 Gouraud shading
 
 void main()
 {
-    fragPos = vec3(matModel * vec4(vertexPosition, 1.0));
-    normal = mat3(transpose(inverse(matModel))) * vertexNormal;
-    fragTexCoord = vertexTexCoord;  
+    vec3 worldPos = vec3(matModel * vec4(vertexPosition, 1.0));
+    vec3 norm = normalize(mat3(transpose(inverse(matModel))) * vertexNormal);
+
+    // Key light, toon-banded into 3 steps instead of smooth
+    float diffKey = max(dot(norm, normalize(-lightDir)), 0.0);
+    float bandedKey = floor(diffKey * 3.0) / 3.0;
+
+    // Fill light — soft, no banding, just lifts the dark side
+    float diffFill = max(dot(norm, normalize(-fillDir)), 0.0);
+
+    float ambient = 0.2;
+
+    vertColor = lightColor * (bandedKey + ambient) + fillColor * diffFill * 0.25;
+
+    fragTexCoord = vertexTexCoord;
     gl_Position = mvp * vec4(vertexPosition, 1.0);
 }

@@ -14,6 +14,7 @@ namespace BOTB64.Graphics.G3D
         public static void Update()
         {
             WS.SetLighting(Vector3.Normalize(new Vector3(-0.35f, -1.0f, -0.35f)), new Vector3(1.5f, 1.5f, 1.5f));
+            WS.SetFillLight(new Vector3(0, -1, 0), new Vector3(0.5f, 0.55f, 0.7f));
         }
 
         public static void Unload()

@@ -10,6 +10,8 @@ namespace BOTB64.Graphics.G3D
 
         private readonly int LightDirLoc;
         private readonly int LightColorLoc;
+        private readonly int FillDirLoc;
+        private readonly int FillColorLoc;
 
         public WorldShader(string vs, string fs)
         {
@@ -19,8 +21,9 @@ namespace BOTB64.Graphics.G3D
                 throw new Exception("Failed to load world shader");
 
             LightDirLoc = RB.GetShaderLocation(Shader.Handle, "lightDir");
-
-            LightColorLoc =RB.GetShaderLocation(Shader.Handle, "lightColor");
+            LightColorLoc = RB.GetShaderLocation(Shader.Handle, "lightColor");
+            FillDirLoc = RB.GetShaderLocation(Shader.Handle, "fillDir");
+            FillColorLoc = RB.GetShaderLocation(Shader.Handle, "fillColor");
         }
 
         public RL.Shader GetShader()
@@ -31,8 +34,13 @@ namespace BOTB64.Graphics.G3D
         public void SetLighting(Vector3 dir, Vector3 color)
         {
             RB.SetShaderValue(Shader.Handle, LightDirLoc, dir, RL.ShaderUniformDataType.Vec3);
-
             RB.SetShaderValue(Shader.Handle, LightColorLoc, color, RL.ShaderUniformDataType.Vec3);
+        }
+
+        public void SetFillLight(Vector3 dir, Vector3 color)
+        {
+            RB.SetShaderValue(Shader.Handle, FillDirLoc, dir, RL.ShaderUniformDataType.Vec3);
+            RB.SetShaderValue(Shader.Handle, FillColorLoc, color, RL.ShaderUniformDataType.Vec3);
         }
 
         public void Dispose()
