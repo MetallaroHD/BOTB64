@@ -1,4 +1,6 @@
-﻿namespace BOTB64.Runtime
+﻿using BOTB64.Entities.DTOs;
+
+namespace BOTB64.Runtime
 {
     public static class CommonURIs
     {
@@ -8,11 +10,11 @@
         public static readonly string LevelJSON = "Levels\\levels.json";
         public static readonly string TileEffJSON = "TileEffects\\tileEffects.json";
 
-        public static readonly DataFile AuraJSONF = new DataFile(AuraJSON);
-        public static readonly DataFile SpellJSONF = new DataFile(SpellJSON);
-        public static readonly DataFile CharacterJSONF = new DataFile(CharacterJSON);
-        public static readonly DataFile LevelJSONF = new DataFile(LevelJSON);
-        public static readonly DataFile TileEffJSONF = new DataFile(TileEffJSON);
+        public static readonly string AuraDir = "Auras\\";
+        public static readonly string SpellDir = "Spells\\";
+        public static readonly string CharacterDir = "Characters\\";
+        public static readonly string LevelDir = "Levels\\";
+        public static readonly string TileEffDir = "TileEffects\\";
 
         public static readonly string AuraEXT = ".b64a";
         public static readonly string SpellEXT = ".b64s";
@@ -21,5 +23,17 @@
         public static readonly string TileEffEXT = ".b64t";
 
         public static readonly string ModelEXT = ".gltf";
+        public static readonly string ShaderVSEXT = ".vs";
+        public static readonly string ShaderFSEXT = ".fs";
+
+        public static (string script, string model, string wall, string shaderv, string shaderf) GetLevelResources(LevelDTO level) 
+        {
+            string scriptURI = LevelDir + level.Subdir + "\\" + level.Script + LevelEXT;
+            string modelURI = LevelDir + level.Subdir + "\\" + level.Model + ModelEXT;
+            string wallURI = LevelDir + level.Subdir + "\\" + level.Wall + ModelEXT;
+            string shaderv = LevelDir + level.Subdir + "\\" + level.Shader + ShaderVSEXT;
+            string shaderf = LevelDir + level.Subdir + "\\" + level.Shader + ShaderFSEXT;
+            return (scriptURI, modelURI, wallURI, shaderv, shaderf);
+        }
     }
 }

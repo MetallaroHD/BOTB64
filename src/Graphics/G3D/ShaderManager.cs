@@ -6,9 +6,9 @@ namespace BOTB64.Graphics.G3D
     {
         public static WorldShader WS { get; private set; }
 
-        public static void Load()
+        public static void Load(string vs, string fs)
         {
-            WS = new WorldShader();
+            WS = new WorldShader(vs, fs);
         }
 
         public static void Update()

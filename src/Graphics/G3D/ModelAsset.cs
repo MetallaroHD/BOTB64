@@ -1,5 +1,4 @@
 ﻿using BOTB64.Runtime;
-using Raylib_cs;
 using RL = Raylib_cs;
 using RB = Raylib_cs.Raylib;
 
@@ -22,9 +21,9 @@ namespace BOTB64.Graphics.G3D
                 {
                     Model.Materials[i].Shader = ShaderManager.WS.GetShader();
 
-                    int loc = Raylib.GetShaderLocation(Model.Materials[i].Shader, "texture0");
-                    Raylib.SetShaderValueTexture(Model.Materials[i].Shader, loc,
-                        Model.Materials[i].Maps[(int)MaterialMapIndex.Albedo].Texture);
+                    int loc = RB.GetShaderLocation(Model.Materials[i].Shader, "texture0");
+                    RB.SetShaderValueTexture(Model.Materials[i].Shader, loc,
+                        Model.Materials[i].Maps[(int)RL.MaterialMapIndex.Albedo].Texture);
                 }
             }
         }

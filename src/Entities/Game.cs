@@ -29,10 +29,9 @@ namespace BOTB64.Entities
 
         public void Initialize(GameInitializer lI)
         {
-            string scriptURI = CommonURIs.LevelJSONF.GetDirectory() + lI.Level.Subdir + "\\" + lI.Level.Script + CommonURIs.LevelEXT;
-            string modelURI = CommonURIs.LevelJSONF.GetDirectory() + lI.Level.Script + CommonURIs.LevelEXT;
-            string wallURI = CommonURIs.LevelJSONF.GetDirectory() + lI.Level.Script + CommonURIs.LevelEXT;
-            Level = Level.Load(scriptURI, modelURI, wallURI);
+            (string script, string model, string wall, string shaderv, string shaderf) = CommonURIs.GetLevelResources(lI.Level);
+            ShaderManager.Load(shaderv, shaderf);
+            Level = Level.Load(script, model, wall);
             LoadStartingCharacters(lI);
             if (Characters.Count < 1)
                 throw new Exception("Must pick at least one character.");
@@ -55,6 +54,7 @@ namespace BOTB64.Entities
         public void Unload() 
         {
             AssetManager.UnloadAll();
+            ShaderManager.Unload();
         }
 
         private void LoadStartingCharacters(GameInitializer lI)

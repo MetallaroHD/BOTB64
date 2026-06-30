@@ -6,6 +6,7 @@ namespace BOTB64.Entities
     {
         public string Name { get; set; }
         public Board LevelBoard { get; set; }
+
         public static Level Load(string scriptPath, string modelPath, string wallPath)
         {
             var reader = new LevelDataFile();

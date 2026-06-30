@@ -11,9 +11,9 @@ namespace BOTB64.Graphics.G3D
         private readonly int LightDirLoc;
         private readonly int LightColorLoc;
 
-        public WorldShader()
+        public WorldShader(string vs, string fs)
         {
-            Shader = new Shader("Shaders\\shader.vs", "Shaders\\shader.fs");
+            Shader = new Shader(vs, fs);
 
             if (!Shader.IsValid())
                 throw new Exception("Failed to load world shader");
