@@ -29,7 +29,10 @@ namespace BOTB64.Entities
 
         public void Initialize(GameInitializer lI)
         {
-            Level = Level.Load(lI.Level.ScriptURI, lI.Level.ModelURI, lI.Level.WallURI);
+            string scriptURI = CommonURIs.LevelJSONF.GetDirectory() + lI.Level.Subdir + "\\" + lI.Level.Script + CommonURIs.LevelEXT;
+            string modelURI = CommonURIs.LevelJSONF.GetDirectory() + lI.Level.Script + CommonURIs.LevelEXT;
+            string wallURI = CommonURIs.LevelJSONF.GetDirectory() + lI.Level.Script + CommonURIs.LevelEXT;
+            Level = Level.Load(scriptURI, modelURI, wallURI);
             LoadStartingCharacters(lI);
             if (Characters.Count < 1)
                 throw new Exception("Must pick at least one character.");

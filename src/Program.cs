@@ -9,7 +9,7 @@ namespace BOTB64
         public static void Main()
         {
             Graphics.Graphics.Initialize(1280, 720, "BOTB64");
-            ShaderManager.Load();
+            //ShaderManager.Load();
             Engine.Engine.Initialize();
 
             while (!InputManager.ShouldClose())
