@@ -27,7 +27,7 @@ void main()
     // Fill light — soft, no banding, just lifts the dark side
     float diffFill = max(dot(norm, normalize(-fillDir)), 0.0);
 
-    float ambient = 0.2;
+    float ambient = 0.35;
 
     vertColor = lightColor * (bandedKey + ambient) + fillColor * diffFill * 0.25;
 

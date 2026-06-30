@@ -1,6 +1,4 @@
 ﻿using BOTB64.Runtime;
-using BOTB64.Graphics;
-using BOTB64.Graphics.G3D;
 
 namespace BOTB64
 {

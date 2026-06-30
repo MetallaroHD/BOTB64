@@ -7,6 +7,7 @@ using BOTB64.Graphics.UI;
 using BOTB64.Entities.DTOs;
 using BOTB64.Engine.Actions;
 using BOTB64.Graphics.Animations;
+using System.Net.Http.Headers;
 
 namespace BOTB64.Engine.States
 {
@@ -17,7 +18,7 @@ namespace BOTB64.Engine.States
         private Game Game = new();
         private Viewport Viewport = new();
         
-        private DebugGameOverlayScreen Screen = new();
+        private GameOverlayScreen Screen = new();
 
         private DefaultAction Idle;
         private CharacterMoveAction Move;
@@ -31,22 +32,33 @@ namespace BOTB64.Engine.States
             Targeter.SetBoard(Game.GetBoard());
             AuraTriggerManager.Init(Game);
             InitActions();
+            Logger.Init(Screen.Log);
         }
 
         public void OnExit()
         {
             Game.Unload();
             AnimationManager.Clear();
+            Logger.Unload();
         }
 
         public void Update(float dt)
         {
+            bool gameOver = false;
             CurrentAction?.Update();
-            Game.Update(dt);
+            Game.Update(dt, out gameOver);
             Viewport.Update(dt);
             Screen.Update(dt);
+            Logger.Update();
             FloatingTextManager.Update(dt);
             AnimationManager.Update(dt);
+
+            if (gameOver)
+            {
+                GameOverState gOver = new GameOverState();
+                gOver.Winner = Game.Winner;
+                StateManager.ChangeState(gOver);
+            }
         }
 
         public void Render()
@@ -55,15 +67,6 @@ namespace BOTB64.Engine.States
             ShaderManager.Update();
             Game.Render();
             Viewport.End();
-
-            // DEBUG
-            bool valid;
-            Hex mouseCast = GetMouseAxial(out valid);
-            if(valid)
-                Screen.PosLabel.Text = mouseCast.Q.ToString() + ", " + mouseCast.R.ToString();
-            Screen.FPSLabel.Text = RB.GetFPS().ToString();
-            ////////
-
             FloatingTextManager.Draw(Viewport);
             Screen.Draw();
         }
@@ -97,7 +100,7 @@ namespace BOTB64.Engine.States
 
         private void InitBindings()
         {
-            RegisterBinding([Idle], Screen.ButtonM, RL.KeyboardKey.M, () => { Move.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Move); }, KeyBindingType.Press);
+            RegisterBinding([Idle], null, RL.KeyboardKey.M, () => { Move.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Move); }, KeyBindingType.Press);
             RegisterBinding([Idle], null, RL.KeyboardKey.K, () => { Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Atk); }, KeyBindingType.Press);
             RegisterBinding([Move], null, RL.KeyboardKey.Tab, () => { Move.CycleToNextPath(); }, KeyBindingType.Press);
 

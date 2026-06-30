@@ -5,6 +5,7 @@ using BOTB64.Graphics.Animations;
 using BOTB64.Graphics.G3D;
 using BOTB64.Graphics.UI;
 using BOTB64.Runtime;
+using System.Runtime.CompilerServices;
 
 namespace BOTB64.Entities
 {
@@ -22,6 +23,8 @@ namespace BOTB64.Entities
         private List<Spell> Spells = new();
         private List<Aura> Auras = new();
 
+        public Faction Winner = Faction.Neutral;
+
         public Turn CurrentTurn;
         public Character CurrentCharacter => CurrentTurn.ActiveCharacter;
 
@@ -38,9 +41,10 @@ namespace BOTB64.Entities
             CurrentTurn = new Turn(0, Characters[0], this);
         }
 
-        public void Update(float dt)
+        public void Update(float dt, out bool gameOver)
         {
-
+            CheckAlive();
+            gameOver = CheckGameOver(out Winner);
         }
 
         public void Render()
@@ -133,6 +137,51 @@ namespace BOTB64.Entities
             eff.Execute(ctx);
             FloatingTextManager.Add(ctx.DamageDone.ToString(), HexAlgo.HexToWorld(ctx.DamageTaker.Position));
             AuraTriggerManager.Execute(ctx, EffectTrigger.OnDamageDone, AuraType.Character | AuraType.Tile);
+        }
+
+        private void CheckAlive()
+        {
+            foreach (var character in Characters)
+                if (character.CurrentHP <= 0)
+                    character.Die();
+        }
+
+        private bool CheckGameOver(out Faction winner)
+        {
+            winner = Faction.Neutral;
+
+            if (Characters.Count < 1)
+                return true;
+
+            bool blueFound = false;
+            bool redFound = false;
+
+            foreach (var character in Characters)
+            {
+                if (!character.Alive)
+                    continue;
+
+                if (character.Faction == Faction.BlueTeam)
+                    blueFound = true;
+                if (character.Faction == Faction.RedTeam)
+                    redFound = true;
+
+                if (blueFound && redFound)
+                    return false;
+            }
+
+            if (blueFound && !redFound)
+            {
+                winner = Faction.BlueTeam;
+                return true;
+            }
+            else if (!blueFound && redFound)
+            {
+                winner = Faction.RedTeam;
+                return true;
+            }
+
+            return false;
         }
     }
 }

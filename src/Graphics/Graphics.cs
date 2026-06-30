@@ -10,6 +10,7 @@ namespace BOTB64.Graphics
         {
             RB.InitWindow(width, height, title);
             RB.SetTargetFPS(60);
+            RB.SetExitKey(RL.KeyboardKey.Null);
         }
 
         public static void BeginFrame()
