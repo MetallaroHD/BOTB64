@@ -3,6 +3,7 @@ using BOTB64.Entities;
 using BOTB64.Entities.DTOs;
 using BOTB64.Graphics.UI;
 using BOTB64.Runtime;
+using BOTB64.Shared;
 using RB = Raylib_cs.Raylib;
 using RL = Raylib_cs;
 
