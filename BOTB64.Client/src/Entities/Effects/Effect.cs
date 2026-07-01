@@ -45,6 +45,9 @@
         // The wearer has moved for the first time in a turn
         OnMoveFirstTime = 1 << 15,
 
+        // When the spell or attack crits
+        OnCrit = 1 << 16,
+
         All = -0,
     }
 
@@ -64,16 +67,16 @@
 
         public bool IsDirect => Trigger == 0;
 
-        public abstract void Execute(EffectContext context);
+        public abstract void Execute(Game game, EffectContext context);
     }
 
     public abstract class Effect<TContext> : Effect where TContext : EffectContext
     {
-        public override void Execute(EffectContext context)
+        public override void Execute(Game game, EffectContext context)
         {
             if (context is TContext typed)
-                Execute(typed);
+                Execute(game, typed);
         }
-        protected abstract void Execute(TContext ctx);
+        protected abstract void Execute(Game game, TContext ctx);
     }
 }

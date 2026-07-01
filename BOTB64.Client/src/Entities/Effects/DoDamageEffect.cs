@@ -1,4 +1,7 @@
-﻿namespace BOTB64.Entities.Effects
+﻿using BOTB64.Engine;
+using BOTB64.Engine.Net;
+
+namespace BOTB64.Entities.Effects
 {
     public enum DamageSourceType
     {
@@ -22,6 +25,7 @@
     public class DamageContext : EffectContext
     {
         public int DamageDone;
+        public bool Crit;
         public Character DamageDoer;
         public Character DamageTaker;
         public DamageType DamageType = DamageType.Physical;
@@ -36,7 +40,7 @@
 
     public class DoDamageEffect : Effect<DamageContext>
     {
-        protected override void Execute(DamageContext ctx)
+        protected override void Execute(Game game, DamageContext ctx)
         {
             if (ctx.SourceType == DamageSourceType.AutoAttack)
             {
@@ -44,8 +48,24 @@
                     ctx.DamageDoer.SpellPower * ctx.DamageDoer.AutoAttackSP -
                     ctx.DamageDoer.AutoAttackDef * ctx.DamageTaker.Defense -
                     ctx.DamageDoer.AutoAttackMDef * ctx.DamageTaker.AutoAttackMDef);
-                ctx.DamageDone = baseDamage;
-                ctx.DamageTaker.TakeDamage(ctx);
+
+                bool crit = Random.Shared.NextDouble() < ctx.DamageDoer.Crit;
+
+                ctx.Crit = crit;
+                ctx.DamageDone = crit ? (int)(baseDamage * 1.5) : baseDamage;
+
+                game.RecordAndApply(new DamageEvent
+                {
+                    TargetID = ctx.DamageTaker.GameID,
+                    Amount = ctx.DamageDone,
+                    Crit = crit,
+                });
+
+                if (ctx.DamageTaker.CurrentHP <= 0)
+                {
+                    game.RecordAndApply(new DeathEvent { CharacterID = ctx.DamageTaker.GameID });
+                    AuraTriggerManager.Execute(new EffectContext(ctx.DamageTaker), EffectTrigger.OnDeath, AuraType.Character | AuraType.Tile);
+                }
             }
         }
     }

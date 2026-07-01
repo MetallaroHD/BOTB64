@@ -30,7 +30,10 @@ namespace BOTB64.Graphics.UI
             WasHovered = IsHovered;
 
             if (InputManager.IsLMP && IsHovered)
-                    OnClick?.Invoke();
+            {
+                OnClick?.Invoke();
+                InputManager.UseClick();
+            }
         }
 
         public override void Draw()

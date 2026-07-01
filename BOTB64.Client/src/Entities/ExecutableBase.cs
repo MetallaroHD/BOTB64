@@ -12,7 +12,7 @@ namespace BOTB64.Entities
             {
                 if (effect.Trigger.HasFlag(trigger))
                 {
-                    effect.Execute(ctx);
+                    effect.Execute(game, ctx);
                 }
             }
         }

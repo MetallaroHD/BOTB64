@@ -25,6 +25,5 @@ namespace BOTB64.Entities
         public TileEffectType Type = TileEffectType.None;
 
         public List<Parameter> Parameters = new();
-        private List<Effect> Effects = new();
     }
 }

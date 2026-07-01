@@ -6,6 +6,8 @@ namespace BOTB64.Runtime
 {
     public static class InputManager
     {
+        public static bool WantsClose = false;
+        private static bool ClickUsed = false;
         public static bool IsMouseButtonPressed(RL.MouseButton btn) => RB.IsMouseButtonPressed(btn);
         public static bool IsMouseButtonDown(RL.MouseButton btn) => RB.IsMouseButtonDown(btn);
         public static bool IsKeyDown(RL.KeyboardKey key) => RB.IsKeyDown(key);
@@ -14,14 +16,17 @@ namespace BOTB64.Runtime
         public static float ScrollDelta => RB.GetMouseWheelMove();
         public static Vector2 MouseDelta => RB.GetMouseDelta();
         public static Vector2 MousePosition => RB.GetMousePosition();
-        public static bool IsLMP => IsMouseButtonPressed(RL.MouseButton.Left);
+        public static bool IsLMP => !ClickUsed && IsMouseButtonPressed(RL.MouseButton.Left);
         public static bool IsRMP => IsMouseButtonPressed(RL.MouseButton.Right);
         public static bool IsLMD => IsMouseButtonDown(RL.MouseButton.Left);
         public static bool IsRMD => IsMouseButtonDown(RL.MouseButton.Right);
 
+        public static void UseClick() => ClickUsed = true;
+        public static void NewFrame() => ClickUsed = false;
+
         public static bool ShouldClose()
         {
-            //and other conditions
+            if(WantsClose) return true;
 
             return RB.WindowShouldClose();
         }

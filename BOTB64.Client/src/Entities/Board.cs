@@ -260,7 +260,7 @@ namespace BOTB64.Entities
             character.Position = new Hex(path.Last().Q, path.Last().R);
         }
 
-        public void SpawnCharacter(Character character, Hex tile)
+        public void SpawnCharacter(ref int alloc, Character character, Hex tile)
         {
             var t = GetTile(tile);
 
@@ -269,6 +269,8 @@ namespace BOTB64.Entities
             t.Character = character;
             character.Position = tile;
             character.Alive = true;
+            character.GameID = alloc;
+            alloc++;
         }
 
         public void BakeNeighbors()

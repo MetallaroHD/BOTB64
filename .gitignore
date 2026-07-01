@@ -1,3 +1,9 @@
 .vs/
 bin/
 obj/
+BOTB64.Client/bin/
+BOTB64.Client/obj/
+BOTB64.Shared/bin/
+BOTB64.Shared/obj/
+BOTB64.Server/bin/
+BOTB64.Server/obj/

@@ -1,4 +1,5 @@
 ﻿using BOTB64.Engine;
+using BOTB64.Engine.Net;
 using BOTB64.Entities.DTOs;
 using BOTB64.Entities.Effects;
 using BOTB64.Graphics.Animations;
@@ -18,6 +19,10 @@ namespace BOTB64.Entities
 
     public class Game
     {
+        private int CharAlloc = 0;
+
+        private List<IGameEvent> Pending = new();
+
         private Level Level = new Level();
         private List<Character> Characters = new();
         private List<Spell> Spells = new();
@@ -43,7 +48,6 @@ namespace BOTB64.Entities
 
         public void Update(float dt, out bool gameOver)
         {
-            CheckAlive();
             gameOver = CheckGameOver(out Winner);
         }
 
@@ -59,6 +63,26 @@ namespace BOTB64.Entities
         {
             AssetManager.UnloadAll();
             ShaderManager.Unload();
+        }
+
+        public List<IGameEvent> ExecuteAndResolve(IGameCommand command)
+        {
+            if(!command.Validate(this)) return null;
+            Pending.Clear();
+            command.Resolve(this);
+            return new List<IGameEvent>(Pending);
+        }
+
+        internal void RecordAndApply(IGameEvent evt)
+        {
+            evt.Apply(this);
+            Pending.Add(evt);
+        }
+
+        public void ApplyEventLog(List<IGameEvent> events)
+        {
+            foreach (var evt in events)
+                evt.Apply(this);
         }
 
         private void LoadStartingCharacters(GameInitializer lI)
@@ -98,52 +122,38 @@ namespace BOTB64.Entities
             {
                 if (character.Faction == Faction.BlueTeam && blueIndex < Level.LevelBoard.BlueSpawns.Count)
                 {
-                    Level.LevelBoard.SpawnCharacter(character, Level.LevelBoard.BlueSpawns[blueIndex].Position);
+                    Level.LevelBoard.SpawnCharacter(ref CharAlloc, character, Level.LevelBoard.BlueSpawns[blueIndex].Position);
                     blueIndex++;
                 }
                 else if (character.Faction == Faction.RedTeam && redIndex < Level.LevelBoard.RedSpawns.Count)
                 {
-                    Level.LevelBoard.SpawnCharacter(character, Level.LevelBoard.RedSpawns[redIndex].Position);
+                    Level.LevelBoard.SpawnCharacter(ref CharAlloc, character, Level.LevelBoard.RedSpawns[redIndex].Position);
                     redIndex++;
                 }
             }
         }
 
-        private void MoveCharacter(Character character, List<Tile> path)
+        internal void AdvanceTurnInternal()
         {
-            var anim = new CharacterMoveAnimation(character, path);
-            Level.LevelBoard.MoveCharacter(character, path);
-            AnimationManager.Play(anim);
-            foreach (var tile in path)
+            CurrentTurn.End();
+            var next = GetNextLivingCharacter(CurrentTurn.ActiveCharacter);
+            CurrentTurn = new Turn(CurrentTurn.Number + 1, next, this);
+            CurrentTurn.Begin();
+        }
+
+        public Character? FindCharacter(int id) => Characters.FirstOrDefault(c => c.GameID == id);
+
+        private Character GetNextLivingCharacter(Character current)
+        {
+            // ACTUALLY NEED TO IMPLEMENT HASTE SYSTEM
+            int startIndex = Characters.IndexOf(current);
+            for (int i = 1; i <= Characters.Count; i++)
             {
-                AuraTriggerManager.Execute(new EffectContext(character), EffectTrigger.OnMove, AuraType.Character | AuraType.Tile);
+                var candidate = Characters[(startIndex + i) % Characters.Count];
+                if (candidate.Alive)
+                    return candidate;
             }
-        }
-
-        public void MoveCurrentCharacter(List<Tile> path)
-        {
-            MoveCharacter(CurrentCharacter, path);
-        }
-
-        public void AutoAttack(Character attacker, Character attacked)
-        {
-            //animation
-            DoDamageEffect eff = new DoDamageEffect();
-            DamageContext ctx = new DamageContext(attacker, attacker, attacked)
-            {
-                DamageType = attacker.AutoAttackDamageType,
-                SourceType = DamageSourceType.AutoAttack,
-            };
-            eff.Execute(ctx);
-            FloatingTextManager.Add(ctx.DamageDone.ToString(), HexAlgo.HexToWorld(ctx.DamageTaker.Position));
-            AuraTriggerManager.Execute(ctx, EffectTrigger.OnDamageDone, AuraType.Character | AuraType.Tile);
-        }
-
-        private void CheckAlive()
-        {
-            foreach (var character in Characters)
-                if (character.CurrentHP <= 0)
-                    character.Die();
+            return current;
         }
 
         private bool CheckGameOver(out Faction winner)

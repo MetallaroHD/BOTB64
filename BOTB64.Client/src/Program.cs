@@ -11,6 +11,7 @@ namespace BOTB64
 
             while (!InputManager.ShouldClose())
             {
+                InputManager.NewFrame();
                 Engine.Engine.Update();
                 Engine.Engine.Render();
             }

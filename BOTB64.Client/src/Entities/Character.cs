@@ -28,6 +28,9 @@ namespace BOTB64.Entities
 
         public bool Alive = false;
 
+        // The incremental in-game id
+        public int GameID = 0;
+        // The database id
         public int ID = 0;
         public string Name = "";
 
@@ -47,7 +50,7 @@ namespace BOTB64.Entities
         public float Crit = 0f;
         public float LifeSteal = 0f;
 
-        public int CurrentHP = 0;
+        public int CurrentHP = 1;
         public int CurrentResource = 0;
         public int HPRegen = 0;
 
@@ -77,12 +80,6 @@ namespace BOTB64.Entities
         {
             Model.Transform.Position = IsAnimating ? VisualPosition : HexAlgo.HexToWorld(Position);
             Model?.Draw();
-        }
-
-        public void TakeDamage(DamageContext ctx)
-        {
-            CurrentHP -= ctx.DamageDone;
-            AuraTriggerManager.Execute(ctx, EffectTrigger.OnDamageTaken, AuraType.Character | AuraType.Tile);
         }
 
         public void Die()

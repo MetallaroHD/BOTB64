@@ -30,7 +30,6 @@ namespace BOTB64.Entities
         public DispelType Dispel = DispelType.None;
 
         public List<Parameter> Parameters = new();
-        private List<Effect> Effects = new();
 
         public string Tooltip = "";
     }

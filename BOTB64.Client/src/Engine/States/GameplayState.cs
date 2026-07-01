@@ -8,16 +8,17 @@ using BOTB64.Entities.DTOs;
 using BOTB64.Engine.Actions;
 using BOTB64.Graphics.Animations;
 using System.Net.Http.Headers;
+using BOTB64.Engine.Net;
 
 namespace BOTB64.Engine.States
 {
     public class GameplayState : IGameState
     {
         public GameInitializer Initer = new();
-
         private Game Game = new();
+        IGameCommandChannel Channel; //init depending on game type
+
         private Viewport Viewport = new();
-        
         private GameOverlayScreen Screen = new();
 
         private DefaultAction Idle;
@@ -29,6 +30,7 @@ namespace BOTB64.Engine.States
         public void OnEnter()
         {
             Game.Initialize(Initer);
+            Channel = new LocalCommandChannel(Game);
             Targeter.SetBoard(Game.GetBoard());
             AuraTriggerManager.Init(Game);
             InitActions();
@@ -104,8 +106,8 @@ namespace BOTB64.Engine.States
             RegisterBinding([Idle], null, RL.KeyboardKey.K, () => { Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Atk); }, KeyBindingType.Press);
             RegisterBinding([Move], null, RL.KeyboardKey.Tab, () => { Move.CycleToNextPath(); }, KeyBindingType.Press);
 
-            Move.SetLMBinding(() => { if (Screen.IsMouseBlocked()) return; Game.MoveCurrentCharacter(Move.GetPath()); ChangeAction(Idle); });
-            Atk.SetLMBinding(() => { if (Screen.IsMouseBlocked()) return; Character? tg = Atk.ConfirmTarget(); if(tg != null) Game.AutoAttack(Game.CurrentCharacter, tg); ChangeAction(Idle); });
+            Move.SetLMBinding(() => { if (Screen.IsMouseBlocked()) return; Channel.Submit(new MoveCommand { ActingCharacterID = Game.CurrentCharacter.ID, Path = Move.GetPath() }); ChangeAction(Idle); });
+            Atk.SetLMBinding(() => { if (Screen.IsMouseBlocked()) return; Character? tg = Atk.ConfirmTarget(); if(tg != null) Channel.Submit(new AutoAttackCommand { ActingCharacterID = Game.CurrentCharacter.GameID, TargetID = tg.GameID }); ChangeAction(Idle); });
         }
 
         public Hex GetMouseAxial(out bool valid)
