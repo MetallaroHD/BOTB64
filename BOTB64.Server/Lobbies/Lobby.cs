@@ -9,6 +9,7 @@ namespace BOTB64.Server.Lobbies
 {
     public class Lobby
     {
+        public int HostPlayerID { get; set; }
         public Guid LobbyId { get; init; } = Guid.NewGuid();
         public required GameSizeType GameSizeType { get; init; }
         public string? JoinCode { get; init; } // null for random-matchmaking lobbies, set for custom

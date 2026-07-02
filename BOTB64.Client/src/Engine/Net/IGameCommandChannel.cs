@@ -22,22 +22,28 @@ namespace BOTB64.Engine.Net
         {
             Game = game;
             Session = session;
+            Session.OnCommandReceived += cmd =>
+            {
+                if (!Session.IsHost) return;
+                var events = Game.ExecuteAndResolve(cmd);
+                if(events != null)
+                    session.BroadcastEvents(events);
+            };
+            session.OnEventsReceived += OnEventsFromHost;
         }
 
         public void Submit(IGameCommand command)
         {
-            //if (Session.IsHost)
-            //{
-            //    var events = Game.ExecuteAndResolve(command);
-            //    if (events != null)
-            //        Session.BroadCast(new EventBatch { Events = events });
-            //    else
-            //        Session.NotifyRejected(command);
-            //}
-            //else
-            //{
-            //    Session.SendToHost(command);
-            //}
+            if (Session.IsHost)
+            {
+                var events = Game.ExecuteAndResolve(command);
+                if (events != null)
+                    Session.BroadcastEvents(events);
+            }
+            else 
+            {
+                Session.SendCommand(command);
+            }
         }
 
         public void OnEventsFromHost(List<IGameEvent> events) => Game.ApplyEventLog(events);

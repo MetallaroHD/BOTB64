@@ -246,7 +246,7 @@ namespace BOTB64.Entities
             }
         }
 
-        public void MoveCharacter(Character character, List<Tile> path)
+        public void MoveCharacter(Character character, List<Hex> path)
         {
             if (path.Count == 0)
                 return;
@@ -255,8 +255,10 @@ namespace BOTB64.Entities
             if (oldTile == null)
                 return;
 
+            var tiles = GetTiles(path);
+
             oldTile.Character = null;
-            path.Last().Character = character;
+            tiles.Last().Character = character;
             character.Position = new Hex(path.Last().Q, path.Last().R);
         }
 

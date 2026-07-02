@@ -1,20 +1,25 @@
 ﻿using BOTB64.Entities;
-using BOTB64.Graphics.UI;
 using BOTB64.Graphics.Animations;
+using BOTB64.Graphics.UI;
 using BOTB64.Runtime;
+using MessagePack;
 
 namespace BOTB64.Engine.Net
 {
+    [Union(0, typeof(DamageEvent))]
+    [Union(1, typeof(DeathEvent))]
+    [Union(2, typeof(MoveEvent))]
     public interface IGameEvent
     {
         void Apply(Game game);
     }
 
+    [MessagePackObject]
     public struct DamageEvent : IGameEvent 
     {
-        public int TargetID;
-        public int Amount;
-        public bool Crit;
+        [Key(0)] public int TargetID;
+        [Key(1)] public int Amount;
+        [Key(2)] public bool Crit;
         public void Apply(Game game)
         {
             var target = game.FindCharacter(TargetID);
@@ -26,16 +31,18 @@ namespace BOTB64.Engine.Net
         }
     }
 
+    [MessagePackObject]
     public struct DeathEvent : IGameEvent
     {
-        public int CharacterID;
+        [Key(0)] public int CharacterID;
         public void Apply(Game game) => game.FindCharacter(CharacterID)?.Die();
     }
 
+    [MessagePackObject]
     public struct MoveEvent : IGameEvent 
     {
-        public int CharacterID;
-        public List<Tile> Path;
+        [Key(0)] public int CharacterID;
+        [Key(1)] public List<Hex> Path;
         public void Apply(Game game)
         {
             var character = game.FindCharacter(CharacterID);

@@ -1,5 +1,5 @@
-﻿using BOTB64.Shared;
-using BOTB64.Entities;
+﻿using BOTB64.Entities;
+using BOTB64.Shared;
 
 namespace BOTB64.Engine.Net
 {

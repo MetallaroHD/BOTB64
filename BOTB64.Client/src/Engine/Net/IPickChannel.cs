@@ -1,5 +1,6 @@
 ﻿using BOTB64.Engine.States;
 using BOTB64.Entities;
+using MessagePack;
 using System.Security.Cryptography.X509Certificates;
 
 namespace BOTB64.Engine.Net
@@ -9,18 +10,20 @@ namespace BOTB64.Engine.Net
         void Submit(PickCommand command);
     }
 
+    [MessagePackObject]
     public struct PickCommand
     {
-        public int PlayerID;
-        public int PickingIndex;
-        public int CharacterIndex;
+        [Key(0)] public int PlayerID;
+        [Key(1)] public int PickingIndex;
+        [Key(2)] public int CharacterIndex;
     }
 
+    [MessagePackObject]
     public struct PickEvent
     {
-        public int PickingIndex;
-        public int CharacterIndex;
-        public Faction Faction;
+        [Key(0)] public int PickingIndex;
+        [Key(1)] public int CharacterIndex;
+        [Key(2)] public Faction Faction;
     }
 
     public class LocalPickChannel : IPickChannel
@@ -38,6 +41,18 @@ namespace BOTB64.Engine.Net
         {
             State = state;
             Session = session;
+            Session.OnPickCommandReceived += cmd =>
+            {
+                if (!Session.IsHost) return; // stale, arrived after a host migration mid-select — ignore
+                if (State.ValidatePick(cmd))
+                {
+                    var evt = State.ResolvePick(cmd);
+                    Session.BroadcastPickEvent(evt);
+                }
+                // else: could send a rejection notice back to Sender
+            };
+
+            Session.OnPickEventReceived += OnEventFromHost;
         }
         public void Submit(PickCommand command)
         {
@@ -46,16 +61,12 @@ namespace BOTB64.Engine.Net
                 if (State.ValidatePick(command))
                 {
                     var evt = State.ResolvePick(command);
-                    //Session.Broadcast(evt);
-                }
-                else
-                {
-                    //Session.NotifyRejected();
+                    Session.BroadcastPickEvent(evt);
                 }
             }
-            else 
+            else
             {
-                //Session.SendToHost(command);
+                Session.SendPickCommand(command);
             }
         }
         public void OnEventFromHost(PickEvent evt) => State.ApplyPickEvent(evt);

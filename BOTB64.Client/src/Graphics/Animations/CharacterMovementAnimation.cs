@@ -27,7 +27,7 @@ namespace BOTB64.Graphics.Animations
         private readonly float[] SegmentEnds;
         private readonly float TotalLength;
 
-        public CharacterMoveAnimation(Character character, List<Tile> path, float speedPerTile = 0.2f)
+        public CharacterMoveAnimation(Character character, List<Hex> path, float speedPerTile = 0.2f)
         {
             Character = character;
             IsBlocking = true;
@@ -35,7 +35,7 @@ namespace BOTB64.Graphics.Animations
             if (path.Count <= 0)
                 return;
 
-            Points = path.Select(t => t.WorldPosition).ToList();
+            Points = path.Select(t => HexAlgo.HexToWorld(t)).ToList();
             float[] segLengths = new float[Points.Count - 1];
             TotalLength = 0f;
             for (int i = 0; i < segLengths.Length; i++)

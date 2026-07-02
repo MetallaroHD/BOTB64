@@ -1,5 +1,6 @@
 ﻿using BOTB64.Engine.States;
 using BOTB64.Entities;
+using BOTB64.Runtime;
 
 namespace BOTB64.Engine.Actions
 {
@@ -38,9 +39,12 @@ namespace BOTB64.Engine.Actions
             Character = character;
         }
 
-        public List<Tile> GetPath()
+        public List<Hex> GetPath()
         {
-            return Targeter.Targeted;
+            List<Hex> ret = new();
+            foreach (var tile in Targeter.Targeted)
+                ret.Add(tile.AxialPosition);
+            return ret;
         }
 
         public void CycleToNextPath()

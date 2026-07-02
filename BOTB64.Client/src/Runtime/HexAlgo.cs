@@ -1,12 +1,14 @@
 ﻿using BOTB64.Entities;
+using MessagePack;
 using System.Numerics;
 
 namespace BOTB64.Runtime
 {
+    [MessagePackObject]
     public readonly struct Hex
     {
-        public int Q { get; }
-        public int R { get; }
+        [Key(0)] public int Q { get; }
+        [Key(1)] public int R { get; }
 
         public Hex(int q, int r)
         {
