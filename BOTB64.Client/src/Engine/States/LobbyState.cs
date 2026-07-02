@@ -1,93 +1,144 @@
 ﻿using BOTB64.Engine.Net;
-using BOTB64.Shared;
+using BOTB64.Graphics.UI;
 using BOTB64.Runtime;
+using BOTB64.Shared;
 
 namespace BOTB64.Engine.States
 {
     public class LobbyState : IGameState
     {
-        public GameType GameType { get; set; }
-        public GameSizeType GameSizeType { get; set; }
-        public bool IsHost { get; set; } // set by MainMenuState depending on Create vs Join flow
-        public string? JoinCode { get; set; } // only used when joining an existing lobby
-
-        private LobbyApiClient API;
+        private LobbyScreen Screen = new();
+        private LobbyApiClient? API;
         private Guid LobbyID;
         private int PlayerID;
+        private bool IsHost;
+        private GameSizeType CurrentMode = GameSizeType.v2P;
+        private string JoinCode = "";
 
-        private Task<LobbyDto?>? PendingPoll;
         private Task<(Guid lobbyId, string joinCode)>? PendingCreate;
-        private float Timer;
+        private Task<JoinLobbyResponse?>? PendingJoin;
+        private Task<LobbyDto?>? PendingPoll;
+        private float PollTimer;
 
         public void OnEnter()
         {
-            API = new LobbyApiClient("http://localhost:5000"); // TODO: pull from shared config once that exists
-            PlayerID = LocalPlayerIdentity.PlayerId; // wherever you end up tracking "who am I" locally
-
-            if (IsHost)
-                PendingCreate = API.CreateLobby(PlayerID, GameSizeType);
-            else
-                _ = JoinExisting();
+            LocalPlayerIdentity.Init();
+            Screen.Controller = this;
+            Screen.Enter();
         }
 
-        private async Task JoinExisting()
-        {
-            var result = await API.JoinLobby(LocalPlayerIdentity.PlayerId, JoinCode!);
-            if (result != null)
-                LobbyID = result.LobbyId;
-            // else: show an error state — bad code / lobby full / etc.
-        }
+        public void OnExit() { }
 
         public void Update(float dt)
         {
-            if (PendingCreate != null)
+            Screen.Update(dt);
+
+            if (PendingCreate != null && PendingCreate.IsCompletedSuccessfully)
             {
-                if (PendingCreate.IsCompletedSuccessfully)
+                (LobbyID, JoinCode) = PendingCreate.Result;
+                PendingCreate = null;
+                IsHost = true;
+
+                Screen.ShowWaitingRoom(JoinCode, CurrentMode, IsHost);
+            }
+
+            if (PendingJoin != null && PendingJoin.IsCompletedSuccessfully)
+            {
+                var result = PendingJoin.Result;
+                PendingJoin = null;
+
+                if (result == null)
                 {
-                    (LobbyID, JoinCode) = PendingCreate.Result;
-                    PendingCreate = null;
+                    Screen.SetStatus("Could not join — check the Lobby ID and try again.");
                 }
-                return;
+                else
+                {
+                    LobbyID = result.LobbyId;
+                    JoinCode = result.JoinCode;
+
+                    IsHost = result.HostPlayerId == PlayerID;
+
+                    Screen.ShowWaitingRoom(JoinCode, CurrentMode, IsHost);
+                }
             }
 
-            if (LobbyID == Guid.Empty) return;
-
-            Timer += dt;
-            if (Timer > 1.0f && (PendingPoll == null || PendingPoll.IsCompleted))
+            if (LobbyID != Guid.Empty)
             {
-                Timer = 0;
-                PendingPoll = API.GetLobby(LobbyID);
+                PollTimer += dt;
+
+                if (PollTimer > 1.0f && (PendingPoll == null || PendingPoll.IsCompleted))
+                {
+                    PollTimer = 0;
+                    PendingPoll = API!.GetLobby(LobbyID);
+                }
+
+                if (PendingPoll?.IsCompletedSuccessfully == true)
+                {
+                    var lobby = PendingPoll.Result;
+
+                    if (lobby != null)
+                    {
+                        CurrentMode = lobby.GameSizeType;
+
+                        Screen.RefreshPlayerList(
+                            lobby.Players.Select(p =>
+                                p.PlayerId == PlayerID
+                                    ? $"{p.DisplayName} (you)"
+                                    : p.DisplayName
+                            ).ToList()
+                        );
+                    }
+                }
             }
-
-            if (PendingPoll?.IsCompletedSuccessfully == true)
-            {
-                var lobby = PendingPoll.Result;
-                if (lobby?.IsFull == true)
-                    TransitionToCharacterSelect(lobby);
-            }
         }
 
-        private void TransitionToCharacterSelect(LobbyDto lobby)
+        public void Render() => Screen.Draw();
+
+        // --- called by LobbyScreen ---
+
+        public void OnConnectClicked(string displayName, string address, string lobbyIdOrCode)
         {
-            var session = new NetSession(LobbyID, PlayerID, lobby.HostPlayerId);
-            session.Players = lobby.Players.Select(p => new Player { PlayerID = p.PlayerId }).ToList();
-
-            var seats = SeatAssignment.Assign(GameSizeType, lobby.Players.Select(p => p.PlayerId).ToList(), GameModeRules.DefaultFactionOrder, GameModeRules.TotalCharacters(GameSizeType));
-            foreach (var seat in seats)
-                session.Players.First(p => p.PlayerID == seat.PlayerID).OwnedPickSlots = seat.OwnedPickSlots;
-
-            var cs = new CharacterSelectState { GameType = GameType, GameSizeType = GameSizeType, Session = session };
-            StateManager.ChangeState(cs);
+            LocalPlayerIdentity.SetDisplayName(displayName);
+            PlayerID = LocalPlayerIdentity.PlayerId;
+            API = new LobbyApiClient(NormalizeAddress(address));
+            PendingJoin = API.JoinLobby(PlayerID, displayName, lobbyIdOrCode);
         }
 
-        public void OnExit()
+        public void OnCreateClicked(string displayName, string address)
         {
-            throw new NotImplementedException();
+            LocalPlayerIdentity.SetDisplayName(displayName);
+            PlayerID = LocalPlayerIdentity.PlayerId;
+            API = new LobbyApiClient(NormalizeAddress(address));
+            PendingCreate = API.CreateLobby(PlayerID, displayName, CurrentMode);
         }
 
-        public void Render()
+        public void OnModeSelected(GameSizeType mode)
         {
-            throw new NotImplementedException();
+            if (!IsHost || API == null) return;
+            CurrentMode = mode;
+            _ = API.SetLobbyMode(LobbyID, PlayerID, mode);
+            Screen.ShowWaitingRoom(JoinCode, CurrentMode, IsHost);
+        }
+
+        public void OnStartClicked()
+        {
+            // TODO: host-only, triggers the actual roster-full check + transition into CharacterSelectState,
+            // same shape as TransitionToCharacterSelect sketched a couple messages ago.
+        }
+
+        public void OnBackFromSetup() => StateManager.ChangeState(new MainMenuState());
+        public void OnLeaveClicked()
+        {
+            if (API != null && LobbyID != Guid.Empty)
+                _ = API.LeaveLobby(LobbyID, PlayerID);
+            StateManager.ChangeState(new MainMenuState());
+        }
+
+        private static string NormalizeAddress(string address)
+        {
+            if (!address.StartsWith("http://") && !address.StartsWith("https://"))
+                address = "http://" + address;
+            return address;
         }
     }
 }

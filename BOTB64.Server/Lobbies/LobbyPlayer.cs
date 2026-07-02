@@ -9,8 +9,9 @@ namespace BOTB64.Server.Lobbies
 {
     public class LobbyPlayer
     {
-        public required int PlayerId { get; init; }
-        public required string PublicEndpoint { get; set; } // ip:port, for NAT punch handoff
+        public int PlayerId { get; set; }
+        public string DisplayName { get; set; } = "";
+        public string PublicEndpoint { get; set; } = "";
         public bool IsHost { get; set; }
     }
 }

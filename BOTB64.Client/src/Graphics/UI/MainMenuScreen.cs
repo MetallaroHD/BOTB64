@@ -1,8 +1,9 @@
-﻿using BOTB64.Engine.States;
+﻿using BOTB64.Engine;
+using BOTB64.Engine.States;
 using BOTB64.Runtime;
+using BOTB64.Shared;
 using System.Numerics;
 using RL = Raylib_cs;
-using BOTB64.Shared;
 
 namespace BOTB64.Graphics.UI
 {
@@ -125,7 +126,7 @@ namespace BOTB64.Graphics.UI
 
         private void MoveToLobbySelect()
         {
-            //TBI - make new gamestate
+            StateManager.ChangeState(new LobbyState());
         }
         private void MoveToSettings()
         {

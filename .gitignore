@@ -7,3 +7,4 @@ BOTB64.Shared/bin/
 BOTB64.Shared/obj/
 BOTB64.Server/bin/
 BOTB64.Server/obj/
+*.user
