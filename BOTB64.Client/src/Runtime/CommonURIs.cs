@@ -25,6 +25,7 @@ namespace BOTB64.Runtime
         public static readonly string ModelEXT = ".gltf";
         public static readonly string ShaderVSEXT = ".vs";
         public static readonly string ShaderFSEXT = ".fs";
+        public static readonly string ImageEXT = ".png";
 
         public static (string script, string model, string wall, string shaderv, string shaderf) GetLevelResources(LevelDTO level) 
         {
@@ -34,6 +35,18 @@ namespace BOTB64.Runtime
             string shaderv = LevelDir + level.Subdir + "\\" + level.Shader + ShaderVSEXT;
             string shaderf = LevelDir + level.Subdir + "\\" + level.Shader + ShaderFSEXT;
             return (scriptURI, modelURI, wallURI, shaderv, shaderf);
+        }
+        public static (string script, string model, string icon) GetCharacterResources(CharacterDTO character)
+        {
+            string scriptURI = CharacterDir + character.Subdir + "\\" + character.ScriptURI + CharacterEXT;
+            string modelURI = CharacterDir + character.Subdir + "\\" + character.ModelURI + ModelEXT;
+            string iconURI = CharacterDir + character.Subdir + "\\" + character.IconURI + ImageEXT;
+
+            return (scriptURI, modelURI, iconURI);
+        }
+        public static string GetCharacterIcon(CharacterDTO character)
+        {
+            return CharacterDir + character.Subdir + "\\" + character.IconURI + ImageEXT;
         }
     }
 }

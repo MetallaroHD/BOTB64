@@ -30,7 +30,7 @@ namespace BOTB64.Server.Relay
                 {
                     var bytes = reader.GetRemainingBytes();
                     var envelope = MessagePackSerializer.Deserialize<RelayEnvelope>(bytes);
-
+                    
                     if (envelope.Type == RelayMessageType.Join)
                     {
                         var lobby = LobbyManager.FindByMatchID(envelope.MatchID);
@@ -54,7 +54,7 @@ namespace BOTB64.Server.Relay
 
             Listener.PeerDisconnectedEvent += (peer, info) => MatchRelay.HandleDisconnectByPeer(peer);
 
-            NetManager = new NetManager(Listener);
+            NetManager = new NetManager(Listener) { DisconnectTimeout = 15000 };
             NetManager.Start(RelayPort);
             Console.WriteLine($"Relay listening on UDP {RelayPort}");
 

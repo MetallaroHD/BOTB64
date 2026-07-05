@@ -1,12 +1,16 @@
-﻿namespace BOTB64.Entities.DTOs
+﻿using MessagePack;
+
+namespace BOTB64.Entities.DTOs
 {
+    [MessagePackObject]
     public class CharacterDTO
     {
-        public int ID { get; set; }
-        public string Name { get; set; }
-        public string ModelURI { get; set; }
-        public string ScriptURI { get; set; }
-        public string IconURI { get; set; }
-        public bool Enabled { get; set; }
+        [Key(0)] public int ID { get; set; }
+        [Key(1)] public string Name { get; set; }
+        [Key(2)] public string Subdir { get; set; }
+        [Key(3)] public string ModelURI { get; set; }
+        [Key(4)] public string ScriptURI { get; set; }
+        [Key(5)] public string IconURI { get; set; }
+        [Key(6)] public bool Enabled { get; set; }
     }
 }

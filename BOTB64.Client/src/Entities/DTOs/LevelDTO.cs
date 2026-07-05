@@ -1,13 +1,16 @@
-﻿namespace BOTB64.Entities.DTOs
+﻿using MessagePack;
+
+namespace BOTB64.Entities.DTOs
 {
+    [MessagePackObject]
     public class LevelDTO
     {
-        public int ID { get; set; }
-        public string Name { get; set; }
-        public string Subdir { get; set; }
-        public string Script { get; set; }
-        public string Model { get; set; }
-        public string Wall { get; set; }
-        public string Shader { get; set; }
+        [Key(0)] public int ID { get; set; }
+        [Key(1)] public string Name { get; set; }
+        [Key(2)] public string Subdir { get; set; }
+        [Key(3)] public string Script { get; set; }
+        [Key(4)] public string Model { get; set; }
+        [Key(5)] public string Wall { get; set; }
+        [Key(6)] public string Shader { get; set; }
     }
 }

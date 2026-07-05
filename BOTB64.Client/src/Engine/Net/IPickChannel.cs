@@ -43,13 +43,16 @@ namespace BOTB64.Engine.Net
             Session = session;
             Session.OnPickCommandReceived += cmd =>
             {
-                if (!Session.IsHost) return; // stale, arrived after a host migration mid-select — ignore
+                if (!Session.IsHost) return;
                 if (State.ValidatePick(cmd))
                 {
                     var evt = State.ResolvePick(cmd);
                     Session.BroadcastPickEvent(evt);
                 }
-                // else: could send a rejection notice back to Sender
+                else
+                {
+                    Console.WriteLine("Failed to send pick command!");
+                }
             };
 
             Session.OnPickEventReceived += OnEventFromHost;
@@ -69,6 +72,9 @@ namespace BOTB64.Engine.Net
                 Session.SendPickCommand(command);
             }
         }
-        public void OnEventFromHost(PickEvent evt) => State.ApplyPickEvent(evt);
+        public void OnEventFromHost(PickEvent evt)
+        {
+            State.ApplyPickEvent(evt);
+        }
     }
 }

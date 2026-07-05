@@ -7,6 +7,12 @@ namespace BOTB64.Server.Endpoints
     {
         public static void MapLobbyEndpoints(this WebApplication app)
         {
+            app.MapPost("/lobby/{id}/start", (Guid id, StartLobbyRequest req, LobbyManager lobbies) =>
+            {
+                var ok = lobbies.MarkStarted(id, req.PlayerId);
+                return ok ? Results.Ok() : Results.BadRequest(new { error = "not host, or lobby not found" });
+            });
+
             app.MapPost("/lobby/create", (CreateLobbyRequest req, LobbyManager lobbies, HttpContext ctx) =>
             {
                 var endpoint = ctx.Connection.RemoteIpAddress + ":" + ctx.Connection.RemotePort;
@@ -43,13 +49,13 @@ namespace BOTB64.Server.Endpoints
             {
                 var lobby = lobbies.FindByMatchID(id);
                 if (lobby == null) return Results.NotFound();
-
                 return Results.Ok(new LobbyDto(
                     lobby.JoinCode!,
                     lobby.Players.Select(p => new LobbyPlayerDto(p.PlayerId, p.DisplayName, p.IsHost)).ToList(),
                     lobby.HostPlayerID,
                     lobby.GameSizeType,
-                    lobby.IsFull));
+                    lobby.IsFull,
+                    lobby.Started));
             });
 
             app.MapPost("/lobby/{id}/leave", (Guid id, LeaveLobbyRequest req, LobbyManager lobbies) =>
@@ -77,18 +83,11 @@ namespace BOTB64.Server.Endpoints
 
     public record LobbyPlayerDto(int PlayerId, string DisplayName, bool IsHost);
 
-    public record JoinLobbyResponse(
-        Guid LobbyId,
-        string JoinCode,
-        List<LobbyPlayerDto> Players,
-        int HostPlayerId);
+    public record JoinLobbyResponse(Guid LobbyId, string JoinCode, List<LobbyPlayerDto> Players, int HostPlayerId);
 
     public record CreateLobbyResponse(Guid LobbyId, string JoinCode);
 
-    public record LobbyDto(
-        string JoinCode,
-        List<LobbyPlayerDto> Players,
-        int HostPlayerId,
-        GameSizeType GameSizeType,
-        bool IsFull);
+    public record LobbyDto(string JoinCode, List<LobbyPlayerDto> Players, int HostPlayerId, GameSizeType GameSizeType, bool IsFull, bool Started);
+
+    public record StartLobbyRequest(int PlayerId);
 }

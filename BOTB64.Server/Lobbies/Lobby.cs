@@ -15,5 +15,7 @@ namespace BOTB64.Server.Lobbies
         public List<LobbyPlayer> Players { get; } = new();
 
         public bool IsFull => Players.Count >= GameSizeRules.RequiredPlayerCount(GameSizeType);
+
+        public bool Started { get; set; } = false;
     }
 }

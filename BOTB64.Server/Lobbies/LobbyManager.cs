@@ -7,6 +7,17 @@ namespace BOTB64.Server.Lobbies
         private readonly Dictionary<Guid, Lobby> Lobbies = new();
         private readonly object Lock = new();
 
+        public bool MarkStarted(Guid lobbyId, int playerId)
+        {
+            lock (Lock)
+            {
+                if (!Lobbies.TryGetValue(lobbyId, out var lobby)) return false;
+                var caller = lobby.Players.FirstOrDefault(p => p.PlayerId == playerId);
+                if (caller == null || !caller.IsHost) return false;
+                lobby.Started = true;
+                return true;
+            }
+        }
         public Lobby CreateRandomLobby(GameSizeType type, List<(int playerId, string endpoint)> group)
         {
             lock (Lock)

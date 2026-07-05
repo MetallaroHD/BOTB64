@@ -2,9 +2,40 @@
     {
         "ID" : 0,
         "Enabled" : true,
+        "Subdir" : "Dummy",
         "Name" : "Dummy",
-        "ModelURI" : "Characters\\Dummy\\GenericCharacter.gltf",
-        "ScriptURI" : "Characters\\Dummy\\character.b64c",
-        "IconURI" : "Characters\\Dummy\\dummy.png"
+        "ModelURI" : "GenericCharacter",
+        "ScriptURI" : "character",
+        "IconURI" : "dummy"
+    },
+
+    {
+        "ID" : 1,
+        "Enabled" : true,
+        "Subdir" : "Soldato",
+        "Name" : "Soldatosolitario",
+        "ModelURI" : "GenericCharacter",
+        "ScriptURI" : "character",
+        "IconURI" : "dummy"
+    },
+
+    {
+        "ID" : 2,
+        "Enabled" : true,
+        "Subdir" : "Scoper",
+        "Name" : "Scoper",
+        "ModelURI" : "GenericCharacter",
+        "ScriptURI" : "character",
+        "IconURI" : "dummy"
+    },
+        
+    {
+        "ID" : 3,
+        "Enabled" : true,
+        "Subdir" : "Rag",
+        "Name" : "Ragnarass",
+        "ModelURI" : "GenericCharacter",
+        "ScriptURI" : "character",
+        "IconURI" : "dummy"
     }
 ]

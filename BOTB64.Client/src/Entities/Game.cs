@@ -6,15 +6,17 @@ using BOTB64.Graphics.Animations;
 using BOTB64.Graphics.G3D;
 using BOTB64.Graphics.UI;
 using BOTB64.Runtime;
+using MessagePack;
 using System.Runtime.CompilerServices;
 
 namespace BOTB64.Entities
 {
+    [MessagePackObject]
     public struct GameInitializer
     {
-        public LevelDTO Level;
-        public List<CharacterDTO> BlueTeam;
-        public List<CharacterDTO> RedTeam;
+        [Key(0)] public LevelDTO Level;
+        [Key(1)] public List<CharacterDTO> BlueTeam;
+        [Key(2)] public List<CharacterDTO> RedTeam;
     }
 
     public class Game
@@ -89,20 +91,24 @@ namespace BOTB64.Entities
         {
             foreach (var chara in lI.BlueTeam)
             {
+                (string script, string model, string icon) = CommonURIs.GetCharacterResources(chara);
+
                 Character character = new Character();
                 character.Name = chara.Name;
                 character.ID = chara.ID;
-                character.Model = new ModelInstance(AssetManager.GetModel(chara.ModelURI));
+                character.Model = new ModelInstance(AssetManager.GetModel(model));
                 character.Faction = Faction.BlueTeam;
                 // now we fill the rest using the script URI
                 Characters.Add(character);
             }
             foreach (var chara in lI.RedTeam)
             {
+                (string script, string model, string icon) = CommonURIs.GetCharacterResources(chara);
+
                 Character character = new Character();
                 character.Name = chara.Name;
                 character.ID = chara.ID;
-                character.Model = new ModelInstance(AssetManager.GetModel(chara.ModelURI));
+                character.Model = new ModelInstance(AssetManager.GetModel(model));
                 character.Faction = Faction.RedTeam;
                 // now we fill the rest using the script URI
                 Characters.Add(character);

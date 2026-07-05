@@ -45,10 +45,23 @@ namespace BOTB64.Server.Relay
 
                 // Commands only ever go to the current host, regardless of what TargetPlayerId says —
                 // server enforces this rather than trusting the sender's routing.
-                if (envelope.Type == RelayMessageType.Command)
+                if (envelope.Type == RelayMessageType.Command || envelope.Type == RelayMessageType.PickCommand)
                 {
                     var host = match.Connections.FirstOrDefault(c => c.PlayerId == match.HostPlayerId);
-                    host?.Peer.Send(Serialize(envelope), DeliveryMethod.ReliableOrdered);
+                    if (host == null)
+                        Console.WriteLine($"Route: no host found for match {envelope.MatchID}, expected host {match.HostPlayerId}");
+                    else
+                        host.Peer.Send(Serialize(envelope), DeliveryMethod.ReliableOrdered);
+                    return;
+                }
+
+                // MatchStart is a broadcast that must include the sender too — unlike EventBatch/PickEvent,
+                // the host doesn't apply this one locally before sending; it waits for the same
+                // OnMatchStartReceived echo as every other client, so everyone (host included) needs a copy.
+                if (envelope.Type == RelayMessageType.MatchStart)
+                {
+                    foreach (var conn in match.Connections)
+                        conn.Peer.Send(Serialize(envelope), DeliveryMethod.ReliableOrdered);
                     return;
                 }
 

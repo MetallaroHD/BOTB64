@@ -2,8 +2,10 @@
 using BOTB64.Engine.States;
 using BOTB64.Runtime;
 using BOTB64.Shared;
+using BOTB64;
 using System.Numerics;
 using RL = Raylib_cs;
+using System.Threading.Tasks.Sources;
 
 namespace BOTB64.Graphics.UI
 {
@@ -13,6 +15,7 @@ namespace BOTB64.Graphics.UI
 
         Background Background = new Background { Bounds = new RL.Rectangle(0, 0, 1280, 720), Color = new RL.Color(30, 30, 40, 255) };
         Label Title = new Label { Position = new Vector2(546, 160), Text = "BOTB64", FontSize = 48, Color = RL.Color.White };
+        Label VersionLabel = new Label { Position = new Vector2(5, 705), Text = "", FontSize = 14, Color = RL.Color.White };
         TextButton StartButton = new TextButton { Bounds = new RL.Rectangle(540, 300, 200, 60), Text = "Start", };
         TextButton SettingsButton = new TextButton() { Bounds = new RL.Rectangle(540, 380, 200, 60), Text = "Settings", };
         TextButton ExitButton = new TextButton() { Bounds = new RL.Rectangle(540, 460, 200, 60), Text = "Exit", OnClick = () => { InputManager.WantsClose = true; } };
@@ -32,8 +35,12 @@ namespace BOTB64.Graphics.UI
 
         public MainMenuScreen()
         {
+            string vText = "v" + Version.Major + "." + Version.Minor + "." + Version.Patch + Version.Special;
+            VersionLabel.Text = vText;
+
             AddElement(Background);
             AddElement(Title);
+            AddElement(VersionLabel);
             AddElement(StartButton);
             AddElement(SettingsButton);
             AddElement(ExitButton);
@@ -59,15 +66,15 @@ namespace BOTB64.Graphics.UI
             LocalGameButton.OnClick = () => { Controller.SetChosenGT(GameType.Local); MoveToSizeSelectLocal(); };
             RandomOnlineButton.OnClick = () => { Controller.SetChosenGT(GameType.RandomRanked); MoveToSizeSelectRanked(); };
             CustomGameButton.OnClick = () => { Controller.SetChosenGT(GameType.IPMultiplayer); MoveToLobbySelect(); };
-            V2Button.OnClick = () => { Controller.SetChosenST(GameSizeType.v2P); Controller.StartLocalGame(); };
-            V3Button.OnClick = () => { Controller.SetChosenST(GameSizeType.v3P); Controller.StartLocalGame(); };
-            V5Button.OnClick = () => { Controller.SetChosenST(GameSizeType.v5P); Controller.StartLocalGame(); };
-            V2PButton.OnClick = () => { Controller.SetChosenST(GameSizeType.v2P); MoveToRankedMatchmaking(); };
-            V3PButton.OnClick = () => { Controller.SetChosenST(GameSizeType.v3P); MoveToRankedMatchmaking(); };
-            V5PButton.OnClick = () => { Controller.SetChosenST(GameSizeType.v5P); MoveToRankedMatchmaking(); };
-            V2TButton.OnClick = () => { Controller.SetChosenST(GameSizeType.v2T); MoveToRankedMatchmaking(); };
-            V3TButton.OnClick = () => { Controller.SetChosenST(GameSizeType.v3T); MoveToRankedMatchmaking(); };
-            V5TButton.OnClick = () => { Controller.SetChosenST(GameSizeType.v5T); MoveToRankedMatchmaking(); };
+            V2Button.OnClick = () => { Controller.SetChosenST(GameSizeType.V2P); Controller.StartLocalGame(); };
+            V3Button.OnClick = () => { Controller.SetChosenST(GameSizeType.V3P); Controller.StartLocalGame(); };
+            V5Button.OnClick = () => { Controller.SetChosenST(GameSizeType.V5P); Controller.StartLocalGame(); };
+            V2PButton.OnClick = () => { Controller.SetChosenST(GameSizeType.V2P); MoveToRankedMatchmaking(); };
+            V3PButton.OnClick = () => { Controller.SetChosenST(GameSizeType.V3P); MoveToRankedMatchmaking(); };
+            V5PButton.OnClick = () => { Controller.SetChosenST(GameSizeType.V5P); MoveToRankedMatchmaking(); };
+            V2TButton.OnClick = () => { Controller.SetChosenST(GameSizeType.V2T); MoveToRankedMatchmaking(); };
+            V3TButton.OnClick = () => { Controller.SetChosenST(GameSizeType.V3T); MoveToRankedMatchmaking(); };
+            V5TButton.OnClick = () => { Controller.SetChosenST(GameSizeType.V5T); MoveToRankedMatchmaking(); };
 
             MoveToStart();
         }

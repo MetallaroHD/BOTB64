@@ -1,46 +1,50 @@
-﻿using BOTB64.Entities;
+﻿using BOTB64.Engine.Net;
+using BOTB64.Entities;
 using BOTB64.Shared;
 
-namespace BOTB64.Engine.Net
+public static class SeatAssignment
 {
-    public static class SeatAssignment
+    public static List<Player> Assign(GameSizeType sizeType, List<LobbyPlayerDto> connectedPlayers, List<Faction> factionOrder, int totalCharacters)
     {
-        public static List<Player> Assign(GameSizeType sizeType, List<int> connectedPlayerIds, List<Faction> factionOrder, int totalCharacters)
+        bool isTeamMode = sizeType is GameSizeType.V2T or GameSizeType.V3T or GameSizeType.V5T;
+        var players = new List<Player>();
+
+        if (isTeamMode)
         {
-            bool isTeamMode = sizeType is GameSizeType.v2T or GameSizeType.v3T or GameSizeType.v5T;
-
-            if (isTeamMode)
+            for (int i = 0; i < connectedPlayers.Count; i++)
             {
-                if (connectedPlayerIds.Count != totalCharacters)
-                    throw new InvalidOperationException($"Team mode requires exactly {totalCharacters} players, got {connectedPlayerIds.Count}");
-
-                var players = new List<Player>();
-                for (int i = 0; i < totalCharacters; i++)
-                {
-                    players.Add(new Player
-                    {
-                        PlayerID = connectedPlayerIds[i],
-                        Faction = factionOrder[i],
-                        OwnedPickSlots = new List<int> { i }
-                    });
-                }
-                return players;
-            }
-            else // vNP — exactly 2 players, one per faction
-            {
-                if (connectedPlayerIds.Count != 2)
-                    throw new InvalidOperationException($"1v1 mode requires exactly 2 players, got {connectedPlayerIds.Count}");
-
-                var bluePlayer = new Player { PlayerID = connectedPlayerIds[0], Faction = Faction.BlueTeam };
-                var redPlayer = new Player { PlayerID = connectedPlayerIds[1], Faction = Faction.RedTeam };
-
-                for (int i = 0; i < totalCharacters; i++)
-                {
-                    if (factionOrder[i] == Faction.BlueTeam) bluePlayer.OwnedPickSlots.Add(i);
-                    else redPlayer.OwnedPickSlots.Add(i);
-                }
-                return new List<Player> { bluePlayer, redPlayer };
+                var src = connectedPlayers[i];
+                if (i < totalCharacters)
+                    players.Add(new Player { PlayerID = src.PlayerId, DisplayName = src.DisplayName, Faction = factionOrder[i], OwnedPickSlots = new List<int> { i } });
+                else
+                    players.Add(new Player { PlayerID = src.PlayerId, DisplayName = src.DisplayName, Faction = Faction.Spectator, OwnedPickSlots = new() });
             }
         }
+        else // vNP
+        {
+            for (int i = 0; i < connectedPlayers.Count; i++)
+            {
+                var src = connectedPlayers[i];
+                if (i == 0)
+                {
+                    var p = new Player { PlayerID = src.PlayerId, DisplayName = src.DisplayName, Faction = Faction.BlueTeam, OwnedPickSlots = new() };
+                    for (int slot = 0; slot < totalCharacters; slot++)
+                        if (factionOrder[slot] == Faction.BlueTeam) p.OwnedPickSlots.Add(slot);
+                    players.Add(p);
+                }
+                else if (i == 1)
+                {
+                    var p = new Player { PlayerID = src.PlayerId, DisplayName = src.DisplayName, Faction = Faction.RedTeam, OwnedPickSlots = new() };
+                    for (int slot = 0; slot < totalCharacters; slot++)
+                        if (factionOrder[slot] == Faction.RedTeam) p.OwnedPickSlots.Add(slot);
+                    players.Add(p);
+                }
+                else
+                {
+                    players.Add(new Player { PlayerID = src.PlayerId, DisplayName = src.DisplayName, Faction = Faction.Spectator, OwnedPickSlots = new() });
+                }
+            }
+        }
+        return players;
     }
 }

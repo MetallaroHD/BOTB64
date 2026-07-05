@@ -6,6 +6,9 @@ namespace BOTB64
     {
         public static void Main()
         {
+            if (Version.Expires < DateTime.Now)
+                return;
+
             Graphics.Graphics.Initialize(1280, 720, "BOTB64");
             Engine.Engine.Initialize();
 

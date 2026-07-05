@@ -1,4 +1,6 @@
-﻿namespace BOTB64.Shared
+﻿using MessagePack;
+
+namespace BOTB64.Shared
 {
     public enum RelayMessageType : byte
     {
@@ -10,14 +12,16 @@
         PlayerReconnected = 5,
         PickCommand = 6,
         PickEvent = 7,
+        MatchStart = 8,
     }
 
+    [MessagePackObject]
     public struct RelayEnvelope
     {
-        public Guid MatchID;
-        public RelayMessageType Type;
-        public int SenderID;
-        public int TargetID; //-1 = broadcast to all
-        public byte[] Payload;
+        [Key(0)] public Guid MatchID;
+        [Key(1)] public RelayMessageType Type;
+        [Key(2)] public int SenderID;
+        [Key(3)] public int TargetID; //-1 = broadcast to all
+        [Key(4)] public byte[] Payload;
     }
 }

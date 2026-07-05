@@ -11,6 +11,7 @@ namespace BOTB64.Entities
         BlueTeam = 1,
         RedTeam = 2,
         Hostile = 3,
+        Spectator = 4,
     }
 
     public enum ResourceType
@@ -34,25 +35,25 @@ namespace BOTB64.Entities
 
         public Hex Position;
 
-        public int MaxHP = 1;
+        public int MaxHP = 1000;
         public int MaxRes = 0;
         public int ResRegen = 0;
         public int StartRes = 0;
-        public int AttackPower = 0;
+        public int AttackPower = 30;
         public int SpellPower = 0;
-        public int Defense = 0;
+        public int Defense = 5;
         public int MagicDefense = 0;
-        public int Haste = 0;
-        public int Speed = 0;
+        public int Haste = 4;
+        public int Speed = 5;
 
         public float Crit = 0f;
         public float LifeSteal = 0f;
 
-        public int CurrentHP = 1;
+        public int CurrentHP = 1000;
         public int CurrentResource = 0;
         public int HPRegen = 0;
 
-        public int RemainMovement = 0;
+        public int RemainMovement = 5;
         public int RemainAction = 0;
         public int RemainFastAction = 0;
 

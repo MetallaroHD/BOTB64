@@ -30,6 +30,7 @@ namespace BOTB64.Engine.States
 
         private int PickingIndex = 0;
         private readonly HashSet<int> TakenCharacterIndices = new();
+        private readonly Dictionary<int, RL.Texture2D> CharacterIcons = new();
 
         private LevelDTO Level;
         private List<CharacterDTO> AllCharacters;
@@ -46,9 +47,9 @@ namespace BOTB64.Engine.States
 
             TotalCharacters = GameSizeType switch
             {
-                GameSizeType.v2P or GameSizeType.v2T => 4,
-                GameSizeType.v3P or GameSizeType.v3T => 6,
-                GameSizeType.v5P or GameSizeType.v5T => 10,
+                GameSizeType.V2P or GameSizeType.V2T => 4,
+                GameSizeType.V3P or GameSizeType.V3T => 6,
+                GameSizeType.V5P or GameSizeType.V5T => 10,
                 _ => TotalCharacters
             };
 
@@ -71,9 +72,17 @@ namespace BOTB64.Engine.States
                 });
             };
 
-            Screen.StartButton.OnClick = () => { if (Session == null || Session.IsHost) StartGame(); };
+            Screen.StartButton.Visible = Session == null || Session.IsHost;
+            Screen.StartButton.OnClick = () => StartGame();
+
+            if (Session != null)
+                Session.OnMatchStartReceived += OnMatchStart;
+
+            if (Session != null && IsSpectator())
+                Screen.LockButton.Visible = false;
 
             FillCharacterButtons();
+            UpdateNowPickingLabel();
             Screen.Enter();
         }
 
@@ -114,6 +123,42 @@ namespace BOTB64.Engine.States
             TakenCharacterIndices.Add(evt.CharacterIndex);
             PickingIndex = evt.PickingIndex + 1;
             CurrentSelection = -1;
+
+            var icon = GetOrLoadIcon(evt.CharacterIndex);
+            if (evt.Faction == Faction.RedTeam) Screen.RedStrip.AddIcon(icon);
+            else Screen.BlueStrip.AddIcon(icon);
+
+            UpdateNowPickingLabel();
+        }
+
+        private void UpdateNowPickingLabel()
+        {
+            if (PickingIndex >= DefaultFactionOrder.Count || PickingIndex >= TotalCharacters)
+            {
+                Screen.NowPickingLabel.Text = "All picks complete";
+                return;
+            }
+
+            if (Session == null)
+            {
+                Screen.NowPickingLabel.Text = $"Now picking: {DefaultFactionOrder[PickingIndex]}";
+                return;
+            }
+
+            var picker = Session.Players.FirstOrDefault(p => p.OwnedPickSlots.Contains(PickingIndex));
+            Screen.NowPickingLabel.Text = picker != null
+                ? $"Now picking: {picker.DisplayName}"
+                : $"Now picking: (spectated slot)";
+        }
+
+        private RL.Texture2D GetOrLoadIcon(int characterIndex)
+        {
+            if (!CharacterIcons.TryGetValue(characterIndex, out var tex))
+            {
+                tex = RB.LoadTexture(new DataFile(CommonURIs.GetCharacterIcon(AllCharacters[characterIndex])).Path);
+                CharacterIcons[characterIndex] = tex;
+            }
+            return tex;
         }
 
         public void OnExit()
@@ -123,6 +168,7 @@ namespace BOTB64.Engine.States
 
         public void Update(float dt)
         {
+            Session?.PumpMainThreadActions();
             Screen.Update(dt);
         }
 
@@ -140,10 +186,17 @@ namespace BOTB64.Engine.States
                 RedTeam = RedTeam
             };
 
-            GameplayState gs = new GameplayState();
-            gs.Initer = init;
-            StateManager.ChangeState(gs);
+            if (Session == null)
+            {
+                TransitionToGameplay(init);
+            }
+            else
+            {
+                Session.BroadcastMatchStart(init);
+            }
         }
+
+        private bool IsSpectator() => Session != null && Session.LocalPlayer.OwnedPickSlots.Count == 0;
 
         private void FillCharacterButtons()
         {
@@ -152,16 +205,23 @@ namespace BOTB64.Engine.States
                 if (AllCharacters[i].Enabled)
                 {
                     int index = i;
-
                     IconButton btn = new IconButton
                     {
-                        Bounds = new RL.Rectangle(index * 50 + 5, 5, 64, 64),
-                        Icon = RB.LoadTexture(new DataFile(AllCharacters[index].IconURI).Path),
+                        Bounds = new RL.Rectangle(5 + index * (64 + 5), 5, 64, 64),
+                        Icon = GetOrLoadIcon(index),
                         OnClick = () => CurrentSelection = index
                     };
                     Screen.AddElement(btn);
                 }
             }
+        }
+
+        private void OnMatchStart(GameInitializer init) => TransitionToGameplay(init);
+
+        private void TransitionToGameplay(GameInitializer init)
+        {
+            GameplayState gs = new GameplayState { Initer = init, Session = Session };
+            StateManager.ChangeState(gs);
         }
     }
 }

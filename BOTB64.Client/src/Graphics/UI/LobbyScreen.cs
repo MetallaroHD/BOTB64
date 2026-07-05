@@ -78,17 +78,18 @@ namespace BOTB64.Graphics.UI
             CreateButton.OnClick = () => Controller.OnCreateClicked(NameBox.Text, AddressBox.Text);
             SetupBackButton.OnClick = () => Controller.OnBackFromSetup();
 
-            ModeV2PButton.OnClick = () => Controller.OnModeSelected(GameSizeType.v2P);
-            ModeV3PButton.OnClick = () => Controller.OnModeSelected(GameSizeType.v3P);
-            ModeV5PButton.OnClick = () => Controller.OnModeSelected(GameSizeType.v5P);
-            ModeV2TButton.OnClick = () => Controller.OnModeSelected(GameSizeType.v2T);
-            ModeV3TButton.OnClick = () => Controller.OnModeSelected(GameSizeType.v3T);
-            ModeV5TButton.OnClick = () => Controller.OnModeSelected(GameSizeType.v5T);
+            ModeV2PButton.OnClick = () => Controller.OnModeSelected(GameSizeType.V2P);
+            ModeV3PButton.OnClick = () => Controller.OnModeSelected(GameSizeType.V3P);
+            ModeV5PButton.OnClick = () => Controller.OnModeSelected(GameSizeType.V5P);
+            ModeV2TButton.OnClick = () => Controller.OnModeSelected(GameSizeType.V2T);
+            ModeV3TButton.OnClick = () => Controller.OnModeSelected(GameSizeType.V3T);
+            ModeV5TButton.OnClick = () => Controller.OnModeSelected(GameSizeType.V5T);
 
             StartButton.OnClick = () => Controller.OnStartClicked();
             WaitingBackButton.OnClick = () => Controller.OnLeaveClicked();
 
             ShowSetupPage();
+            LoadRecents();
         }
 
         public void ShowSetupPage()
@@ -146,6 +147,11 @@ namespace BOTB64.Graphics.UI
                 PlayerLabels.Add(label);
                 AddElement(label);
             }
+        }
+        private void LoadRecents()
+        {
+            //add actual recents later
+            AddressBox.Text = "localhost:5000";
         }
     }
 }

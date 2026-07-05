@@ -7,18 +7,18 @@
         IPMultiplayer = 2,
     }
 
-    public enum GameSizeType { v2P, v3P, v5P, v2T, v3T, v5T }
+    public enum GameSizeType { V2P, V3P, V5P, V2T, V3T, V5T }
 
     public static class GameSizeRules
     {
         public static int RequiredPlayerCount(GameSizeType type) => type switch
         {
-            GameSizeType.v2P => 2,
-            GameSizeType.v3P => 2,
-            GameSizeType.v5P => 2,
-            GameSizeType.v2T => 4,
-            GameSizeType.v3T => 6,
-            GameSizeType.v5T => 10,
+            GameSizeType.V2P => 2,
+            GameSizeType.V3P => 2,
+            GameSizeType.V5P => 2,
+            GameSizeType.V2T => 4,
+            GameSizeType.V3T => 6,
+            GameSizeType.V5T => 10,
             _ => throw new ArgumentOutOfRangeException(nameof(type))
         };
     }

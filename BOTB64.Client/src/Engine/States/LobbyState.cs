@@ -12,13 +12,16 @@ namespace BOTB64.Engine.States
         private Guid LobbyID;
         private int PlayerID;
         private bool IsHost;
-        private GameSizeType CurrentMode = GameSizeType.v2P;
+        private GameSizeType CurrentMode = GameSizeType.V2P;
         private string JoinCode = "";
 
         private Task<(Guid lobbyId, string joinCode)>? PendingCreate;
         private Task<JoinLobbyResponse?>? PendingJoin;
         private Task<LobbyDto?>? PendingPoll;
         private float PollTimer;
+
+        private string RelayAddress = "";
+        private const int RelayPort = 9050;
 
         public void OnEnter()
         {
@@ -72,13 +75,24 @@ namespace BOTB64.Engine.States
                     PendingPoll = API!.GetLobby(LobbyID);
                 }
 
+                if (PendingPoll?.IsFaulted == true)
+                {
+                    Console.WriteLine(PendingPoll.Exception);
+                    Console.WriteLine(PendingPoll.Exception?.InnerException);
+                }
+
                 if (PendingPoll?.IsCompletedSuccessfully == true)
                 {
                     var lobby = PendingPoll.Result;
 
                     if (lobby != null)
                     {
-                        CurrentMode = lobby.GameSizeType;
+                        if (CurrentMode != lobby.GameSizeType)
+                        {
+                            CurrentMode = lobby.GameSizeType;
+
+                            Screen.ShowWaitingRoom(JoinCode, CurrentMode, IsHost);
+                        }
 
                         Screen.RefreshPlayerList(
                             lobby.Players.Select(p =>
@@ -87,6 +101,11 @@ namespace BOTB64.Engine.States
                                     : p.DisplayName
                             ).ToList()
                         );
+
+                        if (lobby.Started)
+                        {
+                            _ = TransitionToCharacterSelect(lobby);
+                        }
                     }
                 }
             }
@@ -100,6 +119,7 @@ namespace BOTB64.Engine.States
         {
             LocalPlayerIdentity.SetDisplayName(displayName);
             PlayerID = LocalPlayerIdentity.PlayerId;
+            RelayAddress = StripScheme(address);
             API = new LobbyApiClient(NormalizeAddress(address));
             PendingJoin = API.JoinLobby(PlayerID, displayName, lobbyIdOrCode);
         }
@@ -108,8 +128,19 @@ namespace BOTB64.Engine.States
         {
             LocalPlayerIdentity.SetDisplayName(displayName);
             PlayerID = LocalPlayerIdentity.PlayerId;
+            RelayAddress = StripScheme(address);
             API = new LobbyApiClient(NormalizeAddress(address));
-            PendingCreate = API.CreateLobby(PlayerID, displayName, CurrentMode);
+            PendingCreate = API.CreateLobby(PlayerID, displayName, CurrentMode); 
+        }
+
+        private static string StripScheme(string address)
+        {
+            address = address.Trim();
+            if (address.StartsWith("http://")) address = address["http://".Length..];
+            if (address.StartsWith("https://")) address = address["https://".Length..];
+            // also strip a trailing :port if the user typed one for the HTTP address — relay uses its own fixed port
+            int colon = address.IndexOf(':');
+            return colon >= 0 ? address[..colon] : address;
         }
 
         public void OnModeSelected(GameSizeType mode)
@@ -122,8 +153,13 @@ namespace BOTB64.Engine.States
 
         public void OnStartClicked()
         {
-            // TODO: host-only, triggers the actual roster-full check + transition into CharacterSelectState,
-            // same shape as TransitionToCharacterSelect sketched a couple messages ago.
+            if (!IsHost || API == null || LobbyID == Guid.Empty) return;
+            _ = StartGameAsync();
+        }
+
+        private async Task StartGameAsync()
+        {
+            await API!.StartLobby(LobbyID, PlayerID);
         }
 
         public void OnBackFromSetup() => StateManager.ChangeState(new MainMenuState());
@@ -139,6 +175,24 @@ namespace BOTB64.Engine.States
             if (!address.StartsWith("http://") && !address.StartsWith("https://"))
                 address = "http://" + address;
             return address;
+        }
+        private async Task TransitionToCharacterSelect(LobbyDto lobby)
+        {
+            var seats = SeatAssignment.Assign(CurrentMode, lobby.Players, GameModeRules.DefaultFactionOrder, GameModeRules.TotalCharacters(CurrentMode));
+            var session = new NetSession(LobbyID, PlayerID, lobby.HostPlayerId) { Players = seats };
+
+            try
+            {
+                await session.Connect(RelayAddress, RelayPort);
+            }
+            catch (Exception ex)
+            {
+                Screen.SetStatus($"Failed to connect to relay: {ex.Message}");
+                return; // don't transition into a broken session
+            }
+
+            var cs = new CharacterSelectState { GameType = GameType.IPMultiplayer, GameSizeType = CurrentMode, Session = session };
+            StateManager.ChangeState(cs);
         }
     }
 }

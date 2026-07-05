@@ -27,6 +27,8 @@ namespace BOTB64.Engine.States
 
         private IAction? CurrentAction;
 
+        public NetSession? Session { get; set; }
+
         public void OnEnter()
         {
             Game.Initialize(Initer);
@@ -46,6 +48,7 @@ namespace BOTB64.Engine.States
 
         public void Update(float dt)
         {
+            Session?.PumpMainThreadActions();
             bool gameOver = false;
             CurrentAction?.Update();
             Game.Update(dt, out gameOver);

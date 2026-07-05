@@ -14,9 +14,9 @@ namespace BOTB64.Engine.Net
 
         public static int TotalCharacters(GameSizeType sizeType) => sizeType switch
         {
-            GameSizeType.v2P or GameSizeType.v2T => 4,
-            GameSizeType.v3P or GameSizeType.v3T => 6,
-            GameSizeType.v5P or GameSizeType.v5T => 10,
+            GameSizeType.V2P or GameSizeType.V2T => 4,
+            GameSizeType.V3P or GameSizeType.V3T => 6,
+            GameSizeType.V5P or GameSizeType.V5T => 10,
             _ => throw new ArgumentOutOfRangeException(nameof(sizeType))
         };
     }
