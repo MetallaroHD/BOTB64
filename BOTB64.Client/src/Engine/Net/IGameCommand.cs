@@ -25,7 +25,7 @@ namespace BOTB64.Engine.Net
             if (game.CurrentCharacter.GameID != ActingCharacterID)
                 return false;
             var character = game.FindCharacter(ActingCharacterID);
-            return character != null && character.Alive; // TODO: validate path is reachable/legal
+            return character != null && character.Alive && Path.Count > 1;
         }
 
         public void Resolve(Game game)

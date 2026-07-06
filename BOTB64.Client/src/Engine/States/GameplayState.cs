@@ -107,6 +107,7 @@ namespace BOTB64.Engine.States
         {
             RegisterBinding([Idle], null, RL.KeyboardKey.M, () => { Move.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Move); }, KeyBindingType.Press);
             RegisterBinding([Idle], null, RL.KeyboardKey.K, () => { Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Atk); }, KeyBindingType.Press);
+            RegisterBinding([Idle], null, RL.KeyboardKey.Space, () => { Channel.Submit(new EndTurnCommand { ActingCharacterID = Game.CurrentCharacter.ID }); Console.WriteLine("New Turn: " + Game.CurrentCharacter.Name); }, KeyBindingType.Press);
             RegisterBinding([Move], null, RL.KeyboardKey.Tab, () => { Move.CycleToNextPath(); }, KeyBindingType.Press);
 
             Move.SetLMBinding(() => { if (Screen.IsMouseBlocked()) return; Channel.Submit(new MoveCommand { ActingCharacterID = Game.CurrentCharacter.ID, Path = Move.GetPath() }); ChangeAction(Idle); });

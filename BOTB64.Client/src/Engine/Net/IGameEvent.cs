@@ -45,9 +45,13 @@ namespace BOTB64.Engine.Net
         [Key(1)] public List<Hex> Path;
         public void Apply(Game game)
         {
+            if (Path.Count < 2)
+                return;
             var character = game.FindCharacter(CharacterID);
-            if (character == null) return;
+            if (character == null) 
+                return;
             var anim = new CharacterMoveAnimation(character, Path);
+            character.RemainMovement -= Path.Count - 1;
             game.GetBoard().MoveCharacter(character, Path);
             AnimationManager.Play(anim);
         }
