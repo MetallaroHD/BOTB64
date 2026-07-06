@@ -35,7 +35,7 @@ namespace BOTB64.Entities
 
         public Hex Position;
 
-        public int MaxHP = 1000;
+        public int MaxHP = 50;
         public int MaxRes = 0;
         public int ResRegen = 0;
         public int StartRes = 0;
@@ -49,7 +49,7 @@ namespace BOTB64.Entities
         public float Crit = 0f;
         public float LifeSteal = 0f;
 
-        public int CurrentHP = 1000;
+        public int CurrentHP = 50;
         public int CurrentResource = 0;
         public int HPRegen = 0;
 

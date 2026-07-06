@@ -159,6 +159,7 @@ namespace BOTB64.Engine.Net
 
         private void Send(RelayEnvelope envelope)
         {
+            Console.WriteLine($"[{LocalPlayerID}] SEND type={envelope.Type} peerState={ServerPeer?.ConnectionState}");
             if (ServerPeer == null || ServerPeer.ConnectionState != ConnectionState.Connected)
             {
                 Console.WriteLine($"Send skipped — ServerPeer state: {ServerPeer?.ConnectionState.ToString() ?? "null"}");
@@ -169,6 +170,7 @@ namespace BOTB64.Engine.Net
 
         public void OnEnvelopeReceived(RelayEnvelope envelope)
         {
+            Console.WriteLine($"[{LocalPlayerID}] RECV type={envelope.Type}");
             switch (envelope.Type)
             {
                 case RelayMessageType.Command:

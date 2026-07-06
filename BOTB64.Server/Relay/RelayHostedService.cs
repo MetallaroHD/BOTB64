@@ -30,7 +30,8 @@ namespace BOTB64.Server.Relay
                 {
                     var bytes = reader.GetRemainingBytes();
                     var envelope = MessagePackSerializer.Deserialize<RelayEnvelope>(bytes);
-                    
+
+                    Console.WriteLine($"[SERVER] RECV type={envelope.Type} from={envelope.SenderID} match={envelope.MatchID}");
                     if (envelope.Type == RelayMessageType.Join)
                     {
                         var lobby = LobbyManager.FindByMatchID(envelope.MatchID);

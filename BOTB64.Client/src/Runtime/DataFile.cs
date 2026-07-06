@@ -5,7 +5,8 @@ namespace BOTB64.Runtime
     public class DataFile
     {
 #if DEVELOPMENT
-        public static string DataDir = "G:\\Dev\\BOTB64\\BOTB64.Client\\data\\";
+        public static string DataDir = "C:\\Users\\caffetti.enrico\\Documents\\BOTB64\\BOTB64.Client\\data\\";
+        //public static string DataDir = "G:\\Dev\\BOTB64\\BOTB64.Client\\data\\";
 #else
         public static string DataDir = System.Environment.ProcessPath;
 #endif

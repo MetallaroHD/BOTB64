@@ -32,7 +32,7 @@ namespace BOTB64.Engine.States
         public void OnEnter()
         {
             Game.Initialize(Initer);
-            Channel = new LocalCommandChannel(Game);
+            Channel = Session == null ? new LocalCommandChannel(Game) : new NetworkedCommandChannel(Game, Session);
             Targeter.SetBoard(Game.GetBoard());
             AuraTriggerManager.Init(Game);
             InitActions();

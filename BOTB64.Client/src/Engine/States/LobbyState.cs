@@ -23,6 +23,8 @@ namespace BOTB64.Engine.States
         private string RelayAddress = "";
         private const int RelayPort = 9050;
 
+        private bool TransitionStarted = false;
+
         public void OnEnter()
         {
             LocalPlayerIdentity.Init();
@@ -102,8 +104,9 @@ namespace BOTB64.Engine.States
                             ).ToList()
                         );
 
-                        if (lobby.Started)
+                        if (lobby.Started && !TransitionStarted)
                         {
+                            TransitionStarted = true;
                             _ = TransitionToCharacterSelect(lobby);
                         }
                     }

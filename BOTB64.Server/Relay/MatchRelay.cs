@@ -2,6 +2,7 @@
 using LiteNetLib;
 using MessagePack;
 using Microsoft.Extensions.FileSystemGlobbing;
+using Microsoft.Extensions.Hosting;
 
 namespace BOTB64.Server.Relay
 {
@@ -49,9 +50,14 @@ namespace BOTB64.Server.Relay
                 {
                     var host = match.Connections.FirstOrDefault(c => c.PlayerId == match.HostPlayerId);
                     if (host == null)
+                    {
                         Console.WriteLine($"Route: no host found for match {envelope.MatchID}, expected host {match.HostPlayerId}");
+                    }
                     else
+                    {
                         host.Peer.Send(Serialize(envelope), DeliveryMethod.ReliableOrdered);
+                        Console.WriteLine($"[SERVER] ROUTE type={envelope.Type} -> target(s)={string.Join(",", host.Peer.Address)}");
+                    }
                     return;
                 }
 
@@ -61,7 +67,10 @@ namespace BOTB64.Server.Relay
                 if (envelope.Type == RelayMessageType.MatchStart)
                 {
                     foreach (var conn in match.Connections)
+                    {
+                        Console.WriteLine($"[SERVER] ROUTE type={envelope.Type} -> target(s)={string.Join(",", conn.Peer.Address)}");
                         conn.Peer.Send(Serialize(envelope), DeliveryMethod.ReliableOrdered);
+                    }
                     return;
                 }
 
@@ -69,6 +78,7 @@ namespace BOTB64.Server.Relay
                 foreach (var conn in match.Connections)
                 {
                     if (conn.PlayerId == envelope.SenderID) continue;
+                    Console.WriteLine($"[SERVER] ROUTE type={envelope.Type} -> target(s)={string.Join(",", conn.Peer.Address)}");
                     conn.Peer.Send(Serialize(envelope), DeliveryMethod.ReliableOrdered);
                 }
             }
