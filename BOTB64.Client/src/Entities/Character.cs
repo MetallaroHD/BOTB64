@@ -61,7 +61,7 @@ namespace BOTB64.Entities
         public int RemainAction = 1;
         public int RemainFastAction = 1;
 
-        public int AutoAttackRange = 0;
+        public int AutoAttackRange = 4;
         public float AutoAttackAP = 1f;
         public float AutoAttackSP = 0f;
         public float AutoAttackDef = 1f;

@@ -40,11 +40,20 @@ namespace BOTB64.Engine.States
 
             if (PendingCreate != null && PendingCreate.IsCompletedSuccessfully)
             {
-                (LobbyID, JoinCode) = PendingCreate.Result;
+                var (lobbyId, joinCode) = PendingCreate.Result;
                 PendingCreate = null;
-                IsHost = true;
 
-                Screen.ShowWaitingRoom(JoinCode, CurrentMode, IsHost);
+                if (lobbyId == Guid.Empty)
+                {
+                    // already handled by createsafe
+                }
+                else
+                {
+                    LobbyID = lobbyId;
+                    JoinCode = joinCode;
+                    IsHost = true;
+                    Screen.ShowWaitingRoom(JoinCode, CurrentMode, IsHost);
+                }
             }
 
             if (PendingJoin != null && PendingJoin.IsCompletedSuccessfully)
@@ -54,7 +63,7 @@ namespace BOTB64.Engine.States
 
                 if (result == null)
                 {
-                    Screen.SetStatus("Could not join — check the Lobby ID and try again.");
+                    // already handled by joinsafe
                 }
                 else
                 {
@@ -124,7 +133,20 @@ namespace BOTB64.Engine.States
             PlayerID = LocalPlayerIdentity.PlayerId;
             RelayAddress = StripScheme(address);
             API = new LobbyApiClient(NormalizeAddress(address));
-            PendingJoin = API.JoinLobby(PlayerID, displayName, lobbyIdOrCode);
+            PendingJoin = JoinSafe(displayName, lobbyIdOrCode);
+        }
+
+        private async Task<JoinLobbyResponse?> JoinSafe(string displayName, string lobbyIdOrCode)
+        {
+            try
+            {
+                return await API!.JoinLobby(PlayerID, displayName, lobbyIdOrCode);
+            }
+            catch (Exception ex)
+            {
+                Screen.SetStatus(ex.Message);
+                return null;
+            }
         }
 
         public void OnCreateClicked(string displayName, string address)
@@ -133,7 +155,20 @@ namespace BOTB64.Engine.States
             PlayerID = LocalPlayerIdentity.PlayerId;
             RelayAddress = StripScheme(address);
             API = new LobbyApiClient(NormalizeAddress(address));
-            PendingCreate = API.CreateLobby(PlayerID, displayName, CurrentMode); 
+            PendingCreate = CreateSafe(displayName);
+        }
+
+        private async Task<(Guid lobbyId, string joinCode)> CreateSafe(string displayName)
+        {
+            try
+            {
+                return await API!.CreateLobby(PlayerID, displayName, CurrentMode);
+            }
+            catch (Exception ex)
+            {
+                Screen.SetStatus(ex.Message);
+                return (Guid.Empty, ""); // sentinel — Update below needs to recognize this as "don't proceed"
+            }
         }
 
         private static string StripScheme(string address)

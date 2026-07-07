@@ -10,9 +10,31 @@ namespace BOTB64.Engine.Net
     [Union(1, typeof(DeathEvent))]
     [Union(2, typeof(MoveEvent))]
     [Union(3, typeof(TurnAdvancedEvent))]
+    [Union(4, typeof(CharacterReassignedEvent))]
+    [Union(5, typeof(TeamEliminatedEvent))]
+    [Union(6, typeof(ActionSpentEvent))]
     public interface IGameEvent
     {
         void Apply(Game game);
+    }
+
+    [MessagePackObject]
+    public struct CharacterReassignedEvent : IGameEvent
+    {
+        [Key(0)] public int CharacterGameID;
+        [Key(1)] public int NewOwnerID;
+        public void Apply(Game game)
+        {
+            var character = game.FindCharacter(CharacterGameID);
+            if (character != null) character.OwnerID = NewOwnerID;
+        }
+    }
+
+    [MessagePackObject]
+    public struct TeamEliminatedEvent : IGameEvent
+    {
+        [Key(0)] public Faction Winner;
+        public void Apply(Game game) => game.ForceGameOver(Winner);
     }
 
     [MessagePackObject]
@@ -67,6 +89,19 @@ namespace BOTB64.Engine.Net
             var anim = new CharacterMoveAnimation(character, new List<Hex> { character.Position, tile.AxialPosition });
             game.GetBoard().MoveCharacter(character, new List<Hex> { character.Position, tile.AxialPosition });
             AnimationManager.Play(anim);
+        }
+    }
+
+    [MessagePackObject]
+    public struct ActionSpentEvent : IGameEvent
+    {
+        [Key(0)] public int CharacterID;
+        [Key(1)] public bool FastAction;
+        public void Apply(Game game)
+        {
+            var c = game.FindCharacter(CharacterID);
+            if (c == null) return;
+            if (FastAction) c.RemainFastAction--; else c.RemainAction--;
         }
     }
 }

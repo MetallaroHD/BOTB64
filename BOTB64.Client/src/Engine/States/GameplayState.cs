@@ -74,6 +74,7 @@ namespace BOTB64.Engine.States
             Game.Render();
             Viewport.End();
             FloatingTextManager.Draw(Viewport);
+            UIRenderer.Begin();
             Screen.Draw();
         }
 
@@ -110,6 +111,7 @@ namespace BOTB64.Engine.States
             RegisterBinding([Idle], null, RL.KeyboardKey.K, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Atk); }, KeyBindingType.Press);
             RegisterBinding([Idle], null, RL.KeyboardKey.Space, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Channel.Submit(new EndTurnCommand { ActingCharacterID = Game.CurrentCharacter.GameID }); Console.WriteLine("New Turn: " + Game.CurrentCharacter.Name); }, KeyBindingType.Press);
             RegisterBinding([Move], null, RL.KeyboardKey.Tab, () => { Move.CycleToNextPath(); }, KeyBindingType.Press);
+            RegisterBinding([Move, Atk], null, RL.KeyboardKey.Escape, () => { ChangeAction(Idle); }, KeyBindingType.Press);
 
             Move.SetLMBinding(() => { if (!Enabled) return; if (Screen.IsMouseBlocked()) return; Channel.Submit(new MoveCommand { ActingCharacterID = Game.CurrentCharacter.GameID, Path = Move.GetPath() }); ChangeAction(Idle); });
             Atk.SetLMBinding(() => { if (!Enabled) return; if (Screen.IsMouseBlocked()) return; Character? tg = Atk.ConfirmTarget(); if(tg != null) Channel.Submit(new AutoAttackCommand { ActingCharacterID = Game.CurrentCharacter.GameID, TargetID = tg.GameID }); ChangeAction(Idle); });

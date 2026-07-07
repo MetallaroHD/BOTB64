@@ -1,5 +1,6 @@
 ﻿using BOTB64.Entities;
 using BOTB64.Runtime;
+using System.Security.Cryptography;
 
 namespace BOTB64.Engine
 {
@@ -59,7 +60,7 @@ namespace BOTB64.Engine
                 case TargetingType.None:
                     break;
                 case TargetingType.Direct:
-                    Targeted.Add(Board?.GetTile(pickedPoint) ?? throw new InvalidOperationException("Board is not set."));
+                    TargetDirect(pickedPoint, false);
                     break;
                 case TargetingType.BeamNoLos:
                     TargetBeam(pickedPoint, false);
@@ -73,6 +74,38 @@ namespace BOTB64.Engine
 
             if(!Data.Secret)
                 SetHighlightStatus(true);
+        }
+
+        public static void TargetDirect(Hex picked, bool lineOfSight)
+        {
+            if (Data.Source == null || Board == null)
+                return;
+
+            var line = HexAlgo.Beam(Data.Source.Value, picked);
+            if (line.Count == 0)
+                return;
+
+            if (!lineOfSight)
+            {
+                int idx = Math.Min(Data.Radius, line.Count - 1);
+                Targeted.Add(Board.GetTile(line[idx]));
+                return;
+            }
+
+            Tile? tile = Board.GetTile(line[0]);
+            foreach (var h in line)
+            {
+                if (!Board.IsPassable(h))
+                    break;
+
+                var next = Board.GetTile(h);
+                if (next == null)
+                    break;
+
+                tile = next;
+            }
+
+            Targeted.Add(tile);
         }
 
         public static void TargetBeam(Hex dst, bool lineOfSight)
@@ -117,14 +150,12 @@ namespace BOTB64.Engine
             if (srcTile == null || dstTile == null)
                 return;
 
-            // New destination: reset and start fresh
             if (PathEnumerator == null || dst != LastPathFindingDst)
             {
                 PathEnumerator?.Dispose();
                 LastPathFindingDst = dst;
                 PathEnumerator = HexAlgo.YensKShortest(srcTile, dstTile, h => h.IsPassable(), h => h.GetNeighbors(), Data.Radius).GetEnumerator();
 
-                // Advance to first (optimal) path immediately
                 AdvancePathEnumerator();
             }
         }

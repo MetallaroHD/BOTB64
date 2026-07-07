@@ -22,7 +22,7 @@ namespace BOTB64.Graphics.UI
         {
             if (!Visible) return;
 
-            IsHovered = RB.CheckCollisionPointRec(InputManager.MousePosition, Bounds);
+            IsHovered = RB.CheckCollisionPointRec(UIRenderer.ScreenToUI(InputManager.MousePosition), Bounds);
 
             if (!WasHovered && IsHovered)
                 OnHover?.Invoke();

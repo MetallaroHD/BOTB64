@@ -12,7 +12,7 @@ namespace BOTB64.Graphics.UI
         Background Background = new Background
         {
             Bounds = new RL.Rectangle(0, 0, 1280, 720),
-            Color = new RL.Color(20, 20, 28, 255)
+            Color = new RL.Color(30, 30, 40, 255)
         };
 
         public GameOverScreen()

@@ -15,33 +15,23 @@ namespace BOTB64.Server.Endpoints
 
             app.MapPost("/lobby/create", (CreateLobbyRequest req, LobbyManager lobbies, HttpContext ctx) =>
             {
+                if (!VersionCheck.IsCompatible(req.VersionMajor, req.VersionMinor, req.VersionPatch))
+                    return Results.BadRequest(new { error = $"Version mismatch — server is {BOTBVersion.Major}.{BOTBVersion.Minor}.{BOTBVersion.Patch}, client is {req.VersionMajor}.{req.VersionMinor}.{req.VersionPatch}" });
+
                 var endpoint = ctx.Connection.RemoteIpAddress + ":" + ctx.Connection.RemotePort;
-
-                var lobby = lobbies.CreateCustomLobby(
-                    req.PlayerId,
-                    endpoint,
-                    req.DisplayName,
-                    req.GameSizeType);
-
+                var lobby = lobbies.CreateCustomLobby(req.PlayerId, endpoint, req.DisplayName, req.GameSizeType);
                 return Results.Ok(new CreateLobbyResponse(lobby.LobbyId, lobby.JoinCode!));
             });
 
             app.MapPost("/lobby/join", (JoinLobbyRequest req, LobbyManager lobbies, HttpContext ctx) =>
             {
+                if (!VersionCheck.IsCompatible(req.VersionMajor, req.VersionMinor, req.VersionPatch))
+                    return Results.BadRequest(new { error = $"Version mismatch — server is {BOTBVersion.Major}.{BOTBVersion.Minor}.{BOTBVersion.Patch}, client is {req.VersionMajor}.{req.VersionMinor}.{req.VersionPatch}" });
+
                 var endpoint = ctx.Connection.RemoteIpAddress + ":" + ctx.Connection.RemotePort;
-
-                var (ok, lobby, error) = lobbies.JoinByCode(
-                    req.JoinCode,
-                    req.PlayerId,
-                    endpoint,
-                    req.DisplayName);
-
+                var (ok, lobby, error) = lobbies.JoinByCode(req.JoinCode, req.PlayerId, endpoint, req.DisplayName);
                 return ok
-                    ? Results.Ok(new JoinLobbyResponse(
-                        lobby!.LobbyId,
-                        lobby.JoinCode!,
-                        lobby.Players.Select(p => new LobbyPlayerDto(p.PlayerId, p.DisplayName, p.IsHost)).ToList(),
-                        lobby.Players.First(p => p.IsHost).PlayerId))
+                    ? Results.Ok(new JoinLobbyResponse(lobby!.LobbyId, lobby.JoinCode!, lobby.Players.Select(p => new LobbyPlayerDto(p.PlayerId, p.DisplayName, p.IsHost)).ToList(), lobby.Players.First(p => p.IsHost).PlayerId))
                     : Results.BadRequest(new { error });
             });
 
@@ -71,13 +61,18 @@ namespace BOTB64.Server.Endpoints
             });
         }
     }
+    public static class VersionCheck
+    {
+        public static bool IsCompatible(int major, int minor, int patch) =>
+            major == BOTBVersion.Major && minor == BOTBVersion.Minor && patch == BOTBVersion.Patch;
+    }
 
     // DTOs
     public record SetModeRequest(int PlayerId, GameSizeType GameSizeType);
 
-    public record CreateLobbyRequest(int PlayerId, string DisplayName, GameSizeType GameSizeType);
+    public record CreateLobbyRequest(int PlayerId, string DisplayName, GameSizeType GameSizeType, int VersionMajor, int VersionMinor, int VersionPatch);
 
-    public record JoinLobbyRequest(int PlayerId, string DisplayName, string JoinCode);
+    public record JoinLobbyRequest(int PlayerId, string DisplayName, string JoinCode, int VersionMajor, int VersionMinor, int VersionPatch);
 
     public record LeaveLobbyRequest(int PlayerId);
 

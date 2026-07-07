@@ -98,6 +98,7 @@ namespace BOTB64.Server.Relay
                 }
 
                 bool wasHost = match.HostPlayerId == playerId;
+                match.HostPlayerId = match.Connections.OrderBy(c => c.PlayerId).First().PlayerId;
                 var notice = new RelayEnvelope
                 {
                     MatchID = matchId,

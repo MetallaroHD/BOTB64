@@ -1,4 +1,7 @@
-﻿using BOTB64.Runtime;
+﻿using BOTB64.Graphics;
+using BOTB64.Graphics.UI;
+using BOTB64.Runtime;
+using BOTB64.Shared;
 
 namespace BOTB64
 {
@@ -6,12 +9,14 @@ namespace BOTB64
     {
         public static void Main()
         {
-            if (Version.Expires < DateTime.Now)
+            if (BOTBVersion.Expires < DateTime.Now)
                 return;
 
             if (!DataFile.DirectoryExists())
                 return;
 
+            Settings.Load();
+            UIRenderer.Update();
             ResourceManager.Initialize();
             ResourceArchive.Initialize(DataFile.DataDir);
             Graphics.Graphics.Initialize(1280, 720, "BOTB64");
@@ -19,12 +24,14 @@ namespace BOTB64
 
             while (!InputManager.ShouldClose())
             {
+                WindowManager.Update();
                 InputManager.NewFrame();
                 Engine.Engine.Update();
                 Engine.Engine.Render();
             }
 
             Graphics.Graphics.Unload();
+            ResourceManager.ClearCache();
         }
     }
 }

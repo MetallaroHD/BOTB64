@@ -29,6 +29,8 @@ namespace BOTB64.Entities
         private List<Aura> Auras = new();
 
         public Faction Winner = Faction.Neutral;
+        private bool ForcedGameOver = false;
+        private Faction ForcedWinner = Faction.Neutral;
 
         public Turn CurrentTurn;
         public Character CurrentCharacter => CurrentTurn.ActiveCharacter;
@@ -49,6 +51,7 @@ namespace BOTB64.Entities
 
         public void Update(float dt, out bool gameOver)
         {
+            if (ForcedGameOver) { gameOver = true; Winner = ForcedWinner; return; }
             gameOver = CheckGameOver(out Winner);
         }
 
@@ -158,6 +161,14 @@ namespace BOTB64.Entities
         }
 
         public Character? FindCharacter(int id) => Characters.FirstOrDefault(c => c.GameID == id);
+        public List<Character> GetCharactersOwnedBy(int playerId) => Characters.Where(c => c.OwnerID == playerId).ToList();
+        public void RecordAndApplyExternal(IGameEvent evt) => RecordAndApply(evt);
+
+        public void ForceGameOver(Faction winner)
+        {
+            ForcedGameOver = true;
+            ForcedWinner = winner;
+        }
 
         private Character GetNextLivingCharacter(Character current)
         {

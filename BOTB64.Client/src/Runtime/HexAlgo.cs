@@ -29,7 +29,7 @@ namespace BOTB64.Runtime
         public static readonly float Apothem = 0.5f;
         public static readonly float HexSize = 0.57735f; // derived from apothem = 0.5
         public static readonly (int q, int r)[] Directions = { (1, 0), (1, -1), (0, -1), (-1, 0), (-1, 1), (0, 1) };
-        private static readonly int MaxCircleRadius = 50;
+        public static readonly int MaxCircleRadius = 50;
 
         /* The 6 corner offsets relative to the center */
         public static Vector3[] BuildHexOffsets()

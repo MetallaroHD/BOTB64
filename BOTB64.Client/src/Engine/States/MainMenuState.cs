@@ -1,5 +1,6 @@
 ﻿using BOTB64.Graphics.UI;
 using BOTB64.Shared;
+using BOTB64.Runtime;
 
 namespace BOTB64.Engine.States
 {
@@ -12,6 +13,7 @@ namespace BOTB64.Engine.States
 
         public void OnEnter()
         {
+            ResourceManager.ClearCache();
             Screen.Controller = this;
             Screen.Enter();
         }

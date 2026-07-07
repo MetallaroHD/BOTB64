@@ -68,10 +68,10 @@ namespace BOTB64.Graphics.UI
             RB.DrawRectangleRec(Bounds, BackgroundColor);
 
             RB.BeginScissorMode(
-                (int)Bounds.X,
-                (int)Bounds.Y,
-                (int)Bounds.Width,
-                (int)Bounds.Height
+                (int)(Bounds.X * Settings.Scale),
+                (int)(Bounds.Y * Settings.Scale),
+                (int)(Bounds.Width * Settings.Scale),
+                (int)(Bounds.Height * Settings.Scale)
             );
 
             int visibleLines = (int)(Bounds.Height / LineHeight);

@@ -26,13 +26,22 @@ namespace BOTB64.Engine.Net
             HTTP = new HttpClient { BaseAddress = new Uri(baseUrl) };
         }
 
-        public async Task<(Guid lobbyId, string joinCode)> CreateLobby(int playerId, string name, GameSizeType sizeType)
+        public async Task<(Guid lobbyId, string joinCode)> CreateLobby(int playerId, string displayName, GameSizeType sizeType)
         {
-            var resp = await HTTP.PostAsJsonAsync("/lobby/create",
-                new { playerId, displayName = name, gameSizeType = sizeType });
-
-            resp.EnsureSuccessStatusCode();
-
+            var resp = await HTTP.PostAsJsonAsync("/lobby/create", new
+            {
+                playerId,
+                displayName,
+                gameSizeType = sizeType,
+                versionMajor = BOTBVersion.Major,
+                versionMinor = BOTBVersion.Minor,
+                versionPatch = BOTBVersion.Patch
+            });
+            if (!resp.IsSuccessStatusCode)
+            {
+                var err = await resp.Content.ReadFromJsonAsync<ErrorResponse>();
+                throw new Exception(err?.Error ?? "Failed to create lobby");
+            }
             var result = await resp.Content.ReadFromJsonAsync<CreateLobbyResponse>();
             return (result!.LobbyId, result.JoinCode);
         }
@@ -40,9 +49,17 @@ namespace BOTB64.Engine.Net
         public async Task<JoinLobbyResponse?> JoinLobby(int playerId, string name, string joinCode)
         {
             var resp = await HTTP.PostAsJsonAsync("/lobby/join",
-                new { playerId, displayName = name, joinCode });
+                new { playerId, displayName = name, joinCode,
+                    versionMajor = BOTBVersion.Major,
+                    versionMinor = BOTBVersion.Minor,
+                    versionPatch = BOTBVersion.Patch
+                });
 
-            if (!resp.IsSuccessStatusCode) return null;
+            if (!resp.IsSuccessStatusCode)
+            {
+                var err = await resp.Content.ReadFromJsonAsync<ErrorResponse>();
+                throw new Exception(err?.Error ?? "Failed to create lobby");
+            }
 
             return await resp.Content.ReadFromJsonAsync<JoinLobbyResponse>();
         }
@@ -83,4 +100,5 @@ namespace BOTB64.Engine.Net
     public record CreateLobbyResponse(Guid LobbyId, string JoinCode);
     public record LobbyDto(List<LobbyPlayerDto> Players, int HostPlayerId, GameSizeType GameSizeType, bool IsFull, bool Started);
     public record LobbyPlayerDto(int PlayerId, string DisplayName, bool IsHost);
+    public record ErrorResponse(string Error);
 }

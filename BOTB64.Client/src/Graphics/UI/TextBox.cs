@@ -23,7 +23,7 @@ namespace BOTB64.Graphics.UI
         {
             if (!Visible) return;
 
-            bool hovered = RB.CheckCollisionPointRec(InputManager.MousePosition, Bounds);
+            bool hovered = RB.CheckCollisionPointRec(UIRenderer.ScreenToUI(InputManager.MousePosition), Bounds);
             if (InputManager.IsLMP)
             {
                 if (hovered)
@@ -42,10 +42,12 @@ namespace BOTB64.Graphics.UI
             int key = RB.GetCharPressed();
             while (key > 0)
             {
-                char c = (char)key;
+                char c = char.ToUpperInvariant((char)key);
                 bool allowed = NumericOnly ? char.IsDigit(c) || c == '.' : !char.IsControl(c);
+
                 if (allowed && Text.Length < MaxLength)
                     Text += c;
+
                 key = RB.GetCharPressed();
             }
 

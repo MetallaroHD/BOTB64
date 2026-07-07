@@ -2,10 +2,8 @@
 using BOTB64.Engine.States;
 using BOTB64.Runtime;
 using BOTB64.Shared;
-using BOTB64;
 using System.Numerics;
 using RL = Raylib_cs;
-using System.Threading.Tasks.Sources;
 
 namespace BOTB64.Graphics.UI
 {
@@ -35,7 +33,7 @@ namespace BOTB64.Graphics.UI
 
         public MainMenuScreen()
         {
-            string vText = "v" + Version.Major + "." + Version.Minor + "." + Version.Patch + Version.Special;
+            string vText = "v" + BOTBVersion.Major + "." + BOTBVersion.Minor + "." + BOTBVersion.Patch + BOTBVersion.Special;
             VersionLabel.Text = vText;
 
             AddElement(Background);

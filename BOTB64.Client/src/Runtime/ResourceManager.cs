@@ -1,4 +1,5 @@
 ﻿using Raylib_cs;
+using System.IO;
 using System.IO.Compression;
 
 namespace BOTB64.Runtime;
@@ -15,17 +16,9 @@ public static class ResourceManager
 
     public static void Initialize()
     {
-        if (Directory.Exists(TempAssetRoot))
-        {
-            Directory.Delete(
-                TempAssetRoot,
-                true
-            );
-        }
+        ClearCache();
 
-        Directory.CreateDirectory(
-            TempAssetRoot
-        );
+        Directory.CreateDirectory(TempAssetRoot);
     }
 
     public static bool Exists(string uri)
@@ -37,6 +30,13 @@ public static class ResourceManager
 #endif
     }
 
+    public static void ClearCache()
+    {
+        if (Directory.Exists(TempAssetRoot))
+        {
+            Directory.Delete(TempAssetRoot, true);
+        }
+    }
 
     public static string ReadText(string uri)
     {
@@ -90,12 +90,10 @@ public static class ResourceManager
         return Raylib.LoadShader(vertexURI,fragmentURI);
 
 #else
-
         string vs = ReadText(vertexURI);
         string fs = ReadText(fragmentURI);
 
         return Raylib.LoadShaderFromMemory(vs, fs);
-
 #endif
     }
 
@@ -110,17 +108,10 @@ public static class ResourceManager
 #if DEVELOPMENT
         return Raylib.LoadModel(new DataFile(uri).AbsPath);
 #else
-
         string folder = ExtractModelFolder(uri);
-
-        string gltf =
-            Directory.GetFiles(
-                folder,
-                "*.gltf"
-            )[0];
+        string gltf = Path.Combine(folder, Path.GetFileName(folder));
 
         return Raylib.LoadModel(gltf);
-
 #endif
     }
 
@@ -144,24 +135,10 @@ public static class ResourceManager
 
     public static string ExtractModelFolder(string modelURI)
     {
-        string uniqueID =
-            Guid.NewGuid().ToString();
-
-
-        string outputFolder =
-            Path.Combine(
-                TempAssetRoot,
-                uniqueID
-            );
-
-
+        string uniqueID = modelURI;
+        string outputFolder =Path.Combine(TempAssetRoot,uniqueID);
         Directory.CreateDirectory(outputFolder);
-
-
-        string directory =
-            Path.GetDirectoryName(modelURI)!
-                .Replace('\\', '/');
-
+        string directory =Path.GetDirectoryName(modelURI)!.Replace('\\', '/');
 
         foreach (var entry in ResourceArchive.Entries)
         {

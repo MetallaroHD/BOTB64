@@ -22,11 +22,13 @@ public abstract class UIScreen : IUIScreen
 
     public virtual void Draw()
     {
+        UIRenderer.Begin();
         foreach (var element in Elements)
         {
             if (element.Visible)
                 element.Draw();
         }
+        UIRenderer.End();
     }
 
     public void AddElement(IUIElement element) => Elements.Add(element);
@@ -35,10 +37,12 @@ public abstract class UIScreen : IUIScreen
     
     public virtual bool IsMouseBlocked()
     {
+        Vector2 uiMouse = UIRenderer.ScreenToUI(InputManager.MousePosition);
+
         foreach (var element in Elements)
         {
             if (element is Button)
-                if (RB.CheckCollisionPointRec(InputManager.MousePosition, ((Button)(element)).Bounds))
+                if (RB.CheckCollisionPointRec(uiMouse, ((Button)(element)).Bounds))
                     return true;
         }
         return false;

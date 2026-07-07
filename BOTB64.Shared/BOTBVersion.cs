@@ -1,6 +1,6 @@
-﻿namespace BOTB64
+﻿namespace BOTB64.Shared
 {
-    public static class Version
+    public static class BOTBVersion
     {
         public static readonly int Major = 0;
         public static readonly int Minor = 1;

@@ -7,7 +7,7 @@
 		<Nullable>enable</Nullable>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<RootNamespace>BOTB64</RootNamespace>
-		<DefineConstants>$(DefineConstants);DEVELOPMENT</DefineConstants>
+		<!-->DefineConstants>$(DefineConstants);DEVELOPMENT</DefineConstants-->
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -15,6 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="ini-parser" Version="2.5.2" />
 		<PackageReference Include="LiteNetLib" Version="2.1.4" />
 		<PackageReference Include="MessagePack" Version="3.1.7" />
 		<PackageReference Include="Raylib-cs" Version="8.0.0" />

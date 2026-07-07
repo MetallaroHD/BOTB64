@@ -1,5 +1,6 @@
 ﻿using BOTB64.Engine.States;
 using BOTB64.Engine;
+using BOTB64.Runtime;
 
 namespace BOTB64.Engine.Actions
 {
@@ -15,8 +16,8 @@ namespace BOTB64.Engine.Actions
             {
                 Type = TargetingType.Direct,
                 Secret = false,
-                Radius = 0,
-                Source = null
+                Radius = HexAlgo.MaxCircleRadius,
+                Source = new Hex(0, 0)
             });
             Update();
         }

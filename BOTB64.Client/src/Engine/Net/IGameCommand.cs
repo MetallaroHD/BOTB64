@@ -66,13 +66,17 @@ namespace BOTB64.Engine.Net
                 return false;
             var attacker = game.FindCharacter(ActingCharacterID);
             var target = game.FindCharacter(TargetID);
-            return attacker != null && attacker.Alive && target != null && target.Alive;
+            if (attacker == null) return false;
+            if (attacker.RemainAction <= 0) return false;
+            return attacker.Alive && target != null && target.Alive;
         }
 
         public void Resolve(Game game)
         {
             var attacker = game.FindCharacter(ActingCharacterID);
             var target = game.FindCharacter(TargetID);
+
+            game.RecordAndApply(new ActionSpentEvent { CharacterID = ActingCharacterID, FastAction = false });
 
             DoDamageEffect eff = new DoDamageEffect();
             DamageContext ctx = new DamageContext(attacker, attacker, target)

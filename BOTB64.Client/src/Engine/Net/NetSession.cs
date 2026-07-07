@@ -194,7 +194,12 @@ namespace BOTB64.Engine.Net
                     MainThreadActions.Enqueue(() =>
                     {
                         var p = Players.FirstOrDefault(pl => pl.PlayerID == disconnectedId);
-                        if (p != null) p.IsConnected = false;
+                        if (p != null)
+                        {
+                            p.IsConnected = false;
+                            Logger.Log($"Player disconnected: {p.DisplayName}");
+                        }
+                        OnPlayerDisconnected?.Invoke(disconnectedId);
                     });
                     break;
                 case RelayMessageType.PickCommand:
@@ -218,5 +223,6 @@ namespace BOTB64.Engine.Net
         public event Action<PickCommand>? OnPickCommandReceived;
         public event Action<PickEvent>? OnPickEventReceived;
         public event Action<GameInitializer>? OnMatchStartReceived;
+        public event Action<int>? OnPlayerDisconnected;
     }
 }
