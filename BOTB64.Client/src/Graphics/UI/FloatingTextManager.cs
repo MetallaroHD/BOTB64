@@ -9,7 +9,7 @@ namespace BOTB64.Graphics.UI
     {
         private static readonly List<FloatingText> Texts = new();
 
-        public static void Add(string text, Vector3 worldPosition, float lifetime = 1.5f, float riseSpeed = 1.5f, float size = 20f, RL.Color? color = null)
+        public static void Add(string text, Vector3 worldPosition, float lifetime = 1.5f, float riseSpeed = 1.5f, float size = 25f, RL.Color? color = null)
         {
             Texts.Add(new FloatingText
             {

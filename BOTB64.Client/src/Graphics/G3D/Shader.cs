@@ -35,7 +35,7 @@ namespace BOTB64.Graphics.G3D
                 return;
             }
 
-            RLShader = RB.LoadShader(vf.Path, ff.Path);
+            RLShader = ResourceManager.LoadShader(vf.AbsPath, ff.AbsPath);
 
             // Raylib returns id=0 on failure, never a null struct
             if (RLShader.Id == 0)

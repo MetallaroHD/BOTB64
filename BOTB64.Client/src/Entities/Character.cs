@@ -1,4 +1,5 @@
-﻿using BOTB64.Entities.Effects;
+﻿using BOTB64.Engine;
+using BOTB64.Entities.Effects;
 using BOTB64.Graphics.G3D;
 using BOTB64.Runtime;
 using System.Numerics;
@@ -29,6 +30,8 @@ namespace BOTB64.Entities
 
         // The incremental in-game id
         public int GameID = 0;
+        // The id of the controlling player
+        public int OwnerID = -1;
         // The database id
         public int ID = 0;
         public string Name = "";
@@ -53,9 +56,10 @@ namespace BOTB64.Entities
         public int CurrentResource = 0;
         public int HPRegen = 0;
 
+        public bool HasMovedThisTurn = false;
         public int RemainMovement = 5;
-        public int RemainAction = 0;
-        public int RemainFastAction = 0;
+        public int RemainAction = 1;
+        public int RemainFastAction = 1;
 
         public int AutoAttackRange = 0;
         public float AutoAttackAP = 1f;
@@ -81,9 +85,15 @@ namespace BOTB64.Entities
             Model?.Draw();
         }
 
+        public void Assign(int newOwner)
+        {
+            OwnerID = newOwner;
+        }
+
         public void Die()
         {
             Alive = false;
+            Logger.Log(Name + " dies!");
         }
     }
 }

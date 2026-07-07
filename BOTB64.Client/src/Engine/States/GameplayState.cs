@@ -14,6 +14,8 @@ namespace BOTB64.Engine.States
 {
     public class GameplayState : IGameState
     {
+        private bool Enabled = true;
+
         public GameInitializer Initer = new();
         private Game Game = new();
         IGameCommandChannel Channel; //init depending on game type
@@ -31,12 +33,12 @@ namespace BOTB64.Engine.States
 
         public void OnEnter()
         {
+            Logger.Init(Screen.Log);
             Game.Initialize(Initer);
             Channel = Session == null ? new LocalCommandChannel(Game) : new NetworkedCommandChannel(Game, Session);
             Targeter.SetBoard(Game.GetBoard());
             AuraTriggerManager.Init(Game);
             InitActions();
-            Logger.Init(Screen.Log);
         }
 
         public void OnExit()
@@ -60,8 +62,7 @@ namespace BOTB64.Engine.States
 
             if (gameOver)
             {
-                GameOverState gOver = new GameOverState();
-                gOver.Winner = Game.Winner;
+                GameOverState gOver = new GameOverState { Winner = Game.Winner, Session = Session };
                 StateManager.ChangeState(gOver);
             }
         }
@@ -105,13 +106,13 @@ namespace BOTB64.Engine.States
 
         private void InitBindings()
         {
-            RegisterBinding([Idle], null, RL.KeyboardKey.M, () => { Move.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Move); }, KeyBindingType.Press);
-            RegisterBinding([Idle], null, RL.KeyboardKey.K, () => { Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Atk); }, KeyBindingType.Press);
-            RegisterBinding([Idle], null, RL.KeyboardKey.Space, () => { Channel.Submit(new EndTurnCommand { ActingCharacterID = Game.CurrentCharacter.ID }); Console.WriteLine("New Turn: " + Game.CurrentCharacter.Name); }, KeyBindingType.Press);
+            RegisterBinding([Idle], null, RL.KeyboardKey.M, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Move.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Move); }, KeyBindingType.Press);
+            RegisterBinding([Idle], null, RL.KeyboardKey.K, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Atk); }, KeyBindingType.Press);
+            RegisterBinding([Idle], null, RL.KeyboardKey.Space, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Channel.Submit(new EndTurnCommand { ActingCharacterID = Game.CurrentCharacter.GameID }); Console.WriteLine("New Turn: " + Game.CurrentCharacter.Name); }, KeyBindingType.Press);
             RegisterBinding([Move], null, RL.KeyboardKey.Tab, () => { Move.CycleToNextPath(); }, KeyBindingType.Press);
 
-            Move.SetLMBinding(() => { if (Screen.IsMouseBlocked()) return; Channel.Submit(new MoveCommand { ActingCharacterID = Game.CurrentCharacter.ID, Path = Move.GetPath() }); ChangeAction(Idle); });
-            Atk.SetLMBinding(() => { if (Screen.IsMouseBlocked()) return; Character? tg = Atk.ConfirmTarget(); if(tg != null) Channel.Submit(new AutoAttackCommand { ActingCharacterID = Game.CurrentCharacter.GameID, TargetID = tg.GameID }); ChangeAction(Idle); });
+            Move.SetLMBinding(() => { if (!Enabled) return; if (Screen.IsMouseBlocked()) return; Channel.Submit(new MoveCommand { ActingCharacterID = Game.CurrentCharacter.GameID, Path = Move.GetPath() }); ChangeAction(Idle); });
+            Atk.SetLMBinding(() => { if (!Enabled) return; if (Screen.IsMouseBlocked()) return; Character? tg = Atk.ConfirmTarget(); if(tg != null) Channel.Submit(new AutoAttackCommand { ActingCharacterID = Game.CurrentCharacter.GameID, TargetID = tg.GameID }); ChangeAction(Idle); });
         }
 
         public Hex GetMouseAxial(out bool valid)
@@ -120,5 +121,7 @@ namespace BOTB64.Engine.States
             valid = Game.GetBoard().IsValidHex(ret);
             return ret;
         }
+
+        private bool IsMyCharacter(Character c) => Session == null || c.OwnerID == Session.LocalPlayerID;
     }
 }

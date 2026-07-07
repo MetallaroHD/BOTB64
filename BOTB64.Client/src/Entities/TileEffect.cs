@@ -8,8 +8,11 @@ namespace BOTB64.Entities
     {
         None = 0,
         
-        // Makes the tile like a wall temporarily
+        // Makes the tile unwalkable (eg shadow walls)
         Impassable = 1 << 0,
+
+        // Makes the tile block line of sight (eg windwall)
+        BlocksLos = 1 << 0,
     }
 
     public class TileEffect : ExecutableBase, IReadable

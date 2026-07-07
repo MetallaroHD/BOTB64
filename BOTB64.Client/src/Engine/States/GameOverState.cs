@@ -1,4 +1,6 @@
-﻿using BOTB64.Entities;
+﻿using BOTB64.Engine.Net;
+using BOTB64.Entities;
+using BOTB64.Graphics.UI;
 
 namespace BOTB64.Engine.States
 {
@@ -6,24 +8,33 @@ namespace BOTB64.Engine.States
     {
         public Faction Winner = Faction.Neutral;
 
+        private GameOverScreen Screen = new();
+        public NetSession? Session { get; set; }
+
         public void OnEnter()
         {
-            throw new NotImplementedException();
+            Screen.SetWinner(Winner);
+            Screen.MainMenuButton.OnClick = () =>
+            {
+                Session?.Disconnect();
+                StateManager.ChangeState(new MainMenuState());
+            };
+            Screen.Enter();
         }
 
         public void OnExit()
         {
-            throw new NotImplementedException();
+            Screen.Exit();
         }
 
         public void Update(float deltaTime)
         {
-            throw new NotImplementedException();
+            Screen.Update(deltaTime);
         }
 
         public void Render()
         {
-            throw new NotImplementedException();
+            Screen.Draw();
         }
     }
 }

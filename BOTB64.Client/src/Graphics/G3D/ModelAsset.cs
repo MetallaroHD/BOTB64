@@ -8,12 +8,9 @@ namespace BOTB64.Graphics.G3D
     {
         public RL.Model Model { get; private set; }
 
-        public ModelAsset(DataFile df)
+        public ModelAsset(string relPath)
         {
-            if (!df.Exists())
-                throw new Exception("Invalid model path!");
-
-            Model = RB.LoadModel(df.Path);
+            Model = ResourceManager.LoadModel(relPath);
 
             for (int i = 0; i < Model.MaterialCount; i++)
             {

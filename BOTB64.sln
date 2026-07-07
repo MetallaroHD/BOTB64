@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BOTB64.Shared", "BOTB64.Sha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BOTB64.Server", "BOTB64.Server\BOTB64.Server.csproj", "{EC1A66A3-43C2-46FF-B8C2-1D4879175458}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BOTB64.Packer", "BOTB64.Packer\BOTB64.Packer.csproj", "{1434144A-2A72-2B34-5DDF-88E32A91D56C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{EC1A66A3-43C2-46FF-B8C2-1D4879175458}.Release|x64.Build.0 = Release|Any CPU
 		{EC1A66A3-43C2-46FF-B8C2-1D4879175458}.Release|x86.ActiveCfg = Release|Any CPU
 		{EC1A66A3-43C2-46FF-B8C2-1D4879175458}.Release|x86.Build.0 = Release|Any CPU
+		{1434144A-2A72-2B34-5DDF-88E32A91D56C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1434144A-2A72-2B34-5DDF-88E32A91D56C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1434144A-2A72-2B34-5DDF-88E32A91D56C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1434144A-2A72-2B34-5DDF-88E32A91D56C}.Debug|x64.Build.0 = Debug|Any CPU
+		{1434144A-2A72-2B34-5DDF-88E32A91D56C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1434144A-2A72-2B34-5DDF-88E32A91D56C}.Debug|x86.Build.0 = Debug|Any CPU
+		{1434144A-2A72-2B34-5DDF-88E32A91D56C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1434144A-2A72-2B34-5DDF-88E32A91D56C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1434144A-2A72-2B34-5DDF-88E32A91D56C}.Release|x64.ActiveCfg = Release|Any CPU
+		{1434144A-2A72-2B34-5DDF-88E32A91D56C}.Release|x64.Build.0 = Release|Any CPU
+		{1434144A-2A72-2B34-5DDF-88E32A91D56C}.Release|x86.ActiveCfg = Release|Any CPU
+		{1434144A-2A72-2B34-5DDF-88E32A91D56C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

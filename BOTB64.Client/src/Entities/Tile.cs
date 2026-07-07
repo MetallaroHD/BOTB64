@@ -57,9 +57,26 @@ namespace BOTB64.Entities
             if(Type == TileType.Wall || Type == TileType.Empty)
                 return false;
 
+            if (Character != null)
+                return false;
+
             for (int i = 0; i < Effects.Count(); i++)
             {
-                if (Effects[i].Type == TileEffectType.Impassable)
+                if (Effects[i].Type.HasFlag(TileEffectType.Impassable))
+                    return false;
+            }
+
+            return true;
+        }
+
+        public bool AllowsLos()
+        {
+            if (Type == TileType.Wall || Type == TileType.Empty)
+                return false;
+
+            for (int i = 0; i < Effects.Count(); i++)
+            {
+                if (Effects[i].Type.HasFlag(TileEffectType.BlocksLos))
                     return false;
             }
 

@@ -26,6 +26,7 @@ namespace BOTB64.Entities
             ActiveCharacter.RemainMovement = ActiveCharacter.Speed;
             ActiveCharacter.RemainAction = 1;
             ActiveCharacter.RemainFastAction = 1;
+            ActiveCharacter.HasMovedThisTurn = false;
 
             AuraTriggerManager.Execute(new EffectContext(ActiveCharacter), EffectTrigger.OnStartTurn, AuraType.Character | AuraType.Tile);
         }

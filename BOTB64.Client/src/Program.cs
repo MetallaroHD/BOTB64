@@ -9,6 +9,11 @@ namespace BOTB64
             if (Version.Expires < DateTime.Now)
                 return;
 
+            if (!DataFile.DirectoryExists())
+                return;
+
+            ResourceManager.Initialize();
+            ResourceArchive.Initialize(DataFile.DataDir);
             Graphics.Graphics.Initialize(1280, 720, "BOTB64");
             Engine.Engine.Initialize();
 

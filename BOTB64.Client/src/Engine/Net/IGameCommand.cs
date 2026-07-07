@@ -22,19 +22,35 @@ namespace BOTB64.Engine.Net
 
         public bool Validate(Game game)
         {
-            if (game.CurrentCharacter.GameID != ActingCharacterID)
-                return false;
+            if (game.CurrentCharacter.GameID != ActingCharacterID) return false;
             var character = game.FindCharacter(ActingCharacterID);
             return character != null && character.Alive && Path.Count > 1;
         }
 
         public void Resolve(Game game)
         {
-            game.RecordAndApply(new MoveEvent
+            var character = game.FindCharacter(ActingCharacterID);
+
+            for (int i = 1; i < Path.Count; i++)
             {
-                CharacterID = ActingCharacterID,
-                Path = Path
-            });
+                if (!character.Alive) break;
+
+                var stepHex = Path[i];
+
+                game.RecordAndApply(new MoveEvent
+                {
+                    CharacterID = ActingCharacterID,
+                    Step = stepHex
+                });
+
+                bool isFirstStepThisTurn = !character.HasMovedThisTurn;
+                character.HasMovedThisTurn = true;
+
+                var ctx = new EffectContext(character);
+                AuraTriggerManager.Execute(ctx, EffectTrigger.OnMove, AuraType.Character | AuraType.Tile);
+                if (isFirstStepThisTurn)
+                    AuraTriggerManager.Execute(ctx, EffectTrigger.OnMoveFirstTime, AuraType.Character | AuraType.Tile);
+            }
         }
     }
 

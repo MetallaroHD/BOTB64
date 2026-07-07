@@ -24,6 +24,7 @@ namespace BOTB64.Engine.Net
         [Key(0)] public int PickingIndex;
         [Key(1)] public int CharacterIndex;
         [Key(2)] public Faction Faction;
+        [Key(3)] public int PlayerID;
     }
 
     public class LocalPickChannel : IPickChannel

@@ -1,13 +1,9 @@
 ﻿using BOTB64.Engine;
 using BOTB64.Engine.Net;
 using BOTB64.Entities.DTOs;
-using BOTB64.Entities.Effects;
-using BOTB64.Graphics.Animations;
 using BOTB64.Graphics.G3D;
-using BOTB64.Graphics.UI;
 using BOTB64.Runtime;
 using MessagePack;
-using System.Runtime.CompilerServices;
 
 namespace BOTB64.Entities
 {
@@ -17,6 +13,8 @@ namespace BOTB64.Entities
         [Key(0)] public LevelDTO Level;
         [Key(1)] public List<CharacterDTO> BlueTeam;
         [Key(2)] public List<CharacterDTO> RedTeam;
+        [Key(3)] public List<int> BlueOwners;
+        [Key(4)] public List<int> RedOwners;
     }
 
     public class Game
@@ -45,7 +43,8 @@ namespace BOTB64.Entities
             LoadStartingCharacters(lI);
             if (Characters.Count < 1)
                 throw new Exception("Must pick at least one character.");
-            CurrentTurn = new Turn(0, Characters[0], this);
+            CurrentTurn = new Turn(1, Characters[0], this);
+            Logger.Log("Turn " + CurrentTurn.Number + " - " + Characters[0].Name);
         }
 
         public void Update(float dt, out bool gameOver)
@@ -89,8 +88,9 @@ namespace BOTB64.Entities
 
         private void LoadStartingCharacters(GameInitializer lI)
         {
-            foreach (var chara in lI.BlueTeam)
+            for (int i = 0; i < lI.BlueTeam.Count; i++)
             {
+                var chara = lI.BlueTeam[i];
                 (string script, string model, string icon) = CommonURIs.GetCharacterResources(chara);
 
                 Character character = new Character();
@@ -99,10 +99,12 @@ namespace BOTB64.Entities
                 character.Model = new ModelInstance(AssetManager.GetModel(model));
                 character.Faction = Faction.BlueTeam;
                 // now we fill the rest using the script URI
+                character.OwnerID = i < lI.BlueOwners.Count ? lI.BlueOwners[i] : -1;
                 Characters.Add(character);
             }
-            foreach (var chara in lI.RedTeam)
+            for (int i = 0; i < lI.RedTeam.Count; i++)
             {
+                var chara = lI.RedTeam[i];
                 (string script, string model, string icon) = CommonURIs.GetCharacterResources(chara);
 
                 Character character = new Character();
@@ -111,6 +113,7 @@ namespace BOTB64.Entities
                 character.Model = new ModelInstance(AssetManager.GetModel(model));
                 character.Faction = Faction.RedTeam;
                 // now we fill the rest using the script URI
+                character.OwnerID = i < lI.RedOwners.Count ? lI.RedOwners[i] : -1;
                 Characters.Add(character);
             }
 
@@ -141,9 +144,16 @@ namespace BOTB64.Entities
 
         internal void AdvanceTurnInternal()
         {
-            CurrentTurn.End();
             var next = GetNextLivingCharacter(CurrentTurn.ActiveCharacter);
-            CurrentTurn = new Turn(CurrentTurn.Number + 1, next, this);
+            RecordAndApply(new TurnAdvancedEvent { NextCharacterID = next.GameID, TurnNumber = CurrentTurn.Number + 1 });
+        }
+
+        public void ApplyTurnAdvance(int nextCharacterId, int turnNumber)
+        {
+            CurrentTurn.End();
+            var next = FindCharacter(nextCharacterId);
+            CurrentTurn = new Turn(turnNumber, next, this);
+            Logger.Log("Turn " + CurrentTurn.Number + " - " + next.Name);
             CurrentTurn.Begin();
         }
 

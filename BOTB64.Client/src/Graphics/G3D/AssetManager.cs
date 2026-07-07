@@ -15,8 +15,7 @@ namespace BOTB64.Graphics.G3D
         {
             if(!Models.TryGetValue(path, out var model))
             {
-                DataFile df = new DataFile(path);
-                model = new ModelAsset(df);
+                model = new ModelAsset(path);
                 Models[path] = model;
             }
 

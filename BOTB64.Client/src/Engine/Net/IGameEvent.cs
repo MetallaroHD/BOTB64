@@ -9,9 +9,19 @@ namespace BOTB64.Engine.Net
     [Union(0, typeof(DamageEvent))]
     [Union(1, typeof(DeathEvent))]
     [Union(2, typeof(MoveEvent))]
+    [Union(3, typeof(TurnAdvancedEvent))]
     public interface IGameEvent
     {
         void Apply(Game game);
+    }
+
+    [MessagePackObject]
+    public struct TurnAdvancedEvent : IGameEvent
+    {
+        [Key(0)] public int NextCharacterID;
+        [Key(1)] public int TurnNumber;
+
+        public void Apply(Game game) => game.ApplyTurnAdvance(NextCharacterID, TurnNumber);
     }
 
     [MessagePackObject]
@@ -27,6 +37,7 @@ namespace BOTB64.Engine.Net
             {
                 target.CurrentHP -= Amount;
                 FloatingTextManager.Add(Amount.ToString(), HexAlgo.HexToWorld(target.Position));
+                Logger.Log(target.Name + " receives " + Amount + " damage." + (Crit ? " A critical hit!" : ""));
             }
         }
     }
@@ -39,20 +50,22 @@ namespace BOTB64.Engine.Net
     }
 
     [MessagePackObject]
-    public struct MoveEvent : IGameEvent 
+    public struct MoveEvent : IGameEvent
     {
         [Key(0)] public int CharacterID;
-        [Key(1)] public List<Hex> Path;
+        [Key(1)] public Hex Step; // single destination tile, not a path
+
         public void Apply(Game game)
         {
-            if (Path.Count < 2)
-                return;
             var character = game.FindCharacter(CharacterID);
-            if (character == null) 
-                return;
-            var anim = new CharacterMoveAnimation(character, Path);
-            character.RemainMovement -= Path.Count - 1;
-            game.GetBoard().MoveCharacter(character, Path);
+            if (character == null) return;
+
+            var tile = game.GetBoard().GetTile(Step);
+            if (tile == null) return;
+
+            character.RemainMovement -= 1;
+            var anim = new CharacterMoveAnimation(character, new List<Hex> { character.Position, tile.AxialPosition });
+            game.GetBoard().MoveCharacter(character, new List<Hex> { character.Position, tile.AxialPosition });
             AnimationManager.Play(anim);
         }
     }

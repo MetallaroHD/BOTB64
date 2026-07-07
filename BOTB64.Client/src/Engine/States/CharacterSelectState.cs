@@ -18,6 +18,9 @@ namespace BOTB64.Engine.States
         private CharacterSelectScreen Screen = new();
         private IPickChannel Channel;
 
+        private List<int> BlueOwners = new();
+        private List<int> RedOwners = new();
+
         private int CurrentSelection = -1;
         private int TotalCharacters = 6;
 
@@ -88,11 +91,10 @@ namespace BOTB64.Engine.States
 
         private bool IsLocalPlayersTurn()
         {
-            if (Session == null) return true; // hotseat local play, unchanged behavior
+            if (Session == null) return true;
             return Session.LocalPlayer.OwnedPickSlots.Contains(PickingIndex);
         }
 
-        // Host-only (or local-only) — the one place picks are decided
         public PickEvent ResolvePick(PickCommand command)
         {
             var evt = new PickEvent
@@ -101,24 +103,25 @@ namespace BOTB64.Engine.States
                 CharacterIndex = command.CharacterIndex,
                 Faction = DefaultFactionOrder[command.PickingIndex]
             };
-            ApplyPickEvent(evt); // host applies to its own state immediately too
+            ApplyPickEvent(evt);
             return evt;
         }
 
         public bool ValidatePick(PickCommand command)
         {
-            if (command.PickingIndex != PickingIndex) return false; // out of order / stale
+            if (command.PickingIndex != PickingIndex) return false;
             if (TakenCharacterIndices.Contains(command.CharacterIndex)) return false;
             var owner = Session!.Players.FirstOrDefault(p => p.PlayerID == command.PlayerID);
             return owner != null && owner.OwnedPickSlots.Contains(command.PickingIndex);
         }
 
-        // Called on host (from ResolvePick) AND on every client (from NetworkedPickChannel.OnEventFromHost)
         public void ApplyPickEvent(PickEvent evt)
         {
             var picked = AllCharacters[evt.CharacterIndex];
-            if (evt.Faction == Faction.RedTeam) RedTeam.Add(picked);
-            else BlueTeam.Add(picked);
+            int ownerId = Session?.Players.FirstOrDefault(p => p.OwnedPickSlots.Contains(evt.PickingIndex))?.PlayerID ?? -1;
+
+            if (evt.Faction == Faction.RedTeam) { RedTeam.Add(picked); RedOwners.Add(ownerId); }
+            else { BlueTeam.Add(picked); BlueOwners.Add(ownerId); }
 
             TakenCharacterIndices.Add(evt.CharacterIndex);
             PickingIndex = evt.PickingIndex + 1;
@@ -155,7 +158,7 @@ namespace BOTB64.Engine.States
         {
             if (!CharacterIcons.TryGetValue(characterIndex, out var tex))
             {
-                tex = RB.LoadTexture(new DataFile(CommonURIs.GetCharacterIcon(AllCharacters[characterIndex])).Path);
+                tex = ResourceManager.LoadTexture(CommonURIs.GetCharacterIcon(AllCharacters[characterIndex]));
                 CharacterIcons[characterIndex] = tex;
             }
             return tex;
@@ -183,7 +186,9 @@ namespace BOTB64.Engine.States
             {
                 Level = Level,
                 BlueTeam = BlueTeam,
-                RedTeam = RedTeam
+                RedTeam = RedTeam,
+                BlueOwners = BlueOwners,
+                RedOwners = RedOwners
             };
 
             if (Session == null)
