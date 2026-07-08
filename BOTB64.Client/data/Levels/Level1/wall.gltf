@@ -28,12 +28,9 @@
 		{
 			"doubleSided":true,
 			"name":"wall",
-			"normalTexture":{
-				"index":0
-			},
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
-					"index":1
+					"index":0
 				},
 				"metallicFactor":0
 			}
@@ -59,22 +56,13 @@
 		{
 			"sampler":0,
 			"source":0
-		},
-		{
-			"sampler":0,
-			"source":1
 		}
 	],
 	"images":[
 		{
 			"mimeType":"image/png",
-			"name":"wall_normal",
-			"uri":"wall_normal.png"
-		},
-		{
-			"mimeType":"image/png",
-			"name":"wall",
-			"uri":"wall2.png"
+			"name":"wall4",
+			"uri":"wall4.png"
 		}
 	],
 	"accessors":[
