@@ -1,7 +1,7 @@
 [
     {
         "ID" : 0,
-        "Enabled" : true,
+        "Enabled" : false,
         "Subdir" : "Dummy",
         "Name" : "Dummy",
         "ModelURI" : "GenericCharacter",
@@ -34,6 +34,16 @@
         "Enabled" : true,
         "Subdir" : "Rag",
         "Name" : "Ragnarass",
+        "ModelURI" : "GenericCharacter",
+        "ScriptURI" : "character",
+        "IconURI" : "dummy"
+    },
+
+    {
+        "ID" : 4,
+        "Enabled" : true,
+        "Subdir" : "Trap",
+        "Name" : "Trappus",
         "ModelURI" : "GenericCharacter",
         "ScriptURI" : "character",
         "IconURI" : "dummy"
