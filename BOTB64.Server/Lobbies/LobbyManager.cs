@@ -14,6 +14,7 @@ namespace BOTB64.Server.Lobbies
                 if (!Lobbies.TryGetValue(lobbyId, out var lobby)) return false;
                 var caller = lobby.Players.FirstOrDefault(p => p.PlayerId == playerId);
                 if (caller == null || !caller.IsHost) return false;
+                if (!lobby.IsFull) return false;
                 lobby.Started = true;
                 return true;
             }
@@ -78,7 +79,7 @@ namespace BOTB64.Server.Lobbies
             {
                 var lobby = Lobbies.Values.FirstOrDefault(l => l.JoinCode == joinCode);
                 if (lobby == null) return (false, null, "not found");
-                if (lobby.IsFull) return (false, null, "full");
+                if (lobby.Players.Count >= 10) return (false, null, "full");
 
                 lobby.Players.Add(new LobbyPlayer
                 {
