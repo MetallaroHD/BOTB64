@@ -30,15 +30,21 @@
 		},
 		{
 			"mesh":1,
-			"name":"Chibi_Object",
+			"name":"uploads_files_4670553_fery_lp",
+			"rotation":[
+				0.70710688829422,
+				0,
+				0,
+				0.7071066498756409
+			],
 			"scale":[
-				0.75,
-				0.75,
-				0.75
+				0.029999999329447746,
+				0.029999997466802597,
+				0.029999997466802597
 			],
 			"translation":[
 				0,
-				0.15000000596046448,
+				0.16540880501270294,
 				0
 			]
 		}
@@ -50,6 +56,16 @@
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
 					"index":0
+				},
+				"metallicFactor":0
+			}
+		},
+		{
+			"doubleSided":true,
+			"name":"blinn4SG",
+			"pbrMetallicRoughness":{
+				"baseColorTexture":{
+					"index":1
 				},
 				"metallicFactor":0
 			}
@@ -71,7 +87,7 @@
 			]
 		},
 		{
-			"name":"Cube.001",
+			"name":"uploads_files_4670553_fery_lp",
 			"primitives":[
 				{
 					"attributes":{
@@ -79,7 +95,8 @@
 						"NORMAL":5,
 						"TEXCOORD_0":6
 					},
-					"indices":7
+					"indices":7,
+					"material":1
 				}
 			]
 		}
@@ -88,6 +105,10 @@
 		{
 			"sampler":0,
 			"source":0
+		},
+		{
+			"sampler":0,
+			"source":1
 		}
 	],
 	"images":[
@@ -95,6 +116,11 @@
 			"mimeType":"image/png",
 			"name":"woodSmall",
 			"uri":"woodSmall.png"
+		},
+		{
+			"mimeType":"image/png",
+			"name":"feri_red_BaseColor",
+			"uri":"feri_red_BaseColor.png"
 		}
 	],
 	"accessors":[
@@ -135,35 +161,35 @@
 		{
 			"bufferView":4,
 			"componentType":5126,
-			"count":6296,
+			"count":752,
 			"max":[
-				0.5342299342155457,
-				1.5191482305526733,
-				0.22655613720417023
+				17.378686904907227,
+				3.109015941619873,
+				0.8568230271339417
 			],
 			"min":[
-				-0.5342299342155457,
-				0.0007446071249432862,
-				-0.3417419195175171
+				-17.378686904907227,
+				-11.986483573913574,
+				-62.8718376159668
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":5,
 			"componentType":5126,
-			"count":6296,
+			"count":752,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":6,
 			"componentType":5126,
-			"count":6296,
+			"count":752,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":7,
 			"componentType":5123,
-			"count":9480,
+			"count":2562,
 			"type":"SCALAR"
 		}
 	],
@@ -194,26 +220,26 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":75552,
+			"byteLength":9024,
 			"byteOffset":179924,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":75552,
-			"byteOffset":255476,
+			"byteLength":9024,
+			"byteOffset":188948,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":50368,
-			"byteOffset":331028,
+			"byteLength":6016,
+			"byteOffset":197972,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":18960,
-			"byteOffset":381396,
+			"byteLength":5124,
+			"byteOffset":203988,
 			"target":34963
 		}
 	],
@@ -225,8 +251,8 @@
 	],
 	"buffers":[
 		{
-			"byteLength":400356,
-			"uri":"GenericCharacter.bin"
+			"byteLength":209112,
+			"uri":"fairy.bin"
 		}
 	]
 }

@@ -3,6 +3,9 @@
 		"generator":"Khronos glTF Blender I/O v5.1.19",
 		"version":"2.0"
 	},
+	"extensionsUsed":[
+		"KHR_materials_emissive_strength"
+	],
 	"scene":0,
 	"scenes":[
 		{
@@ -30,16 +33,22 @@
 		},
 		{
 			"mesh":1,
-			"name":"Chibi_Object",
+			"name":"Object_46",
+			"rotation":[
+				-0.7071068286895752,
+				0,
+				0,
+				0.7071068286895752
+			],
 			"scale":[
-				0.75,
-				0.75,
-				0.75
+				0.4902271628379822,
+				0.4902271628379822,
+				0.4902271628379822
 			],
 			"translation":[
-				0,
-				0.15000000596046448,
-				0
+				-0.08575216680765152,
+				-0.04442008584737778,
+				-0.0776551142334938
 			]
 		}
 	],
@@ -52,6 +61,33 @@
 					"index":0
 				},
 				"metallicFactor":0
+			}
+		},
+		{
+			"doubleSided":true,
+			"emissiveFactor":[
+				1,
+				1,
+				1
+			],
+			"emissiveTexture":{
+				"index":1
+			},
+			"extensions":{
+				"KHR_materials_emissive_strength":{
+					"emissiveStrength":3
+				}
+			},
+			"name":"GM-SNIPER",
+			"normalTexture":{
+				"index":2
+			},
+			"pbrMetallicRoughness":{
+				"baseColorTexture":{
+					"index":3
+				},
+				"metallicFactor":0,
+				"roughnessFactor":0.20000000298023224
 			}
 		}
 	],
@@ -71,15 +107,18 @@
 			]
 		},
 		{
-			"name":"Cube.001",
+			"name":"\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd_GM-SNIPER_0",
 			"primitives":[
 				{
 					"attributes":{
 						"POSITION":4,
 						"NORMAL":5,
-						"TEXCOORD_0":6
+						"TEXCOORD_0":6,
+						"TEXCOORD_1":7,
+						"TEXCOORD_2":8
 					},
-					"indices":7
+					"indices":9,
+					"material":1
 				}
 			]
 		}
@@ -88,6 +127,18 @@
 		{
 			"sampler":0,
 			"source":0
+		},
+		{
+			"sampler":0,
+			"source":1
+		},
+		{
+			"sampler":0,
+			"source":2
+		},
+		{
+			"sampler":0,
+			"source":3
 		}
 	],
 	"images":[
@@ -95,6 +146,21 @@
 			"mimeType":"image/png",
 			"name":"woodSmall",
 			"uri":"woodSmall.png"
+		},
+		{
+			"mimeType":"image/png",
+			"name":"GM-SNIPER_emissive",
+			"uri":"GM-SNIPER_emissive.png"
+		},
+		{
+			"mimeType":"image/png",
+			"name":"GM-SNIPER_normal",
+			"uri":"GM-SNIPER_normal.png"
+		},
+		{
+			"mimeType":"image/png",
+			"name":"GM-SNIPER_baseColor",
+			"uri":"GM-SNIPER_baseColor.png"
 		}
 	],
 	"accessors":[
@@ -135,35 +201,47 @@
 		{
 			"bufferView":4,
 			"componentType":5126,
-			"count":6296,
+			"count":4079,
 			"max":[
-				0.5342299342155457,
-				1.5191482305526733,
-				0.22655613720417023
+				0.7594870924949646,
+				0.638481080532074,
+				1.8666914701461792
 			],
 			"min":[
-				-0.5342299342155457,
-				0.0007446071249432862,
-				-0.3417419195175171
+				-0.5427644848823547,
+				-0.9484522938728333,
+				0.39524075388908386
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":5,
 			"componentType":5126,
-			"count":6296,
+			"count":4079,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":6,
 			"componentType":5126,
-			"count":6296,
+			"count":4079,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":7,
+			"componentType":5126,
+			"count":4079,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":8,
+			"componentType":5126,
+			"count":4079,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":9,
 			"componentType":5123,
-			"count":9480,
+			"count":6483,
 			"type":"SCALAR"
 		}
 	],
@@ -194,26 +272,38 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":75552,
+			"byteLength":48948,
 			"byteOffset":179924,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":75552,
-			"byteOffset":255476,
+			"byteLength":48948,
+			"byteOffset":228872,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":50368,
-			"byteOffset":331028,
+			"byteLength":32632,
+			"byteOffset":277820,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":18960,
-			"byteOffset":381396,
+			"byteLength":32632,
+			"byteOffset":310452,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":32632,
+			"byteOffset":343084,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":12966,
+			"byteOffset":375716,
 			"target":34963
 		}
 	],
@@ -225,8 +315,8 @@
 	],
 	"buffers":[
 		{
-			"byteLength":400356,
-			"uri":"GenericCharacter.bin"
+			"byteLength":388684,
+			"uri":"scoper.bin"
 		}
 	]
 }

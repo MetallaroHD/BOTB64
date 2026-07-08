@@ -3,6 +3,9 @@
 		"generator":"Khronos glTF Blender I/O v5.1.19",
 		"version":"2.0"
 	},
+	"extensionsUsed":[
+		"KHR_materials_unlit"
+	],
 	"scene":0,
 	"scenes":[
 		{
@@ -30,16 +33,22 @@
 		},
 		{
 			"mesh":1,
-			"name":"Chibi_Object",
+			"name":"Skull001_01 - Default_0",
+			"rotation":[
+				-0.7071068286895752,
+				0,
+				0,
+				0.7071068286895752
+			],
 			"scale":[
-				0.75,
-				0.75,
-				0.75
+				0.004999999888241291,
+				0.004999999422580004,
+				0.004999999422580004
 			],
 			"translation":[
-				0,
-				0.15000000596046448,
-				0
+				0.3328319489955902,
+				0.8707937002182007,
+				1.1609658002853394
 			]
 		}
 	],
@@ -52,6 +61,20 @@
 					"index":0
 				},
 				"metallicFactor":0
+			}
+		},
+		{
+			"doubleSided":true,
+			"extensions":{
+				"KHR_materials_unlit":{}
+			},
+			"name":"01_-_Default",
+			"pbrMetallicRoughness":{
+				"baseColorTexture":{
+					"index":1
+				},
+				"metallicFactor":0,
+				"roughnessFactor":0.9
 			}
 		}
 	],
@@ -71,7 +94,7 @@
 			]
 		},
 		{
-			"name":"Cube.001",
+			"name":"Skull001_01 - Default_0",
 			"primitives":[
 				{
 					"attributes":{
@@ -79,7 +102,8 @@
 						"NORMAL":5,
 						"TEXCOORD_0":6
 					},
-					"indices":7
+					"indices":7,
+					"material":1
 				}
 			]
 		}
@@ -88,6 +112,10 @@
 		{
 			"sampler":0,
 			"source":0
+		},
+		{
+			"sampler":0,
+			"source":1
 		}
 	],
 	"images":[
@@ -95,6 +123,11 @@
 			"mimeType":"image/png",
 			"name":"woodSmall",
 			"uri":"woodSmall.png"
+		},
+		{
+			"mimeType":"image/jpeg",
+			"name":"01_-_Default_baseColor",
+			"uri":"01_-_Default_baseColor.png"
 		}
 	],
 	"accessors":[
@@ -135,35 +168,35 @@
 		{
 			"bufferView":4,
 			"componentType":5126,
-			"count":6296,
+			"count":4613,
 			"max":[
-				0.5342299342155457,
-				1.5191482305526733,
-				0.22655613720417023
+				35.20170211791992,
+				309.6834411621094,
+				100.43465423583984
 			],
 			"min":[
-				-0.5342299342155457,
-				0.0007446071249432862,
-				-0.3417419195175171
+				-168.00833129882812,
+				162.79684448242188,
+				-144.58502197265625
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":5,
 			"componentType":5126,
-			"count":6296,
+			"count":4613,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":6,
 			"componentType":5126,
-			"count":6296,
+			"count":4613,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":7,
 			"componentType":5123,
-			"count":9480,
+			"count":8778,
 			"type":"SCALAR"
 		}
 	],
@@ -194,26 +227,26 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":75552,
+			"byteLength":55356,
 			"byteOffset":179924,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":75552,
-			"byteOffset":255476,
+			"byteLength":55356,
+			"byteOffset":235280,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":50368,
-			"byteOffset":331028,
+			"byteLength":36904,
+			"byteOffset":290636,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":18960,
-			"byteOffset":381396,
+			"byteLength":17556,
+			"byteOffset":327540,
 			"target":34963
 		}
 	],
@@ -225,8 +258,8 @@
 	],
 	"buffers":[
 		{
-			"byteLength":400356,
-			"uri":"GenericCharacter.bin"
+			"byteLength":345096,
+			"uri":"rag.bin"
 		}
 	]
 }

@@ -14,7 +14,7 @@
         "Enabled" : true,
         "Subdir" : "Soldato",
         "Name" : "Soldatosolitario",
-        "ModelURI" : "GenericCharacter",
+        "ModelURI" : "crab",
         "ScriptURI" : "character",
         "IconURI" : "dummy"
     },
@@ -24,7 +24,7 @@
         "Enabled" : true,
         "Subdir" : "Scoper",
         "Name" : "Scoper",
-        "ModelURI" : "GenericCharacter",
+        "ModelURI" : "scoper",
         "ScriptURI" : "character",
         "IconURI" : "dummy"
     },
@@ -34,7 +34,7 @@
         "Enabled" : true,
         "Subdir" : "Rag",
         "Name" : "Ragnarass",
-        "ModelURI" : "GenericCharacter",
+        "ModelURI" : "rag",
         "ScriptURI" : "character",
         "IconURI" : "dummy"
     },
@@ -44,7 +44,7 @@
         "Enabled" : true,
         "Subdir" : "Trap",
         "Name" : "Trappus",
-        "ModelURI" : "GenericCharacter",
+        "ModelURI" : "fairy",
         "ScriptURI" : "character",
         "IconURI" : "dummy"
     }
