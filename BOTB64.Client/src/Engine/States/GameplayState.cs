@@ -74,7 +74,6 @@ namespace BOTB64.Engine.States
             Game.Render();
             Viewport.End();
             FloatingTextManager.Draw(Viewport);
-            UIRenderer.Begin();
             Screen.Draw();
         }
 

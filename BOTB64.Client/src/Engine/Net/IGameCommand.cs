@@ -64,11 +64,19 @@ namespace BOTB64.Engine.Net
         {
             if (game.CurrentCharacter.GameID != ActingCharacterID)
                 return false;
+
             var attacker = game.FindCharacter(ActingCharacterID);
             var target = game.FindCharacter(TargetID);
-            if (attacker == null) return false;
-            if (attacker.RemainAction <= 0) return false;
-            return attacker.Alive && target != null && target.Alive;
+
+            if (attacker == null || target == null) 
+                return false;
+            if (attacker.RemainAction <= 0) 
+                return false;
+            if (attacker.Faction == target.Faction) 
+                return false;
+            if (!attacker.Alive || !target.Alive)
+                return false;
+            return true;
         }
 
         public void Resolve(Game game)

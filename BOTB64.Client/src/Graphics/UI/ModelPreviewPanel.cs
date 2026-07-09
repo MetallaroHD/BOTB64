@@ -59,7 +59,7 @@ namespace BOTB64.Graphics.UI
             model.Transform.RotationAngle = RotationDegrees;
         }
 
-        public override void Draw()
+        public void RenderToTexture()
         {
             if (RenderTarget.Id == 0) return;
             if (CurrentCharacterIndex < 0 || !ModelCache.TryGetValue(CurrentCharacterIndex, out var model))
@@ -68,16 +68,18 @@ namespace BOTB64.Graphics.UI
             RB.BeginTextureMode(RenderTarget);
             RB.ClearBackground(new RL.Color(20, 20, 28, 255));
             RB.BeginMode3D(Camera);
-
             ShaderManager.UpdateCharSelect(Camera.Position);
             RB.BeginShaderMode(ShaderManager.CS.GetShader());
             model.Draw();
             RB.EndShaderMode();
-
             RB.EndMode3D();
             RB.EndTextureMode();
+        }
 
-            // render textures are upside-down relative to screen space, flip on draw
+        public override void Draw()
+        {
+            if (RenderTarget.Id == 0 || CurrentCharacterIndex < 0) return;
+
             RL.Rectangle src = new RL.Rectangle(0, 0, RenderTarget.Texture.Width, -RenderTarget.Texture.Height);
             RB.DrawTexturePro(RenderTarget.Texture, src, Bounds, Vector2.Zero, 0f, RL.Color.White);
         }

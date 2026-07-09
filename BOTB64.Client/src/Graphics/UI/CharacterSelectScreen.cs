@@ -67,5 +67,11 @@ namespace BOTB64.Graphics.UI
             AddElement(CharacterPreview);
             AddElement(CharacterNameLabel);
         }
+
+        public override void Draw()
+        {
+            CharacterPreview.RenderToTexture();
+            base.Draw();
+        }
     }
 }

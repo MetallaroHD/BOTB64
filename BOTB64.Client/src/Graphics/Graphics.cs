@@ -9,7 +9,7 @@ namespace BOTB64.Graphics
         public static void Initialize(int width, int height, string title)
         {
             RB.SetConfigFlags(RL.ConfigFlags.VSyncHint);
-            RB.InitWindow(width, height, title);
+            RB.InitWindow((int)(width * Settings.Scale), (int)(height * Settings.Scale), title);
             RB.SetTargetFPS(60);
             RB.SetExitKey(RL.KeyboardKey.Null);
         }
