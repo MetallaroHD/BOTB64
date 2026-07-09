@@ -226,7 +226,7 @@ namespace BOTB64.Entities
 
         public void LoadModel(string gltfPath, string wallPath)
         {
-            ModelAsset asset = AssetManager.GetModel(gltfPath);
+            ModelAsset asset = AssetManager.GetModel(gltfPath, ModelPurpose.Game);
 
             Model = new ModelInstance(asset);
 
@@ -235,7 +235,7 @@ namespace BOTB64.Entities
             if (wallPath == "")
                 return;
 
-            ModelAsset wall = AssetManager.GetModel(wallPath);
+            ModelAsset wall = AssetManager.GetModel(wallPath, ModelPurpose.Game);
             foreach (var row in Tiles)
             {
                 foreach (var tile in row)

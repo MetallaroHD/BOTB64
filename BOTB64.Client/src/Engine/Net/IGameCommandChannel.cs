@@ -24,7 +24,13 @@ namespace BOTB64.Engine.Net
             Game = game;
             Session = session;
 
-            Session.OnCommandReceived += cmd => { /* unchanged */ };
+            Session.OnCommandReceived += cmd =>
+            {
+                if (!Session.IsHost) return;
+                var events = Game.ExecuteAndResolve(cmd);
+                if (events != null)
+                    Session.BroadcastEvents(events);
+            };
             Session.OnEventsReceived += OnEventsFromHost;
 
             Session.OnPlayerDisconnected += playerId =>
@@ -49,7 +55,7 @@ namespace BOTB64.Engine.Net
                 if (events != null)
                     Session.BroadcastEvents(events);
             }
-            else 
+            else
             {
                 Session.SendCommand(command);
             }
@@ -65,13 +71,13 @@ namespace BOTB64.Engine.Net
             {
                 var newOwner = Session.Players
                     .Where(p => p.IsConnected && p.PlayerID != disconnectedPlayerId && p.Faction == character.Faction)
-                    .OrderBy(p => p.PlayerID) // deterministic — same tie-break rule as relay host election
+                    .OrderBy(p => p.PlayerID)
                     .FirstOrDefault();
 
-                if (newOwner == null) continue; // no one left on this team — handled by CheckForGameOverByElimination
+                if (newOwner == null) continue;
 
                 var evt = new CharacterReassignedEvent { CharacterGameID = character.GameID, NewOwnerID = newOwner.PlayerID };
-                Game.RecordAndApplyExternal(evt); // see note below — host applies its own copy too, same as other events
+                Game.RecordAndApplyExternal(evt);
                 events.Add(evt);
             }
             return events;
@@ -89,7 +95,6 @@ namespace BOTB64.Engine.Net
         {
             if (!Session.IsHost) return;
 
-            var blueHasConnectedOwner = Game.GetCharactersOwnedBy(-999).Any(); // placeholder — see below
             bool blueAlive = Session.Players.Any(p => p.IsConnected && p.Faction == Faction.BlueTeam);
             bool redAlive = Session.Players.Any(p => p.IsConnected && p.Faction == Faction.RedTeam);
 

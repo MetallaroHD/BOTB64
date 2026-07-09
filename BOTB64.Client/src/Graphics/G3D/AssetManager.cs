@@ -11,11 +11,11 @@ namespace BOTB64.Graphics.G3D
     {
         private static readonly Dictionary<string, ModelAsset> Models = new();
 
-        public static ModelAsset GetModel(string path)
+        public static ModelAsset GetModel(string path, ModelPurpose purpose)
         {
             if(!Models.TryGetValue(path, out var model))
             {
-                model = new ModelAsset(path);
+                model = new ModelAsset(path, purpose);
                 Models[path] = model;
             }
 

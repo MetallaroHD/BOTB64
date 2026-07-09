@@ -8,9 +8,9 @@ namespace BOTB64.Graphics
     {
         public static void Initialize(int width, int height, string title)
         {
+            RB.SetConfigFlags(RL.ConfigFlags.VSyncHint);
             RB.InitWindow(width, height, title);
             RB.SetTargetFPS(60);
-            RB.SetConfigFlags(RL.ConfigFlags.VSyncHint);
             RB.SetExitKey(RL.KeyboardKey.Null);
         }
 

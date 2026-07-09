@@ -39,14 +39,17 @@ namespace BOTB64.Runtime
         public static (string script, string model, string icon) GetCharacterResources(CharacterDTO character)
         {
             string scriptURI = CharacterDir + character.Subdir + "\\" + character.ScriptURI + CharacterEXT;
-            string modelURI = CharacterDir + character.Subdir + "\\" + character.ModelURI + ModelEXT;
-            string iconURI = CharacterDir + character.Subdir + "\\" + character.IconURI + ImageEXT;
 
-            return (scriptURI, modelURI, iconURI);
+            return (scriptURI, GetCharacterModel(character), GetCharacterIcon(character));
         }
         public static string GetCharacterIcon(CharacterDTO character)
         {
             return CharacterDir + character.Subdir + "\\" + character.IconURI + ImageEXT;
+        }
+
+        public static string GetCharacterModel(CharacterDTO character)
+        {
+            return CharacterDir + character.Subdir + "\\" + character.ModelURI + ModelEXT;
         }
     }
 }

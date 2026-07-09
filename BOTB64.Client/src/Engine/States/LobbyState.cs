@@ -24,6 +24,7 @@ namespace BOTB64.Engine.States
         private const int RelayPort = 9050;
 
         private bool TransitionStarted = false;
+        private volatile Action? PendingStateChange; // NEW — queued state transition, applied only from Update
 
         public void OnEnter()
         {
@@ -36,6 +37,16 @@ namespace BOTB64.Engine.States
 
         public void Update(float dt)
         {
+            // If a state change is queued (e.g. from an async connect completing on some other thread),
+            // apply it here, on the main thread, before anything else touches raylib/GL this frame.
+            if (PendingStateChange != null)
+            {
+                var action = PendingStateChange;
+                PendingStateChange = null;
+                action();
+                return; // this LobbyState is about to be replaced — don't run the rest of Update against it
+            }
+
             Screen.Update(dt);
 
             if (PendingCreate != null && PendingCreate.IsCompletedSuccessfully)
@@ -214,6 +225,7 @@ namespace BOTB64.Engine.States
                 address = "http://" + address;
             return address;
         }
+
         private async Task TransitionToCharacterSelect(LobbyDto lobby)
         {
             var seats = SeatAssignment.Assign(CurrentMode, lobby.Players, GameModeRules.DefaultFactionOrder, GameModeRules.TotalCharacters(CurrentMode));
@@ -229,8 +241,15 @@ namespace BOTB64.Engine.States
                 return; // don't transition into a broken session
             }
 
-            var cs = new CharacterSelectState { GameType = GameType.IPMultiplayer, GameSizeType = CurrentMode, Session = session };
-            StateManager.ChangeState(cs);
+            // Don't call StateManager.ChangeState directly here — this continuation may be resuming on a
+            // thread-pool thread rather than the main/render thread, and CharacterSelectState.OnEnter()
+            // (via ModelPreviewPanel's RB.LoadRenderTexture) needs to run on the GL-owning thread.
+            // Queue it instead; Update() above applies it on the next main-thread tick.
+            PendingStateChange = () =>
+            {
+                var cs = new CharacterSelectState { GameType = GameType.IPMultiplayer, GameSizeType = CurrentMode, Session = session };
+                StateManager.ChangeState(cs);
+            };
         }
     }
 }

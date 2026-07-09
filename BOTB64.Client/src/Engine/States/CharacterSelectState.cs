@@ -1,6 +1,7 @@
 ﻿using BOTB64.Engine.Net;
 using BOTB64.Entities;
 using BOTB64.Entities.DTOs;
+using BOTB64.Graphics.G3D;
 using BOTB64.Graphics.UI;
 using BOTB64.Runtime;
 using BOTB64.Shared;
@@ -42,6 +43,8 @@ namespace BOTB64.Engine.States
 
         public void OnEnter()
         {
+            ShaderManager.LoadCharSelect("Misc\\champselect.vs", "Misc\\champselect.fs");
+
             JsonDataFile<LevelDTO> lf = new JsonDataFile<LevelDTO>();
             Level = lf.DeserializeAll(new DataFile(CommonURIs.LevelJSON))[0];
 
@@ -166,6 +169,7 @@ namespace BOTB64.Engine.States
 
         public void OnExit()
         {
+            Screen.CharacterPreview.Unload();
             Screen.Exit();
         }
 
@@ -205,6 +209,7 @@ namespace BOTB64.Engine.States
 
         private void FillCharacterButtons()
         {
+            int positionIndex = 0;
             for (int i = 0; i < AllCharacters.Count; i++)
             {
                 if (AllCharacters[i].Enabled)
@@ -212,11 +217,17 @@ namespace BOTB64.Engine.States
                     int index = i;
                     IconButton btn = new IconButton
                     {
-                        Bounds = new RL.Rectangle(5 + index * (64 + 5), 5, 64, 64),
+                        Bounds = new RL.Rectangle(5 + (positionIndex % 12) * (64 + 5), 5 + (64 + 5) * (positionIndex / 12), 64, 64),
                         Icon = GetOrLoadIcon(index),
-                        OnClick = () => CurrentSelection = index
+                        OnClick = () =>
+                        {
+                            CurrentSelection = index;
+                            Screen.CharacterPreview.SetCharacter(AllCharacters[index], index);
+                            Screen.CharacterNameLabel.Text = AllCharacters[index].Name;
+                        }
                     };
                     Screen.AddElement(btn);
+                    positionIndex++;
                 }
             }
         }

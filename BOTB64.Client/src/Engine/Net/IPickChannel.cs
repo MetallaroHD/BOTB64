@@ -1,7 +1,6 @@
 ﻿using BOTB64.Engine.States;
 using BOTB64.Entities;
 using MessagePack;
-using System.Security.Cryptography.X509Certificates;
 
 namespace BOTB64.Engine.Net
 {

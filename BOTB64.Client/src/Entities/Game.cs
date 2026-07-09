@@ -40,7 +40,7 @@ namespace BOTB64.Entities
         public void Initialize(GameInitializer lI)
         {
             (string script, string model, string wall, string shaderv, string shaderf) = CommonURIs.GetLevelResources(lI.Level);
-            ShaderManager.Load(shaderv, shaderf);
+            ShaderManager.LoadWorld(shaderv, shaderf);
             Level = Level.Load(script, model, wall);
             LoadStartingCharacters(lI);
             if (Characters.Count < 1)
@@ -99,7 +99,7 @@ namespace BOTB64.Entities
                 Character character = new Character();
                 character.Name = chara.Name;
                 character.ID = chara.ID;
-                character.Model = new ModelInstance(AssetManager.GetModel(model));
+                character.Model = new ModelInstance(AssetManager.GetModel(model, ModelPurpose.Game));
                 character.Faction = Faction.BlueTeam;
                 // now we fill the rest using the script URI
                 character.OwnerID = i < lI.BlueOwners.Count ? lI.BlueOwners[i] : -1;
@@ -113,7 +113,7 @@ namespace BOTB64.Entities
                 Character character = new Character();
                 character.Name = chara.Name;
                 character.ID = chara.ID;
-                character.Model = new ModelInstance(AssetManager.GetModel(model));
+                character.Model = new ModelInstance(AssetManager.GetModel(model, ModelPurpose.Game));
                 character.Faction = Faction.RedTeam;
                 // now we fill the rest using the script URI
                 character.OwnerID = i < lI.RedOwners.Count ? lI.RedOwners[i] : -1;

@@ -70,7 +70,7 @@ namespace BOTB64.Engine.States
         public void Render()
         {
             Viewport.Begin();
-            ShaderManager.Update();
+            ShaderManager.UpdateWorld();
             Game.Render();
             Viewport.End();
             FloatingTextManager.Draw(Viewport);
