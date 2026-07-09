@@ -233,7 +233,7 @@ namespace BOTB64.Runtime
 
                     var suppressedEdges = new HashSet<(Tile, Tile)>();
                     foreach (var p in confirmed)
-                        if (p.Count > i && rootPath.SequenceEqual(p.Take(i + 1)))
+                        if (p.Count > i + 1 && rootPath.SequenceEqual(p.Take(i + 1)))
                             suppressedEdges.Add((p[i], p[i + 1]));
 
                     var suppressedNodes = new HashSet<Tile>(rootPath.Take(rootPath.Count - 1));

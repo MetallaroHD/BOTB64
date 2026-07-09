@@ -30,6 +30,9 @@ namespace BOTB64.Engine
         private static IEnumerator<List<Tile>>? PathEnumerator;
         private static Hex LastPathFindingDst;
 
+        private static List<List<Tile>> PathCache = new();
+        private static int PathIndex = -1;
+
         public static void SetBoard(Board board)
         {
             Board = board;
@@ -153,6 +156,8 @@ namespace BOTB64.Engine
             if (PathEnumerator == null || dst != LastPathFindingDst)
             {
                 PathEnumerator?.Dispose();
+                PathCache.Clear();
+                PathIndex = -1;
                 LastPathFindingDst = dst;
                 PathEnumerator = HexAlgo.YensKShortest(srcTile, dstTile, h => h.IsPassable(), h => h.GetNeighbors(), Data.Radius).GetEnumerator();
 
@@ -175,14 +180,25 @@ namespace BOTB64.Engine
             if (PathEnumerator == null || Board == null)
                 return;
 
-            if (PathEnumerator.MoveNext())
-                Targeted = PathEnumerator.Current;
+            PathIndex++;
+            if (PathIndex >= PathCache.Count)
+            {
+                if (PathEnumerator.MoveNext())
+                    PathCache.Add(PathEnumerator.Current);
+                else
+                    PathIndex = PathCache.Count > 0 ? 0 : -1;
+            }
+
+            if (PathIndex >= 0)
+                Targeted = PathCache[PathIndex];
         }
 
         public static void ResetPathfinding()
         {
             PathEnumerator?.Dispose();
             PathEnumerator = null;
+            PathCache.Clear();
+            PathIndex = -1;
         }
     }
 }
