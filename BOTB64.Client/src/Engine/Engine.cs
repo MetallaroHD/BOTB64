@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using BOTB64.Runtime;
+using System.Diagnostics;
 
 namespace BOTB64.Engine
 {
@@ -30,6 +31,7 @@ namespace BOTB64.Engine
             Graphics.Graphics.BeginFrame();
 
             StateManager.Render();
+            CursorManager.Draw();
 
             Graphics.Graphics.EndFrame();
         }

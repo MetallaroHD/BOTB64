@@ -14,7 +14,8 @@ namespace BOTB64.Engine.Actions
 
         public override void Enter()
         {
-            if(Character == null)
+            CursorManager.SetCursor("Move");
+            if (Character == null)
             {
                 throw new InvalidOperationException("Character must be set before entering CharacterMoveAction.");
             }

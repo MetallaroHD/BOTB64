@@ -1,6 +1,7 @@
 ﻿using BOTB64.Engine.Net;
 using BOTB64.Entities;
 using BOTB64.Graphics.UI;
+using BOTB64.Runtime;
 
 namespace BOTB64.Engine.States
 {
@@ -13,6 +14,7 @@ namespace BOTB64.Engine.States
 
         public void OnEnter()
         {
+            CursorManager.SetCursor("Idle");
             Screen.SetWinner(Winner);
             Screen.MainMenuButton.OnClick = () =>
             {

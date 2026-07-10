@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using BOTB64.Graphics.G3D;
+using System.Collections.Generic;
 using System.Numerics;
 using RB = Raylib_cs.Raylib;
 using RL = Raylib_cs;
@@ -57,7 +58,7 @@ namespace BOTB64.Runtime
             if (_cursors.TryGetValue(name, out var existing))
                 RB.UnloadTexture(existing.Texture);
 
-            RL.Texture2D texture = RB.LoadTexture(pngPath);
+            RL.Texture2D texture = ResourceManager.LoadTexture(pngPath);
 
             _cursors[name] = new CursorDef
             {

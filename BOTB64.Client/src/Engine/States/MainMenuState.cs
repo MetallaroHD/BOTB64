@@ -13,6 +13,7 @@ namespace BOTB64.Engine.States
 
         public void OnEnter()
         {
+            CursorManager.SetCursor("Idle");
             ResourceManager.ClearCache();
             Screen.Controller = this;
             Screen.Enter();

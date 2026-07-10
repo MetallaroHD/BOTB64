@@ -1,5 +1,6 @@
 ﻿using BOTB64.Engine.States;
 using BOTB64.Entities;
+using BOTB64.Runtime;
 
 namespace BOTB64.Engine.Actions
 {
@@ -13,6 +14,7 @@ namespace BOTB64.Engine.Actions
 
         public override void Enter()
         {
+            CursorManager.SetCursor("Attack");
             if (Character == null)
             {
                 throw new InvalidOperationException("Character must be set before entering CharacterMoveAction.");

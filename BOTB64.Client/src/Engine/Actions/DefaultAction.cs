@@ -12,6 +12,7 @@ namespace BOTB64.Engine.Actions
 
         public override void Enter()
         {
+            CursorManager.SetCursor("Idle");
             Targeter.SetTargetingData(new TargetingData
             {
                 Type = TargetingType.Direct,
