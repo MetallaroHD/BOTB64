@@ -11,6 +11,7 @@ namespace BOTB64.Entities.DTOs
         [Key(3)] public string Script { get; set; }
         [Key(4)] public string Model { get; set; }
         [Key(5)] public string Wall { get; set; }
-        [Key(6)] public string Shader { get; set; }
+        [Key(6)] public string Environment { get; set; }
+        [Key(7)] public string Shader { get; set; }
     }
 }

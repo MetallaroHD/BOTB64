@@ -6,6 +6,7 @@
         "Script" : "board",
         "Model" : "Board",
         "Wall" : "wall",
+        "Environment" : "Scenery",
         "Shader" : "shader"
     }
 ]

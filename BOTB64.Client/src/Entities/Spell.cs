@@ -1,11 +1,12 @@
 ﻿using BOTB64.Runtime;
-using BOTB64.Entities.Effects;
+using RL = Raylib_cs;
 
 namespace BOTB64.Entities
 {
     public class Spell : ExecutableBase, IReadable
     {
-        //add visuals and sound later
+        public RL.Texture2D Icon;
+
         public Character? Owner;
 
         public int ID = 0;

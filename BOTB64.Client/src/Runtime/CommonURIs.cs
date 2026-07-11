@@ -27,14 +27,15 @@ namespace BOTB64.Runtime
         public static readonly string ShaderFSEXT = ".fs";
         public static readonly string ImageEXT = ".png";
 
-        public static (string script, string model, string wall, string shaderv, string shaderf) GetLevelResources(LevelDTO level) 
+        public static (string script, string model, string wall, string env, string shaderv, string shaderf) GetLevelResources(LevelDTO level) 
         {
             string scriptURI = LevelDir + level.Subdir + "\\" + level.Script + LevelEXT;
             string modelURI = LevelDir + level.Subdir + "\\" + level.Model + ModelEXT;
             string wallURI = LevelDir + level.Subdir + "\\" + level.Wall + ModelEXT;
+            string environmentURI = LevelDir + level.Subdir + "\\" + level.Environment + ModelEXT;
             string shaderv = LevelDir + level.Subdir + "\\" + level.Shader + ShaderVSEXT;
             string shaderf = LevelDir + level.Subdir + "\\" + level.Shader + ShaderFSEXT;
-            return (scriptURI, modelURI, wallURI, shaderv, shaderf);
+            return (scriptURI, modelURI, wallURI, environmentURI, shaderv, shaderf);
         }
         public static (string script, string model, string icon) GetCharacterResources(CharacterDTO character)
         {

@@ -23,6 +23,7 @@ namespace BOTB64.Entities
     public class Board
     {
         public ModelInstance Model;
+        public ModelInstance EnvModel;
         
         public List<List<Tile>> Tiles = new();
         public Vector2 Center = new();
@@ -130,6 +131,7 @@ namespace BOTB64.Entities
         public void Draw()
         {
             Model?.Draw();
+            EnvModel?.Draw();
 
             Vector3 shift = new Vector3(0, 0.001f, 0);
 
@@ -224,11 +226,13 @@ namespace BOTB64.Entities
             return IsValidIndex(r, c);
         }
 
-        public void LoadModel(string gltfPath, string wallPath)
+        public void LoadModel(string gltfPath, string wallPath, string envPath)
         {
             ModelAsset asset = AssetManager.GetModel(gltfPath, ModelPurpose.Game);
+            ModelAsset env = AssetManager.GetModel(envPath, ModelPurpose.Game);
 
             Model = new ModelInstance(asset);
+            EnvModel = new ModelInstance(env);
 
             Model.Transform.Position = new Vector3(-Center.X, 0f, -Center.Y);
 

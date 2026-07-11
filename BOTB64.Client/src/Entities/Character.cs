@@ -3,6 +3,7 @@ using BOTB64.Entities.Effects;
 using BOTB64.Graphics.G3D;
 using BOTB64.Runtime;
 using System.Numerics;
+using RL = Raylib_cs;
 
 namespace BOTB64.Entities
 {
@@ -39,9 +40,9 @@ namespace BOTB64.Entities
         public Hex Position;
 
         public int MaxHP = 50;
-        public int MaxRes = 0;
+        public int MaxRes = 25;
         public int ResRegen = 0;
-        public int StartRes = 0;
+        public int StartRes = 15;
         public int AttackPower = 30;
         public int SpellPower = 0;
         public int Defense = 5;
@@ -53,7 +54,7 @@ namespace BOTB64.Entities
         public float LifeSteal = 0f;
 
         public int CurrentHP = 50;
-        public int CurrentResource = 0;
+        public int CurrentResource = 15;
         public int HPRegen = 0;
 
         public bool HasMovedThisTurn = false;
@@ -94,6 +95,17 @@ namespace BOTB64.Entities
         {
             Alive = false;
             Logger.Log(Name + " dies!");
+        }
+
+        public RL.Color ResourceColor()
+        {
+            switch (ResType)
+            {
+                case ResourceType.Mana:
+                    return RL.Color.Blue;
+                default:
+                    return RL.Color.Blue;
+            }
         }
     }
 }

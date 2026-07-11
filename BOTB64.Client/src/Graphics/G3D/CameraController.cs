@@ -8,6 +8,9 @@ namespace BOTB64.Graphics.G3D
 {
     public class CameraController
     {
+        public Vector3 Position => Camera.Position;
+
+        private const int MaxDistance = 25;
         private bool Enabled = true;
 
         private float Distance = 15.0f;
@@ -76,6 +79,8 @@ namespace BOTB64.Graphics.G3D
                     Camera.Target += Right * panDistance;
                 if (InputManager.IsKeyDown(RL.KeyboardKey.D))
                     Camera.Target -= Right * panDistance;
+
+                ClampTargetToRadius();
             }
 
             Camera.Position = Camera.Target + Offset;
@@ -108,6 +113,19 @@ namespace BOTB64.Graphics.G3D
             }
 
             return Vector3.Zero;
+        }
+
+        private void ClampTargetToRadius()
+        {
+            Vector2 targetXZ = new Vector2(Camera.Target.X, Camera.Target.Z);
+
+            if (targetXZ.Length() > MaxDistance)
+            {
+                targetXZ = Vector2.Normalize(targetXZ) * MaxDistance;
+
+                Camera.Target.X = targetXZ.X;
+                Camera.Target.Z = targetXZ.Y;
+            }
         }
     }
 }

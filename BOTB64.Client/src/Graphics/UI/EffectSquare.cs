@@ -22,8 +22,8 @@ namespace BOTB64.Graphics.UI
         public int DurationFontSize = 12;
         public RL.Color DurationColor = RL.Color.White;
 
-        private readonly TooltipBox _tooltip = new();
-        private bool _hasTooltip = false;
+        private readonly TooltipBox Tooltip = new();
+        private bool HasTooltip = false;
 
         public void SetIcon(RL.Texture2D texture)
         {
@@ -33,8 +33,8 @@ namespace BOTB64.Graphics.UI
 
         public void SetTooltip(string text)
         {
-            _hasTooltip = !string.IsNullOrEmpty(text);
-            _tooltip.SetText(text);
+            HasTooltip = !string.IsNullOrEmpty(text);
+            Tooltip.SetText(text);
         }
 
         private bool IsHovered()
@@ -81,10 +81,10 @@ namespace BOTB64.Graphics.UI
             if (BorderThickness > 0)
                 RB.DrawRectangleLinesEx(Bounds, BorderThickness, BorderColor);
 
-            if (_hasTooltip && IsHovered())
+            if (HasTooltip && IsHovered())
             {
-                _tooltip.PositionAbove(Bounds);
-                _tooltip.Draw();
+                Tooltip.PositionAbove(Bounds);
+                Tooltip.Draw();
             }
         }
     }

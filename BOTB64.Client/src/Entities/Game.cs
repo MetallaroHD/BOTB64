@@ -39,9 +39,9 @@ namespace BOTB64.Entities
 
         public void Initialize(GameInitializer lI)
         {
-            (string script, string model, string wall, string shaderv, string shaderf) = CommonURIs.GetLevelResources(lI.Level);
+            (string script, string model, string wall, string env, string shaderv, string shaderf) = CommonURIs.GetLevelResources(lI.Level);
             ShaderManager.LoadWorld(shaderv, shaderf);
-            Level = Level.Load(script, model, wall);
+            Level = Level.Load(script, model, wall, env);
             LoadStartingCharacters(lI);
             if (Characters.Count < 1)
                 throw new Exception("Must pick at least one character.");

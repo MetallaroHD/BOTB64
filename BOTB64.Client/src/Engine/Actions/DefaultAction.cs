@@ -1,5 +1,5 @@
 ﻿using BOTB64.Engine.States;
-using BOTB64.Engine;
+using BOTB64.Entities;
 using BOTB64.Runtime;
 
 namespace BOTB64.Engine.Actions
@@ -26,6 +26,14 @@ namespace BOTB64.Engine.Actions
         public override void Update()
         {
             base.Update();
+        }
+
+        public Character? GetTarget()
+        {
+            if (Targeter.Targeted.Count <= 0)
+                return null;
+
+            return Targeter.Targeted[0].Character;
         }
     }
 }

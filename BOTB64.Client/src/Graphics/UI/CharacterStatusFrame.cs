@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using System.Security;
 using RL = Raylib_cs;
 
 namespace BOTB64.Graphics.UI
@@ -28,6 +29,25 @@ namespace BOTB64.Graphics.UI
             Name.Draw();
             Bars.Draw();
             Effects.Draw();
+        }
+
+        public void SetName(string name)
+        {
+            Name.Text = name;
+        }
+        public void SetHealth(int current, int max)
+        {
+            Bars.Health = (float)current / max;
+            Bars.HP.Text = current.ToString();
+        }
+        public void SetResource(int current, int max)
+        {
+            Bars.Resource = (float)current / max;
+            Bars.Res.Text = current.ToString();
+        }
+        public void SetResourceColor(RL.Color color)
+        {
+            Bars.ResourceColor = color;
         }
     }
 }
