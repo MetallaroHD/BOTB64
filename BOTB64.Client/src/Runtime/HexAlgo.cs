@@ -31,6 +31,14 @@ namespace BOTB64.Runtime
         public static readonly (int q, int r)[] Directions = { (1, 0), (1, -1), (0, -1), (-1, 0), (-1, 1), (0, 1) };
         public static readonly int MaxCircleRadius = 50;
 
+        public static int DirectionIndex(Hex dir)
+        {
+            for (int i = 0; i < Directions.Length; ++i)
+                if (Directions[i].q == dir.Q && Directions[i].r == dir.R)
+                    return i;
+            return 0;
+        }
+
         /* The 6 corner offsets relative to the center */
         public static Vector3[] BuildHexOffsets()
         {

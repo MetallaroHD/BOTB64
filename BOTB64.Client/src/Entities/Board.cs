@@ -264,6 +264,7 @@ namespace BOTB64.Entities
             oldTile.Character = null;
             tiles.Last().Character = character;
             character.Position = new Hex(path.Last().Q, path.Last().R);
+            character.Direction = new Hex(path.Last().Q - oldTile.Q, path.Last().R - oldTile.R);
         }
 
         public void SpawnCharacter(ref int alloc, Character character, Hex tile)

@@ -1,13 +1,10 @@
 ﻿using BOTB64.Graphics.G3D;
 using BOTB64.Runtime;
 using BOTB64.Entities;
-using RB = Raylib_cs.Raylib;
 using RL = Raylib_cs;
 using BOTB64.Graphics.UI;
-using BOTB64.Entities.DTOs;
 using BOTB64.Engine.Actions;
 using BOTB64.Graphics.Animations;
-using System.Net.Http.Headers;
 using BOTB64.Engine.Net;
 
 namespace BOTB64.Engine.States
@@ -154,12 +151,15 @@ namespace BOTB64.Engine.States
         private void UpdateGUI()
         {
             UpdateSpellButtons();
-
+            UpdatePlayerGUI();
+            UpdateTargetGUI();
         }
 
         private void UpdatePlayerGUI()
         {
-
+            Screen.PlayerStatus.SetHealth(CurrentCharacter.CurrentHP, CurrentCharacter.MaxHP);
+            Screen.PlayerStatus.SetResource(CurrentCharacter.CurrentResource, CurrentCharacter.MaxRes);
+            Screen.PlayerStatus.SetName(CurrentCharacter.Name);
         }
 
         private void UpdateTargetGUI()

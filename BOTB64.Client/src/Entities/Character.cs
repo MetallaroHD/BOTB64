@@ -38,6 +38,7 @@ namespace BOTB64.Entities
         public string Name = "";
 
         public Hex Position;
+        public Hex Direction = new(1, 0);
 
         public int MaxHP = 50;
         public int MaxRes = 25;
@@ -82,6 +83,8 @@ namespace BOTB64.Entities
 
         public void Draw()
         {
+            int idx = HexAlgo.DirectionIndex(Direction);
+            Model.Transform.RotationAngle = idx * MathF.PI / 3f;
             Model.Transform.Position = IsAnimating ? VisualPosition : HexAlgo.HexToWorld(Position);
             Model?.Draw();
         }
