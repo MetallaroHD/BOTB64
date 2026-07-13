@@ -9,7 +9,8 @@ namespace BOTB64.Graphics
     {
         public static void Initialize(int width, int height, string title)
         {
-            RB.SetConfigFlags(RL.ConfigFlags.VSyncHint);
+            if(Settings.VSync)
+                RB.SetConfigFlags(RL.ConfigFlags.VSyncHint);
             RB.InitWindow((int)(width * Settings.Scale), (int)(height * Settings.Scale), title);
             RB.SetTargetFPS(60);
             RB.SetExitKey(RL.KeyboardKey.Null);
@@ -24,6 +25,9 @@ namespace BOTB64.Graphics
 
         public static void EndFrame()
         {
+#if DEBUG
+            Console.WriteLine(RB.GetFrameTime());
+#endif
             RB.EndDrawing();
         }
 
@@ -40,6 +44,23 @@ namespace BOTB64.Graphics
             CursorManager.LoadCursor("Attack", "Misc\\Cursor_Attack.png");
             CursorManager.LoadCursor("Spell", "Misc\\Cursor_Spell.png");
             CursorManager.SetCursor("Idle");
+        }
+
+        public static void ApplyScale(float scale)
+        {
+            Settings.Scale = scale;
+            int width = (int)(1280 * scale);
+            int height = (int)(720 * scale);
+            RB.SetWindowSize(width, height);
+        }
+
+        public static void ApplyVSync(bool enabled)
+        {
+            Settings.VSync = enabled;
+            if (enabled)
+                RB.SetWindowState(RL.ConfigFlags.VSyncHint);
+            else
+                RB.ClearWindowState(RL.ConfigFlags.VSyncHint);
         }
     }
 }

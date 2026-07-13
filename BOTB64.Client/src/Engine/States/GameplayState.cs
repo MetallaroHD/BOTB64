@@ -32,6 +32,8 @@ namespace BOTB64.Engine.States
         private Character CurrentCharacter => Game.CurrentCharacter;
         private Character? Target;
 
+        private readonly Dictionary<int, RL.Texture2D> AuraIconCache = new();
+
         public void OnEnter()
         {
             Logger.Init(Screen.Log);
@@ -48,6 +50,7 @@ namespace BOTB64.Engine.States
             Game.Unload();
             AnimationManager.Clear();
             Logger.Unload();
+            AuraTriggerManager.ClearCache();
         }
 
         public void Update(float dt)
@@ -56,6 +59,7 @@ namespace BOTB64.Engine.States
             bool gameOver = false;
             CurrentAction?.Update();
             Game.Update(dt, out gameOver);
+            UpdateGUI();
             Viewport.Update(dt);
             Screen.Update(dt);
             Logger.Update();
@@ -110,17 +114,59 @@ namespace BOTB64.Engine.States
 
         private void InitBindings()
         {
-            RegisterBinding([Idle], null, RL.KeyboardKey.Escape, () => { ChangeAction(Pause); }, KeyBindingType.Press);
+            RegisterBinding([Idle], null, RL.KeyboardKey.Escape, () => { Pause.Mode = PauseMode.Esc;  ChangeAction(Pause); }, KeyBindingType.Press);
             RegisterBinding([Idle], Screen.MoveButton, RL.KeyboardKey.M, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Move.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Move); }, KeyBindingType.Press);
             RegisterBinding([Idle], Screen.AttackButton, RL.KeyboardKey.K, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Atk); }, KeyBindingType.Press);
-            RegisterBinding([Idle], Screen.TurnButton, RL.KeyboardKey.Space, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Channel.Submit(new EndTurnCommand { ActingCharacterID = Game.CurrentCharacter.GameID }); Console.WriteLine("New Turn: " + Game.CurrentCharacter.Name); }, KeyBindingType.Press);
+            RegisterBinding([Idle], Screen.TurnButton, RL.KeyboardKey.Space, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; if (!Settings.AskEndTurn) { SubmitEndTurn(); } else { Pause.Mode = PauseMode.Turn; ChangeAction(Pause); } }, KeyBindingType.Press);
             RegisterBinding([Move], null, RL.KeyboardKey.Tab, () => { Move.CycleToNextPath(); }, KeyBindingType.Press);
             RegisterBinding([Move, Atk], null, RL.KeyboardKey.Escape, () => { ChangeAction(Idle); }, KeyBindingType.Press);
 
-            Idle.SetLMBinding(() => { if (!Enabled) return; if (Screen.IsMouseBlocked()) return; Target = Idle.GetTarget(); InputManager.UseClick(); UpdateTargetGUI(); });
-            Move.SetLMBinding(() => { if (!Enabled) return; if (Screen.IsMouseBlocked()) return; Channel.Submit(new MoveCommand { ActingCharacterID = Game.CurrentCharacter.GameID, Path = Move.GetPath() }); InputManager.UseClick(); ChangeAction(Idle); });
-            Atk.SetLMBinding(() => { if (!Enabled) return; if (Screen.IsMouseBlocked()) return; Character? tg = Atk.ConfirmTarget(); if(tg != null) Channel.Submit(new AutoAttackCommand { ActingCharacterID = Game.CurrentCharacter.GameID, TargetID = tg.GameID }); InputManager.UseClick(); ChangeAction(Idle); });
+            Idle.SetLMBinding(SetTarget);
+            Move.SetLMBinding(SubmitMove);
+            Atk.SetLMBinding(SubmitAttack);
             Screen.ResumeButton.OnClick = () => { ChangeAction(Idle); };
+            Screen.NoButton.OnClick = () => { ChangeAction(Idle); };
+            Screen.YesButton.OnClick = () => { SubmitEndTurn(); InputManager.UseClick(); ChangeAction(Idle); };
+        }
+
+        public void SubmitEndTurn()
+        {
+            Channel.Submit(new EndTurnCommand { ActingCharacterID = Game.CurrentCharacter.GameID }); 
+            Console.WriteLine("New Turn: " + Game.CurrentCharacter.Name);
+        }
+
+        public void SubmitMove()
+        {
+            if (!Enabled) 
+                return; 
+            if (Screen.IsMouseBlocked()) 
+                return; 
+            Channel.Submit(new MoveCommand { ActingCharacterID = Game.CurrentCharacter.GameID, Path = Move.GetPath() }); 
+            InputManager.UseClick(); 
+            ChangeAction(Idle);
+        }
+
+        public void SetTarget()
+        {
+            if (!Enabled) 
+                return; 
+            if (Screen.IsMouseBlocked()) 
+                return; 
+            Target = Idle.GetTarget(); 
+            InputManager.UseClick();
+        }
+
+        public void SubmitAttack()
+        {
+            if (!Enabled) 
+                return; 
+            if (Screen.IsMouseBlocked()) 
+                return; 
+            Character? tg = Atk.ConfirmTarget(); 
+            if (tg != null) 
+                Channel.Submit(new AutoAttackCommand { ActingCharacterID = Game.CurrentCharacter.GameID, TargetID = tg.GameID }); 
+            InputManager.UseClick(); 
+            ChangeAction(Idle);
         }
 
         public Hex GetMouseAxial(out bool valid)
@@ -136,6 +182,14 @@ namespace BOTB64.Engine.States
                 Screen.Pause();
             else
                 Screen.UnPause();
+        }
+
+        public void ToggleAskEndTurn(bool active)
+        {
+            if (active)
+                Screen.ShowEndTurn();
+            else
+                Screen.HideEndTurn();
         }
 
         public void ToggleCameraControl(bool active)
@@ -157,27 +211,33 @@ namespace BOTB64.Engine.States
 
         private void UpdatePlayerGUI()
         {
-            Screen.PlayerStatus.SetHealth(CurrentCharacter.CurrentHP, CurrentCharacter.MaxHP);
-            Screen.PlayerStatus.SetResource(CurrentCharacter.CurrentResource, CurrentCharacter.MaxRes);
-            Screen.PlayerStatus.SetName(CurrentCharacter.Name);
+            var current = CurrentCharacter;
+            Screen.PlayerStatus.SetHealth(current.CurrentHP, current.MaxHP);
+            Screen.PlayerStatus.SetResource(current.CurrentResource, current.MaxRes);
+            Screen.PlayerStatus.SetName(current.Name);
+            Screen.PlayerStatus.Effects.Sync(current.Auras, getId: a => a.ID, getDuration: a => a.Remaining, getTooltip: a => a.Tooltip, iconLookup: GetOrLoadAuraIcon);
         }
 
         private void UpdateTargetGUI()
         {
-            if (Target == null)
+            if (Target == null || !Target.Alive)
             {
+                Target = null;
                 Screen.TargetStatus.Visible = false;
                 return;
             }
+            var target = Target;
             Screen.TargetStatus.Visible = true;
-            Screen.TargetStatus.SetHealth(Target.CurrentHP, Target.MaxHP);
-            Screen.TargetStatus.SetResource(Target.CurrentResource, Target.MaxRes);
-            Screen.TargetStatus.SetName(Target.Name);
+            Screen.TargetStatus.SetHealth(target.CurrentHP, target.MaxHP);
+            Screen.TargetStatus.SetResource(target.CurrentResource, target.MaxRes);
+            Screen.TargetStatus.SetName(target.Name);
+            Screen.PlayerStatus.Effects.Sync(target.Auras, getId: a => a.ID, getDuration: a => a.Remaining, getTooltip: a => a.Tooltip, iconLookup: GetOrLoadAuraIcon);
         }
 
         private void UpdateSpellButtons()
         {
-            if (CurrentCharacter.ActiveSpells.TryGetValue(1, out Spell spell1))
+            var current = CurrentCharacter;
+            if (current.ActiveSpells.TryGetValue(1, out Spell spell1))
             {
                 Screen.Spell1Button.SetIcon(spell1.Icon);
                 Screen.Spell1Button.SetTooltip(spell1.Tooltip);
@@ -186,7 +246,7 @@ namespace BOTB64.Engine.States
             {
                 Screen.Spell1Button.Empty();
             }
-            if (CurrentCharacter.ActiveSpells.TryGetValue(2, out Spell spell2))
+            if (current.ActiveSpells.TryGetValue(2, out Spell spell2))
             {
                 Screen.Spell2Button.SetIcon(spell2.Icon);
                 Screen.Spell2Button.SetTooltip(spell2.Tooltip);
@@ -195,7 +255,7 @@ namespace BOTB64.Engine.States
             {
                 Screen.Spell2Button.Empty();
             }
-            if (CurrentCharacter.ActiveSpells.TryGetValue(3, out Spell spell3))
+            if (current.ActiveSpells.TryGetValue(3, out Spell spell3))
             {
                 Screen.Spell3Button.SetIcon(spell3.Icon);
                 Screen.Spell3Button.SetTooltip(spell3.Tooltip);
@@ -204,7 +264,7 @@ namespace BOTB64.Engine.States
             {
                 Screen.Spell3Button.Empty();
             }
-            if (CurrentCharacter.ActiveSpells.TryGetValue(4, out Spell spell4))
+            if (current.ActiveSpells.TryGetValue(4, out Spell spell4))
             {
                 Screen.Spell4Button.SetIcon(spell4.Icon);
                 Screen.Spell4Button.SetTooltip(spell4.Tooltip);
@@ -213,7 +273,7 @@ namespace BOTB64.Engine.States
             {
                 Screen.Spell4Button.Empty();
             }
-            if (CurrentCharacter.ActiveSpells.TryGetValue(5, out Spell spell5))
+            if (current.ActiveSpells.TryGetValue(5, out Spell spell5))
             {
                 Screen.Spell5Button.SetIcon(spell5.Icon);
                 Screen.Spell5Button.SetTooltip(spell5.Tooltip);
@@ -222,6 +282,20 @@ namespace BOTB64.Engine.States
             {
                 Screen.Spell5Button.Empty();
             }
+        }
+
+        private RL.Texture2D GetOrLoadAuraIcon(int auraId)
+        {
+            if (!AuraIconCache.TryGetValue(auraId, out var tex))
+            {
+                string icon = AuraTriggerManager.GetAuraIcon(auraId);
+                if (icon == "")
+                {
+                    tex = ResourceManager.LoadTexture(icon);
+                    AuraIconCache[auraId] = tex;
+                }
+            }
+            return tex;
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using BOTB64.Engine;
-using BOTB64.Entities.Effects;
 
 namespace BOTB64.Entities
 {
@@ -16,27 +15,6 @@ namespace BOTB64.Entities
             Parent = parent;
             Number = number;
             ActiveCharacter = character;
-        }
-
-        public void Begin()
-        {
-            if (!ActiveCharacter.Alive)
-                return;
-
-            ActiveCharacter.RemainMovement = ActiveCharacter.Speed;
-            ActiveCharacter.RemainAction = 1;
-            ActiveCharacter.RemainFastAction = 1;
-            ActiveCharacter.HasMovedThisTurn = false;
-
-            AuraTriggerManager.Execute(new EffectContext(ActiveCharacter), EffectTrigger.OnStartTurn, AuraType.Character | AuraType.Tile);
-        }
-
-        public void End()
-        {
-            if (!ActiveCharacter.Alive)
-                return;
-
-            AuraTriggerManager.Execute(new EffectContext(ActiveCharacter), EffectTrigger.OnStartTurn, AuraType.Character | AuraType.Tile);
         }
     }
 }

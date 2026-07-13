@@ -12,8 +12,16 @@ namespace BOTB64.Graphics
         {
             if (Settings.FullScreen != lastFullscreen)
             {
-                ToggleFullscreen();
+                SetBorderlessFullscreen(Settings.FullScreen);
                 lastFullscreen = Settings.FullScreen;
+            }
+
+            if (Settings.FullScreen)
+            {
+                if (!RB.IsWindowFocused() && !RB.IsWindowMinimized())
+                {
+                    RB.MinimizeWindow();
+                }
             }
 
             UIRenderer.Update();
@@ -33,19 +41,15 @@ namespace BOTB64.Graphics
 
                 int monitor = RB.GetCurrentMonitor();
 
-                RB.SetWindowSize(
-                    RB.GetMonitorWidth(monitor),
-                    RB.GetMonitorHeight(monitor)
-                );
+                Settings.Scale = Math.Min((float)RB.GetMonitorWidth(monitor)/1280, (float)RB.GetMonitorHeight(monitor) / 720);
+
+                RB.SetWindowSize(RB.GetMonitorWidth(monitor), RB.GetMonitorHeight(monitor));
 
                 RB.SetWindowPosition(0, 0);
             }
             else
             {
                 RB.ClearWindowState(RL.ConfigFlags.BorderlessWindowMode);
-
-                RB.SetWindowSize(1280, 720);
-                RB.SetWindowPosition(100, 100);
             }
         }
     }

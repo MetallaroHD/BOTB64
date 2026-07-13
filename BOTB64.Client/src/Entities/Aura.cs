@@ -1,5 +1,4 @@
-﻿using BOTB64.Entities.Effects;
-using System.Reflection.Metadata;
+﻿using System.Reflection.Metadata;
 
 namespace BOTB64.Entities
 {

@@ -60,6 +60,7 @@ namespace BOTB64.Graphics.UI
         public override void Enter()
         {
             StartButton.OnClick = () => { MoveToGameSelect(); };
+            SettingsButton.OnClick = () => { MoveToSettings(); };
             BackButton.OnClick = () => { MoveToStart(); };
             LocalGameButton.OnClick = () => { Controller.SetChosenGT(GameType.Local); MoveToSizeSelectLocal(); };
             RandomOnlineButton.OnClick = () => { Controller.SetChosenGT(GameType.RandomRanked); MoveToSizeSelectRanked(); };
@@ -133,9 +134,10 @@ namespace BOTB64.Graphics.UI
         {
             StateManager.ChangeState(new LobbyState());
         }
+
         private void MoveToSettings()
         {
-            //TBI - make new gamestate
+            StateManager.ChangeState(new SettingsState());
         }
     }
 }

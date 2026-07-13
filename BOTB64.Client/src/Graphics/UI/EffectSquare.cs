@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BOTB64.Runtime;
+using System;
 using System.Numerics;
 using RB = Raylib_cs.Raylib;
 using RL = Raylib_cs;
@@ -37,11 +38,7 @@ namespace BOTB64.Graphics.UI
             Tooltip.SetText(text);
         }
 
-        private bool IsHovered()
-        {
-            Vector2 mouse = RB.GetMousePosition();
-            return RB.CheckCollisionPointRec(mouse, Bounds);
-        }
+        private bool IsHovered() => RB.CheckCollisionPointRec(InputManager.MousePosition, Bounds);
 
         public override void Draw()
         {

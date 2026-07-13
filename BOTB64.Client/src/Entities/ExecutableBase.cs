@@ -1,6 +1,4 @@
-﻿using BOTB64.Entities.Effects;
-
-namespace BOTB64.Entities
+﻿namespace BOTB64.Entities
 {
     public class ExecutableBase : IExecutable
     {
@@ -12,7 +10,8 @@ namespace BOTB64.Entities
             {
                 if (effect.Trigger.HasFlag(trigger))
                 {
-                    effect.Execute(game, ctx);
+                    var runner = game.GetLuaRunner();
+                    runner.Run(effect, ctx);
                 }
             }
         }

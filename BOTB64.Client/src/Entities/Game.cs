@@ -25,8 +25,9 @@ namespace BOTB64.Entities
 
         private Level Level = new Level();
         private List<Character> Characters = new();
-        private List<Spell> Spells = new();
-        private List<Aura> Auras = new();
+        private LuaEffectRunner LuaRunner;
+
+        public LuaEffectRunner GetLuaRunner() => LuaRunner;
 
         public Faction Winner = Faction.Neutral;
         private bool ForcedGameOver = false;
@@ -39,6 +40,7 @@ namespace BOTB64.Entities
 
         public void Initialize(GameInitializer lI)
         {
+            LuaRunner = new LuaEffectRunner(this);
             (string script, string model, string wall, string env, string shaderv, string shaderf) = CommonURIs.GetLevelResources(lI.Level);
             ShaderManager.LoadWorld(shaderv, shaderf);
             Level = Level.Load(script, model, wall, env);
@@ -134,12 +136,12 @@ namespace BOTB64.Entities
             {
                 if (character.Faction == Faction.BlueTeam && blueIndex < Level.LevelBoard.BlueSpawns.Count)
                 {
-                    Level.LevelBoard.SpawnCharacter(ref CharAlloc, character, Level.LevelBoard.BlueSpawns[blueIndex].Position);
+                    Level.LevelBoard.SpawnCharacter(ref CharAlloc, character, Level.LevelBoard.BlueSpawns[blueIndex].Position, new Hex(0, -1));
                     blueIndex++;
                 }
                 else if (character.Faction == Faction.RedTeam && redIndex < Level.LevelBoard.RedSpawns.Count)
                 {
-                    Level.LevelBoard.SpawnCharacter(ref CharAlloc, character, Level.LevelBoard.RedSpawns[redIndex].Position);
+                    Level.LevelBoard.SpawnCharacter(ref CharAlloc, character, Level.LevelBoard.RedSpawns[redIndex].Position, new Hex(0, 1));
                     redIndex++;
                 }
             }
@@ -153,14 +155,19 @@ namespace BOTB64.Entities
 
         public void ApplyTurnAdvance(int nextCharacterId, int turnNumber)
         {
-            CurrentTurn.End();
             var next = FindCharacter(nextCharacterId);
             CurrentTurn = new Turn(turnNumber, next, this);
             Logger.Log("Turn " + CurrentTurn.Number + " - " + next.Name);
-            CurrentTurn.Begin();
+            if (!CurrentCharacter.Alive)
+                return;
+            CurrentCharacter.RemainMovement = CurrentCharacter.Speed;
+            CurrentCharacter.RemainAction = 1;
+            CurrentCharacter.RemainFastAction = 1;
+            CurrentCharacter.HasMovedThisTurn = false;
         }
 
         public Character? FindCharacter(int id) => Characters.FirstOrDefault(c => c.GameID == id);
+        public Character? FindCharacter(int q, int r) => Characters.FirstOrDefault(c => ((c.Position.Q == q) && (c.Position.R == r)));
         public List<Character> GetCharactersOwnedBy(int playerId) => Characters.Where(c => c.OwnerID == playerId).ToList();
         public void RecordAndApplyExternal(IGameEvent evt) => RecordAndApply(evt);
 
@@ -181,6 +188,11 @@ namespace BOTB64.Entities
                     return candidate;
             }
             return current;
+        }
+
+        public double Random()
+        {
+            return System.Random.Shared.NextDouble();
         }
 
         private bool CheckGameOver(out Faction winner)

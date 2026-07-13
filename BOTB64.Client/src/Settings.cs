@@ -10,6 +10,7 @@ namespace BOTB64
         // this is the size relative to 1280x720 - for example 1920x1080 is 1.5f
         public static float Scale = 1.0f;
         public static bool FullScreen = false;
+        public static bool VSync = true;
 
         /* GAMEPLAY */
         public static bool AskEndTurn = true;
@@ -24,12 +25,23 @@ namespace BOTB64
                 return;
             }
 
-            var parser = new FileIniDataParser();
-            IniData data = parser.ReadFile(FileName);
+            try 
+            {
+                var parser = new FileIniDataParser();
+                IniData data = parser.ReadFile(FileName);
 
-            Scale = float.Parse(data["Graphics"]["Scale"], CultureInfo.InvariantCulture);
-            FullScreen = bool.Parse(data["Graphics"]["Fullscreen"]);
-            AskEndTurn = bool.Parse(data["Gameplay"]["AskEndTurn"]);
+                Scale = float.Parse(data["Graphics"]["Scale"], CultureInfo.InvariantCulture);
+                FullScreen = bool.Parse(data["Graphics"]["Fullscreen"]);
+                VSync = bool.Parse(data["Graphics"]["VSync"]);
+                AskEndTurn = bool.Parse(data["Gameplay"]["AskEndTurn"]);
+            }
+            catch 
+            {
+                //invalid data, we purge and rewrite
+                File.Delete(FileName);
+                Save();
+            }
+
         }
 
         public static void Save()
@@ -38,8 +50,8 @@ namespace BOTB64
 
             data["Graphics"]["Scale"] = Scale.ToString(CultureInfo.InvariantCulture);
             data["Graphics"]["Fullscreen"] = FullScreen.ToString();
+            data["Graphics"]["VSync"] = VSync.ToString();
             data["Gameplay"]["AskEndTurn"] = AskEndTurn.ToString();
-
 
             var parser = new FileIniDataParser();
             parser.WriteFile(FileName, data);

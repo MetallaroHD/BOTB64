@@ -2,6 +2,9 @@
     {
         "ID" : 0,
         "Name" : "Dummy",
-        "ScriptURI" : "TileEffects\\Dummy.b64t"
+        "ScriptURI" : "Dummy",
+        "ImageURI" : "dummy",
+        "AnimationURI" : "dummy",
+        "ModelURI" : "dummy"
     }
 ]

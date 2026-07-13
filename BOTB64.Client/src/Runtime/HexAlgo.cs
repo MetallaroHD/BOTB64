@@ -28,7 +28,7 @@ namespace BOTB64.Runtime
     {
         public static readonly float Apothem = 0.5f;
         public static readonly float HexSize = 0.57735f; // derived from apothem = 0.5
-        public static readonly (int q, int r)[] Directions = { (1, 0), (1, -1), (0, -1), (-1, 0), (-1, 1), (0, 1) };
+        public static readonly (int q, int r)[] Directions = { (0, 1), (1, 0), (1, -1), (0, -1), (-1, 0), (-1, 1) };
         public static readonly int MaxCircleRadius = 50;
 
         public static int DirectionIndex(Hex dir)

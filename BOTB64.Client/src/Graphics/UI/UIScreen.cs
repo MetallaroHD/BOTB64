@@ -41,7 +41,7 @@ public abstract class UIScreen : IUIScreen
 
         foreach (var element in Elements)
         {
-            if (element is Button)
+            if (element is Button && element.Visible)
                 if (RB.CheckCollisionPointRec(uiMouse, ((Button)(element)).Bounds))
                     return true;
         }

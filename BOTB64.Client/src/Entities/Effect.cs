@@ -1,4 +1,6 @@
-﻿namespace BOTB64.Entities.Effects
+﻿using BOTB64.Runtime;
+
+namespace BOTB64.Entities
 {
     [Flags]
     public enum EffectTrigger
@@ -53,30 +55,19 @@
 
     public class EffectContext
     {
-        public Character Invoker;
+        public Character Invoker { get; set; }
 
-        public EffectContext(Character inv)
+        public EffectContext(Character invoker)
         {
-            Invoker = inv;
+            Invoker = invoker;
         }
     }
 
-    public abstract class Effect
+    public class Effect
     {
         public EffectTrigger Trigger = 0;
+        public string Script = "";
 
         public bool IsDirect => Trigger == 0;
-
-        public abstract void Execute(Game game, EffectContext context);
-    }
-
-    public abstract class Effect<TContext> : Effect where TContext : EffectContext
-    {
-        public override void Execute(Game game, EffectContext context)
-        {
-            if (context is TContext typed)
-                Execute(game, typed);
-        }
-        protected abstract void Execute(Game game, TContext ctx);
     }
 }

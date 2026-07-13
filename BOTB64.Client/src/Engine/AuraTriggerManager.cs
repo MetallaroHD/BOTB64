@@ -1,5 +1,6 @@
 ﻿using BOTB64.Entities;
-using BOTB64.Entities.Effects;
+using BOTB64.Entities.DTOs;
+using BOTB64.Runtime;
 
 namespace BOTB64.Engine
 {
@@ -15,9 +16,12 @@ namespace BOTB64.Engine
     {
         private static Game Parent;
 
+        private static List<AuraDTO> CachedAuras = new List<AuraDTO>();
+
         public static void Init(Game parent)
         {
             Parent = parent;
+            CacheAllAuras();
         }
 
         public static void Execute(EffectContext ctx, EffectTrigger condition, AuraType type)
@@ -41,6 +45,27 @@ namespace BOTB64.Engine
                     foreach (var aura in tile.Effects)
                         aura.Execute(Parent, ctx, condition);
             }
+        }
+
+        public static void ClearCache()
+        {
+            CachedAuras.Clear();
+        }
+
+        public static void CacheAllAuras()
+        {
+            JsonDataFile<AuraDTO> af = new JsonDataFile<AuraDTO>();
+            CachedAuras = af.DeserializeAll(new DataFile(CommonURIs.AuraJSON));
+        }
+
+        public static string GetAuraIcon(int id)
+        {
+            foreach (var aura in CachedAuras)
+            {
+                if(id == aura.ID)
+                    return CommonURIs.GetAuraIcon(aura);
+            }
+            return "";
         }
     }
 }

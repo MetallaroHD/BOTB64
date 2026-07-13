@@ -2,6 +2,8 @@
     {
         "ID" : 0,
         "Name" : "Dummy",
-        "ScriptURI" : "Auras\\Dummy.b64a"
+        "ScriptURI" : "Dummy",
+        "IconURI" : "dummy",
+        "AnimationURI" : "dummy"
     }
 ]

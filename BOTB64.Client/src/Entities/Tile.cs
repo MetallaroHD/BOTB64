@@ -62,7 +62,7 @@ namespace BOTB64.Entities
 
             for (int i = 0; i < Effects.Count(); i++)
             {
-                if (Effects[i].Type.HasFlag(TileEffectType.Impassable))
+                if (Effects[i].Type.HasFlag(TileEffectFlag.Impassable))
                     return false;
             }
 
@@ -76,7 +76,7 @@ namespace BOTB64.Entities
 
             for (int i = 0; i < Effects.Count(); i++)
             {
-                if (Effects[i].Type.HasFlag(TileEffectType.BlocksLos))
+                if (Effects[i].Type.HasFlag(TileEffectFlag.BlocksLos))
                     return false;
             }
 

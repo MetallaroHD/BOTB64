@@ -1,4 +1,5 @@
-﻿using BOTB64.Entities.DTOs;
+﻿using BOTB64.Entities;
+using BOTB64.Entities.DTOs;
 
 namespace BOTB64.Runtime
 {
@@ -15,6 +16,10 @@ namespace BOTB64.Runtime
         public static readonly string CharacterDir = "Characters\\";
         public static readonly string LevelDir = "Levels\\";
         public static readonly string TileEffDir = "TileEffects\\";
+        public static readonly string GraphicsDir = "Graphics\\";
+        public static readonly string GraphicsIconDir = "Graphics\\Icons\\";
+        public static readonly string GraphicsAnimDir = "Graphics\\Animations\\";
+        public static readonly string GraphicsModelDir = "Graphics\\Models\\";
 
         public static readonly string AuraEXT = ".b64a";
         public static readonly string SpellEXT = ".b64s";
@@ -26,6 +31,7 @@ namespace BOTB64.Runtime
         public static readonly string ShaderVSEXT = ".vs";
         public static readonly string ShaderFSEXT = ".fs";
         public static readonly string ImageEXT = ".png";
+        public static readonly string ScriptExt = ".lua";
 
         public static (string script, string model, string wall, string env, string shaderv, string shaderf) GetLevelResources(LevelDTO level) 
         {
@@ -51,6 +57,11 @@ namespace BOTB64.Runtime
         public static string GetCharacterModel(CharacterDTO character)
         {
             return CharacterDir + character.Subdir + "\\" + character.ModelURI + ModelEXT;
+        }
+
+        public static string GetAuraIcon(AuraDTO aura)
+        {
+            return GraphicsIconDir + aura.IconURI + ImageEXT;
         }
     }
 }

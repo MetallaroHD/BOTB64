@@ -20,6 +20,9 @@ namespace BOTB64.Graphics.UI
         public ActionButton TurnButton = new ActionButton { Bounds = new RL.Rectangle(853, 628, 64, 64), TopRightText = "Space" };
         public TextButton ExitButton = new TextButton { Visible = false, Bounds = new RL.Rectangle(540, 365, 200, 60), Text = "Exit Game", OnClick = () => { InputManager.WantsClose = true; } };
         public TextButton ResumeButton = new TextButton { Visible = false, Bounds = new RL.Rectangle(540, 290, 200, 60), Text = "Resume" };
+        public Label EndTurnQuestion = new Label { Visible = false, Position = new Vector2(540, 290), Text = "End Turn?", FontSize = 36 };
+        public TextButton YesButton = new TextButton { Visible = false, Bounds = new RL.Rectangle(540, 365, 80, 50), Text = "Yes" };
+        public TextButton NoButton = new TextButton { Visible = false, Bounds = new RL.Rectangle(660, 365, 80, 50), Text = "No" };
 
         public GameOverlayScreen()
         {
@@ -49,40 +52,64 @@ namespace BOTB64.Graphics.UI
             AddElement(TurnButton);
             AddElement(ExitButton);
             AddElement(ResumeButton);
+            AddElement(EndTurnQuestion);
+            AddElement(YesButton);
+            AddElement(NoButton);
+        }
+
+        public void TogglePause(bool yes)
+        {
+            Log.Visible = !yes;
+            PlayerStatus.Visible = !yes;
+            TargetStatus.Visible = !yes;
+            MoveButton.Visible = !yes;
+            AttackButton.Visible = !yes;
+            Spell1Button.Visible = !yes;
+            Spell2Button.Visible = !yes;
+            Spell3Button.Visible = !yes;
+            Spell4Button.Visible = !yes;
+            Spell5Button.Visible = !yes;
+            TurnButton.Visible = !yes;
+            ExitButton.Visible = yes;
+            ResumeButton.Visible = yes;
         }
 
         public void Pause()
         {
-            Log.Visible = false;
-            PlayerStatus.Visible = false;
-            TargetStatus.Visible = false;
-            MoveButton.Visible = false;
-            AttackButton.Visible = false;
-            Spell1Button.Visible = false;
-            Spell2Button.Visible = false;
-            Spell3Button.Visible = false;
-            Spell4Button.Visible = false;
-            Spell5Button.Visible = false;
-            TurnButton.Visible = false;
-            ExitButton.Visible = true;
-            ResumeButton.Visible = true;
+            TogglePause(true);
         }
 
         public void UnPause()
         {
-            Log.Visible = true;
-            PlayerStatus.Visible = true;
-            TargetStatus.Visible = true;
-            MoveButton.Visible = true;
-            AttackButton.Visible = true;
-            Spell1Button.Visible = true;
-            Spell2Button.Visible = true;
-            Spell3Button.Visible = true;
-            Spell4Button.Visible = true;
-            Spell5Button.Visible = true;
-            TurnButton.Visible = true;
-            ExitButton.Visible = false;
-            ResumeButton.Visible = false;
+            TogglePause(false);
+        }
+
+        public void AskEndTurn(bool yes)
+        {
+            Log.Visible = !yes;
+            PlayerStatus.Visible = !yes;
+            TargetStatus.Visible = !yes;
+            MoveButton.Visible = !yes;
+            AttackButton.Visible = !yes;
+            Spell1Button.Visible = !yes;
+            Spell2Button.Visible = !yes;
+            Spell3Button.Visible = !yes;
+            Spell4Button.Visible = !yes;
+            Spell5Button.Visible = !yes;
+            TurnButton.Visible = !yes;
+            EndTurnQuestion.Visible = yes;
+            YesButton.Visible = yes;
+            NoButton.Visible = yes;
+        }
+
+        public void ShowEndTurn()
+        {
+            AskEndTurn(true);
+        }
+
+        public void HideEndTurn()
+        { 
+            AskEndTurn(false); 
         }
     }
 }

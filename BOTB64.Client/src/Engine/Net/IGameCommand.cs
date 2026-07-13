@@ -1,6 +1,6 @@
 ﻿using BOTB64.Entities;
-using BOTB64.Entities.Effects;
 using BOTB64.Runtime;
+using BOTB64.Entities.Context;
 using MessagePack;
 namespace BOTB64.Engine.Net
 {
@@ -86,13 +86,17 @@ namespace BOTB64.Engine.Net
 
             game.RecordAndApply(new ActionSpentEvent { CharacterID = ActingCharacterID, FastAction = false });
 
-            DoDamageEffect eff = new DoDamageEffect();
-            DamageContext ctx = new DamageContext(attacker, attacker, target)
+            var ctx = new DirectDamageContext(attacker, attacker, target)
             {
                 DamageType = attacker.AutoAttackDamageType,
                 SourceType = DamageSourceType.AutoAttack,
             };
-            eff.Execute(game, ctx);
+
+            var runner = game.GetLuaRunner();
+            runner.Run(attacker.AutoAttackEffect, ctx);
+
+            ctx.DamageDone = runner.Temp.LastDamageDone;
+            ctx.Crit = runner.Temp.LastCrit;
 
             AuraTriggerManager.Execute(ctx, EffectTrigger.OnDamageDone, AuraType.Character | AuraType.Tile);
             if (target.Alive)
@@ -107,6 +111,13 @@ namespace BOTB64.Engine.Net
     {
         [Key(0)] public int ActingCharacterID { get; set; }
         public bool Validate(Game game) => game.CurrentCharacter.GameID == ActingCharacterID;
-        public void Resolve(Game game) => game.AdvanceTurnInternal();
+        public void Resolve(Game game)
+        {
+            if (game.CurrentCharacter.Alive)
+                AuraTriggerManager.Execute(new EffectContext(game.CurrentCharacter), EffectTrigger.OnEndTurn, AuraType.Character | AuraType.Tile);
+            game.AdvanceTurnInternal();
+            if(game.CurrentCharacter.Alive)
+                AuraTriggerManager.Execute(new EffectContext(game.CurrentCharacter), EffectTrigger.OnStartTurn, AuraType.Character | AuraType.Tile);
+        }
     }
 }

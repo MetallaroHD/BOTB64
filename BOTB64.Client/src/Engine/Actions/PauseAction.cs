@@ -8,8 +8,16 @@ using System.Threading.Tasks;
 
 namespace BOTB64.Engine.Actions
 {
+    public enum PauseMode
+    {
+        Esc = 0,
+        Turn = 1,
+    }
+
     public class PauseAction : ActionBase
     {
+        public PauseMode Mode { get; set; }
+
         public PauseAction(GameplayState parent) : base(parent)
         {
         }
@@ -17,12 +25,28 @@ namespace BOTB64.Engine.Actions
         public override void Enter()
         {
             ((GameplayState)Parent).ToggleCameraControl(false);
-            ((GameplayState)Parent).TogglePauseOverlay(true);
+            switch(Mode)
+            {
+                case PauseMode.Esc:
+                    ((GameplayState)Parent).TogglePauseOverlay(true);
+                    break;
+                case PauseMode.Turn:
+                    ((GameplayState)Parent).ToggleAskEndTurn(true);
+                    break;
+            }
         }
 
         public override void Exit()
         {
-            ((GameplayState)Parent).TogglePauseOverlay(false);
+            switch (Mode)
+            {
+                case PauseMode.Esc:
+                    ((GameplayState)Parent).TogglePauseOverlay(false);
+                    break;
+                case PauseMode.Turn:
+                    ((GameplayState)Parent).ToggleAskEndTurn(false);
+                    break;
+            }
             ((GameplayState)Parent).ToggleCameraControl(true);
         }
 

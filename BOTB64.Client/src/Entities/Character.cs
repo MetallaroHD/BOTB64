@@ -1,7 +1,7 @@
 ﻿using BOTB64.Engine;
-using BOTB64.Entities.Effects;
 using BOTB64.Graphics.G3D;
 using BOTB64.Runtime;
+using BOTB64.Entities.Context;
 using System.Numerics;
 using RL = Raylib_cs;
 
@@ -63,6 +63,7 @@ namespace BOTB64.Entities
         public int RemainAction = 1;
         public int RemainFastAction = 1;
 
+        public Effect AutoAttackEffect = new();
         public int AutoAttackRange = 4;
         public float AutoAttackAP = 1f;
         public float AutoAttackSP = 0f;
@@ -84,7 +85,7 @@ namespace BOTB64.Entities
         public void Draw()
         {
             int idx = HexAlgo.DirectionIndex(Direction);
-            Model.Transform.RotationAngle = idx * MathF.PI / 3f;
+            Model.Transform.RotationAngle = idx * 60f;
             Model.Transform.Position = IsAnimating ? VisualPosition : HexAlgo.HexToWorld(Position);
             Model?.Draw();
         }

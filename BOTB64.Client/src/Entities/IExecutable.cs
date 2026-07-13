@@ -1,6 +1,4 @@
-﻿using BOTB64.Entities.Effects;
-
-namespace BOTB64.Entities
+﻿namespace BOTB64.Entities
 {
     public interface IExecutable
     {
