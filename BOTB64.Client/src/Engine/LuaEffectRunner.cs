@@ -1,7 +1,6 @@
 ﻿using BOTB64.Engine.Net;
 using BOTB64.Entities;
 using BOTB64.Runtime;
-using BOTB64.Entities.Context;
 using MoonSharp.Interpreter;
 
 namespace BOTB64.Engine
@@ -40,9 +39,14 @@ namespace BOTB64.Engine
             Lua.Globals["IsAlive"] = (Func<int, bool>)(charId => game.FindCharacter(charId)?.Alive ?? false);
         }
 
-        public void Run(Effect effect, EffectContext context) 
+        public void Run(Effect effect, EffectContext context)
         {
             Lua.Globals["Invoker"] = context.Invoker.GameID;
+            if (context is SpellCastContext sc)
+            {
+                Lua.Globals["Caster"] = sc.Caster.GameID;
+                Lua.Globals["Targets"] = sc.ExplicitTarget;
+            }
             if (context is DirectDamageContext dc)
             {
                 Lua.Globals["Attacker"] = dc.DamageDoer.GameID;

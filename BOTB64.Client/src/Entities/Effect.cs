@@ -53,20 +53,11 @@ namespace BOTB64.Entities
         All = -0,
     }
 
-    public class EffectContext
-    {
-        public Character Invoker { get; set; }
-
-        public EffectContext(Character invoker)
-        {
-            Invoker = invoker;
-        }
-    }
-
     public class Effect
     {
         public EffectTrigger Trigger = 0;
         public string Script = "";
+        public List<Parameter> Parameters = new();
 
         public bool IsDirect => Trigger == 0;
     }

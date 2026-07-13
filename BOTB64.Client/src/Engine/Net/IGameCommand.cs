@@ -1,6 +1,5 @@
 ﻿using BOTB64.Entities;
 using BOTB64.Runtime;
-using BOTB64.Entities.Context;
 using MessagePack;
 namespace BOTB64.Engine.Net
 {
