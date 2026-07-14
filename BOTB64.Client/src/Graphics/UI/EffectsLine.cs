@@ -13,7 +13,7 @@ namespace BOTB64.Graphics.UI
         private bool _dirty = true;
         public IReadOnlyList<EffectSquare> Effects => _effects;
 
-        public void Sync<T>(IReadOnlyList<T> effects, Func<T, int> getId, Func<T, int> getDuration, Func<T, string> getTooltip, Func<int, RL.Texture2D> iconLookup)
+        public void Sync<T>(IReadOnlyList<T> effects, Func<T, int> getId, Func<T, int> getDuration, Func<T, string> getTooltip, Func<T, RL.Texture2D> getIcon)
         {
             while (_effects.Count > effects.Count)
             {
@@ -30,7 +30,7 @@ namespace BOTB64.Graphics.UI
             {
                 var e = effects[i];
                 int id = getId(e);
-                _effects[i].SetIcon(iconLookup(id));
+                _effects[i].SetIcon(getIcon(e));
                 _effects[i].SetTooltip(getTooltip(e));
                 _effects[i].Duration = getDuration(e);
             }

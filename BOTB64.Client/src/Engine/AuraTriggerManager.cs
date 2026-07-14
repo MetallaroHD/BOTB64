@@ -1,6 +1,7 @@
 ﻿using BOTB64.Entities;
 using BOTB64.Entities.DTOs;
 using BOTB64.Runtime;
+using RL = Raylib_cs;
 
 namespace BOTB64.Engine
 {
@@ -16,7 +17,8 @@ namespace BOTB64.Engine
     {
         private static Game Parent;
 
-        private static List<AuraDTO> CachedAuras = new List<AuraDTO>();
+        private static List<Aura> AuraTemplates = new List<Aura>();
+        private static List<TileEffect> TileEffectTemplates = new List<TileEffect>();
 
         public static void Init(Game parent)
         {
@@ -49,23 +51,30 @@ namespace BOTB64.Engine
 
         public static void ClearCache()
         {
-            CachedAuras.Clear();
+            AuraTemplates.Clear();
+            TileEffectTemplates.Clear();
         }
 
         public static void CacheAllAuras()
         {
+            //for now it's fine like this, however at some point we may want to give spells a REQUIRE property to only cache necessary auras
             JsonDataFile<AuraDTO> af = new JsonDataFile<AuraDTO>();
-            CachedAuras = af.DeserializeAll(new DataFile(CommonURIs.AuraJSON));
+            List<AuraDTO> auras = af.DeserializeAll(new DataFile(CommonURIs.AuraJSON));
+            //create all auras
+
+            JsonDataFile<TileEffectDTO> tf = new JsonDataFile<TileEffectDTO>();
+            List<TileEffectDTO> tileffs = tf.DeserializeAll(new DataFile(CommonURIs.TileEffJSON));
+            //create all teffs
         }
 
-        public static string GetAuraIcon(int id)
+        public static RL.Texture2D? GetAuraIcon(int id)
         {
-            foreach (var aura in CachedAuras)
+            foreach (var aura in AuraTemplates)
             {
                 if(id == aura.ID)
-                    return CommonURIs.GetAuraIcon(aura);
+                    return aura.Icon;
             }
-            return "";
+            return null;
         }
     }
 }

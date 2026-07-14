@@ -1,4 +1,6 @@
-﻿using System.Reflection.Metadata;
+﻿using BOTB64.Graphics.Animations;
+using System.Reflection.Metadata;
+using RL = Raylib_cs;
 
 namespace BOTB64.Entities
 {
@@ -15,7 +17,9 @@ namespace BOTB64.Entities
 
     public class Aura : ExecutableBase, IReadable
     {
-        // add visuals later 
+        public AuraVfxAnimation Animation { get; set; }
+        public RL.Texture2D Icon;
+
         public Character? Owner;
         public Character? Wearer;
 

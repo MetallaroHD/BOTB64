@@ -5,26 +5,22 @@ using MoonSharp.Interpreter;
 
 namespace BOTB64.Engine
 {
-    public struct TemporaryLuaData
-    {
-        public int LastDamageDone;
-        public bool LastCrit;
-    }
-
     public class LuaEffectRunner
     {
         public readonly Script Lua = new Script();
-
-        public TemporaryLuaData Temp;
+        private EffectContext CurrentContext;
+        private Effect CurrentEffect;
 
         public LuaEffectRunner(Game game) 
         {
             // ACTIONS
-            Lua.Globals["Damage"] = (Action<int, int, bool>)((targetID, amount, crit) => { Temp.LastDamageDone = amount; Temp.LastCrit = crit; game.RecordAndApply(new DamageEvent { TargetID = targetID, Amount = amount, Crit = crit }); });
-            Lua.Globals["Die"] = (Action<int>)(charId => { game.RecordAndApply(new DeathEvent { CharacterID = charId }); var character = game.FindCharacter(charId); if (character != null) AuraTriggerManager.Execute(new EffectContext(character), EffectTrigger.OnDeath, AuraType.Character | AuraType.Tile); });
+            Lua.Globals["Damage"] = (Action<int, int>)((targetID, amount) => { EffectProcessor.Damage(game, CurrentContext, targetID, amount, CurrentEffect.Type, CurrentEffect.Source, CurrentEffect.Scaling); });
+            Lua.Globals["DamageAt"] = (Action<int, int, int>)((q, r, amount) => { Character? tg = game.FindCharacter(q, r); if (tg == null) return; EffectProcessor.Damage(game, CurrentContext, tg, amount, CurrentEffect.Type, CurrentEffect.Source, CurrentEffect.Scaling); });
+            Lua.Globals["Die"] = (Action<int>)(charId => { EffectProcessor.Die(game, charId); });
 
-            //RNG
-            Lua.Globals["Roll"] = (Func<float, bool>)(chance => game.Random() < chance);
+            // OTHER
+            Lua.Globals["Roll"] = (Func<float, bool>)(chance => EffectProcessor.Roll(game, chance));
+            Lua.Globals["Log"] = (Action<string>)(text => Logger.Log(text));
 
             // GETTERS
             Lua.Globals["GetHP"] = (Func<int, int>)(charId => game.FindCharacter(charId)?.CurrentHP ?? 0);
@@ -32,27 +28,40 @@ namespace BOTB64.Engine
             Lua.Globals["GetSpellPower"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.SpellPower ?? 0);
             Lua.Globals["GetAutoAttackAP"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.AutoAttackAP ?? 0);
             Lua.Globals["GetAutoAttackSP"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.AutoAttackSP ?? 0);
-            Lua.Globals["GetAutoAttackDef"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.AutoAttackDef ?? 0);
             Lua.Globals["GetDefense"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.Defense ?? 0);
-            Lua.Globals["GetAutoAttackMDef"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.AutoAttackMDef ?? 0);
             Lua.Globals["GetCritChance"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.Crit ?? 0);
             Lua.Globals["IsAlive"] = (Func<int, bool>)(charId => game.FindCharacter(charId)?.Alive ?? false);
         }
 
         public void Run(Effect effect, EffectContext context)
         {
+            CurrentContext = context;
+            CurrentEffect = effect;
+
             Lua.Globals["Invoker"] = context.Invoker.GameID;
             if (context is SpellCastContext sc)
             {
                 Lua.Globals["Caster"] = sc.Caster.GameID;
                 Lua.Globals["Targets"] = sc.ExplicitTarget;
             }
-            if (context is DirectDamageContext dc)
+            try
             {
-                Lua.Globals["Attacker"] = dc.DamageDoer.GameID;
-                Lua.Globals["Target"] = dc.DamageTaker.GameID;
+                Lua.DoString(effect.Script);
             }
-            Lua.DoString(effect.Script);
+            catch (Exception e)
+            {
+                Console.WriteLine("Lua exception: " + e.Message);
+            }
+            finally 
+            {
+                CurrentContext = null;
+                CurrentEffect = null;
+            }
+        }
+
+        public static void RegisterTypes()
+        {
+            UserData.RegisterType<Hex>();
         }
     }
 }

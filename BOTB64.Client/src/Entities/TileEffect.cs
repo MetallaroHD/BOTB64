@@ -1,4 +1,7 @@
-﻿using BOTB64.Runtime;
+﻿using BOTB64.Graphics.Animations;
+using BOTB64.Graphics.G3D;
+using BOTB64.Runtime;
+using RL = Raylib_cs;
 
 namespace BOTB64.Entities
 {
@@ -34,6 +37,14 @@ namespace BOTB64.Entities
 
     public class TileEffect : ExecutableBase, IReadable
     {
+        // Usually only assign 1 of the three visuals
+        // Terrain tiles may have animated visuals or static pngs 
+        public TileVfxAnimation? Animation { get; set; }
+        public RL.Texture2D? Texture { get; set; }
+
+        // Statues always use non-animated 3d models (special tiles do what they want)
+        public ModelInstance? Model { get; set; }
+
         public Character? Owner;
 
         public int ID = 0;

@@ -50,7 +50,41 @@ namespace BOTB64.Entities
         // When the spell or attack crits
         OnCrit = 1 << 16,
 
+        // Just before damage application
+        OnPreDamageDealt = 1 << 17,
+
+        // On autoattack done
+        OnAutoAttack = 1 << 18,
+
         All = -0,
+    }
+    public enum EffectSourceType
+    {
+        Unknown = 0,
+        AutoAttack = 1,
+        Spell = 2,
+        Aura = 3,
+        TileEffect = 4,
+    }
+
+    public enum EffectDamageType
+    {
+        None = 0,
+        Physical = 1,
+        Fire = 2,
+        Lightning = 3,
+        Frost = 4,
+        Nature = 5,
+        Light = 6,
+        Shadow = 7,
+    }
+
+    public enum EffectDamageScaling
+    {
+        None = 0,
+        AttackDamage = 1,
+        SpellDamage = 2,
+        Hybrid = 4,
     }
 
     public class Effect
@@ -58,6 +92,9 @@ namespace BOTB64.Entities
         public EffectTrigger Trigger = 0;
         public string Script = "";
         public List<Parameter> Parameters = new();
+        public EffectSourceType Source = EffectSourceType.Unknown;
+        public EffectDamageType Type = EffectDamageType.None;
+        public EffectDamageScaling Scaling = EffectDamageScaling.None;
 
         public bool IsDirect => Trigger == 0;
     }

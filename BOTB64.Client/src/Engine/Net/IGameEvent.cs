@@ -13,6 +13,7 @@ namespace BOTB64.Engine.Net
     [Union(4, typeof(CharacterReassignedEvent))]
     [Union(5, typeof(TeamEliminatedEvent))]
     [Union(6, typeof(ActionSpentEvent))]
+    [Union(7, typeof(HealEvent))]
     public interface IGameEvent
     {
         void Apply(Game game);
@@ -60,6 +61,24 @@ namespace BOTB64.Engine.Net
                 target.CurrentHP -= Amount;
                 FloatingTextManager.Add(Amount.ToString(), HexAlgo.HexToWorld(target.Position));
                 Logger.Log(target.Name + " receives " + Amount + " damage." + (Crit ? " A critical hit!" : ""));
+            }
+        }
+    }
+
+    [MessagePackObject]
+    public struct HealEvent : IGameEvent
+    {
+        [Key(0)] public int TargetID;
+        [Key(1)] public int Amount;
+        [Key(2)] public bool Crit;
+        public void Apply(Game game)
+        {
+            var target = game.FindCharacter(TargetID);
+            if (target != null)
+            {
+                target.CurrentHP += Amount;
+                FloatingTextManager.Add(Amount.ToString(), HexAlgo.HexToWorld(target.Position), color: Raylib_cs.Color.Green);
+                Logger.Log(target.Name + " heals " + Amount + " damage." + (Crit ? " A critical hit!" : ""));
             }
         }
     }

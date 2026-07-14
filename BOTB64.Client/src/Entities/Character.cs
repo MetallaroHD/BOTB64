@@ -47,11 +47,14 @@ namespace BOTB64.Entities
         public int SpellPower = 0;
         public int Defense = 5;
         public int MagicDefense = 0;
+        public float ArmorPen = 0f;
+        public float SpellPen = 0f;
         public int Haste = 4;
         public int Speed = 5;
 
         public float Crit = 0f;
         public float LifeSteal = 0f;
+        public float SpellVamp = 0f;
 
         public int CurrentHP = 50;
         public int CurrentResource = 15;
@@ -66,9 +69,7 @@ namespace BOTB64.Entities
         public int AutoAttackRange = 4;
         public float AutoAttackAP = 1f;
         public float AutoAttackSP = 0f;
-        public float AutoAttackDef = 1f;
-        public float AutoAttackMDef = 0f;
-        public DamageType AutoAttackDamageType = DamageType.Physical;
+        public EffectDamageType AutoAttackDamageType = EffectDamageType.Physical;
 
         public ResourceType ResType = ResourceType.Mana;
         public Faction Faction = Faction.Neutral;

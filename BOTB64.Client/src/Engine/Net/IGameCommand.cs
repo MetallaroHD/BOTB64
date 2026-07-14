@@ -59,13 +59,17 @@ namespace BOTB64.Engine.Net
         [Key(0)] public int ActingCharacterID { get; set; }
         [Key(1)] public int TargetID { get; set; }
 
+        // Used for caching
+        Character? attacker;
+        Character? target;
+
         public bool Validate(Game game)
         {
             if (game.CurrentCharacter.GameID != ActingCharacterID)
                 return false;
 
-            var attacker = game.FindCharacter(ActingCharacterID);
-            var target = game.FindCharacter(TargetID);
+            attacker = game.FindCharacter(ActingCharacterID);
+            target = game.FindCharacter(TargetID);
 
             if (attacker == null || target == null) 
                 return false;
@@ -80,28 +84,13 @@ namespace BOTB64.Engine.Net
 
         public void Resolve(Game game)
         {
-            var attacker = game.FindCharacter(ActingCharacterID);
-            var target = game.FindCharacter(TargetID);
-
             game.RecordAndApply(new ActionSpentEvent { CharacterID = ActingCharacterID, FastAction = false });
 
-            var ctx = new DirectDamageContext(attacker, attacker, target)
-            {
-                DamageType = attacker.AutoAttackDamageType,
-                SourceType = DamageSourceType.AutoAttack,
-            };
-
+            var ctx = new SpellCastContext(attacker, [target.Position]);
             var runner = game.GetLuaRunner();
             runner.Run(attacker.AutoAttackEffect, ctx);
 
-            ctx.DamageDone = runner.Temp.LastDamageDone;
-            ctx.Crit = runner.Temp.LastCrit;
-
-            AuraTriggerManager.Execute(ctx, EffectTrigger.OnDamageDone, AuraType.Character | AuraType.Tile);
-            if (target.Alive)
-                AuraTriggerManager.Execute(ctx, EffectTrigger.OnDamageTaken, AuraType.Character | AuraType.Tile);
-            if (ctx.Crit)
-                AuraTriggerManager.Execute(ctx, EffectTrigger.OnCrit, AuraType.Character | AuraType.Tile);
+            AuraTriggerManager.Execute(ctx, EffectTrigger.OnAutoAttack, AuraType.Character | AuraType.Tile);
         }
     }
 
