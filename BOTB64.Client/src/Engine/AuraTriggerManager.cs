@@ -37,7 +37,7 @@ namespace BOTB64.Engine
 
             if (type.HasFlag(AuraType.Character))
             {
-                foreach (var aura in invoker.Auras)
+                foreach (var aura in invoker.CurrentAuras)
                     aura.Execute(Parent, ctx, condition);
             }
             if(type.HasFlag(AuraType.Tile))

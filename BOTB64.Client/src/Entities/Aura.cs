@@ -20,20 +20,22 @@ namespace BOTB64.Entities
         public AuraVfxAnimation Animation { get; set; }
         public RL.Texture2D Icon;
 
-        public Character? Owner;
-        public Character? Wearer;
-
+        // --- Base data (does not change during game) --- //
         public int ID = 0;
         public string Name = "";
         public int Duration = 0;
-        public int Remaining = 0;
         public int MaxStacks = 0;
-        public int CurrentStacks = 0;
-
         public DispelType Dispel = DispelType.None;
 
-        public List<Parameter> Parameters = new();
-
         public string Tooltip = "";
+
+        // --- Volatile data --- //
+        public Character? Owner; //character that applied the spell
+        public Character? Wearer; //character that has the spell applied
+
+        public int Remaining = 0;
+        public int CurrentStacks = 0;
+
+        public List<Parameter> Parameters = new();
     }
 }

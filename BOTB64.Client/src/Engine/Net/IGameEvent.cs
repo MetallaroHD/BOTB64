@@ -76,7 +76,7 @@ namespace BOTB64.Engine.Net
             var target = game.FindCharacter(TargetID);
             if (target != null)
             {
-                target.CurrentHP += Amount;
+                target.CurrentHP = Math.Max(target.CurrentHP + Amount, target.MaxHP);
                 FloatingTextManager.Add(Amount.ToString(), HexAlgo.HexToWorld(target.Position), color: Raylib_cs.Color.Green);
                 Logger.Log(target.Name + " heals " + Amount + " damage." + (Crit ? " A critical hit!" : ""));
             }

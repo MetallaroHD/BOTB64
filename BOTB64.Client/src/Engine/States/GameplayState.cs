@@ -215,7 +215,7 @@ namespace BOTB64.Engine.States
             Screen.PlayerStatus.SetHealth(current.CurrentHP, current.MaxHP);
             Screen.PlayerStatus.SetResource(current.CurrentResource, current.MaxRes);
             Screen.PlayerStatus.SetName(current.Name);
-            Screen.PlayerStatus.Effects.Sync(current.Auras, getId: a => a.ID, getDuration: a => a.Remaining, getTooltip: a => a.Tooltip, getIcon: a => a.Icon);
+            Screen.PlayerStatus.Effects.Sync(current.CurrentAuras, getId: a => a.ID, getDuration: a => a.Remaining, getTooltip: a => a.Tooltip, getIcon: a => a.Icon);
         }
 
         private void UpdateTargetGUI()
@@ -231,7 +231,7 @@ namespace BOTB64.Engine.States
             Screen.TargetStatus.SetHealth(target.CurrentHP, target.MaxHP);
             Screen.TargetStatus.SetResource(target.CurrentResource, target.MaxRes);
             Screen.TargetStatus.SetName(target.Name);
-            Screen.PlayerStatus.Effects.Sync(target.Auras, getId: a => a.ID, getDuration: a => a.Remaining, getTooltip: a => a.Tooltip, getIcon: a => a.Icon);
+            Screen.PlayerStatus.Effects.Sync(target.CurrentAuras, getId: a => a.ID, getDuration: a => a.Remaining, getTooltip: a => a.Tooltip, getIcon: a => a.Icon);
         }
 
         private void UpdateSpellButtons()

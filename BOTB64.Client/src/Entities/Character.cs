@@ -28,17 +28,10 @@ namespace BOTB64.Entities
 
         public bool Alive = false;
 
-        // The incremental in-game id
-        public int GameID = 0;
-        // The id of the controlling player
-        public int OwnerID = -1;
+        // --- Base data (can still change during game) --- //
         // The database id
         public int ID = 0;
         public string Name = "";
-
-        public Hex Position;
-        public Hex Direction = new(1, 0);
-
         public int MaxHP = 50;
         public int MaxRes = 25;
         public int ResRegen = 0;
@@ -47,14 +40,32 @@ namespace BOTB64.Entities
         public int SpellPower = 0;
         public int Defense = 5;
         public int MagicDefense = 0;
-        public float ArmorPen = 0f;
-        public float SpellPen = 0f;
         public int Haste = 4;
         public int Speed = 5;
-
+        public float ArmorPen = 0f; //these are all 0-1
+        public float SpellPen = 0f;
         public float Crit = 0f;
         public float LifeSteal = 0f;
         public float SpellVamp = 0f;
+
+        public Effect AutoAttackEffect = new();
+        public int AutoAttackRange = 4;
+        public float AutoAttackAP = 1f;
+        public float AutoAttackSP = 0f;
+        public EffectDamageType AutoAttackDamageType = EffectDamageType.Physical;
+        public ResourceType ResType = ResourceType.Mana;
+
+        // Ids of auras that are applied at game start
+        public List<int> PermanentAuras = new();
+
+        // --- Volatile data --- //
+        // The incremental in-game id
+        public int GameID = 0;
+        // The id of the controlling player
+        public int OwnerID = -1;
+
+        public Hex Position;
+        public Hex Direction = new(1, 0);
 
         public int CurrentHP = 50;
         public int CurrentResource = 15;
@@ -64,22 +75,11 @@ namespace BOTB64.Entities
         public int RemainMovement = 5;
         public int RemainAction = 1;
         public int RemainFastAction = 1;
-
-        public Effect AutoAttackEffect = new();
-        public int AutoAttackRange = 4;
-        public float AutoAttackAP = 1f;
-        public float AutoAttackSP = 0f;
-        public EffectDamageType AutoAttackDamageType = EffectDamageType.Physical;
-
-        public ResourceType ResType = ResourceType.Mana;
         public Faction Faction = Faction.Neutral;
-
-        public List<int> AuraIDs = new();
-        public List<int> SpellIDs = new();
 
         // maps spells to keybinds (1-5)
         public Dictionary<int, Spell> ActiveSpells = new();
-        public List<Aura> Auras = new();
+        public List<Aura> CurrentAuras = new();
         public List<Parameter> CustomParameters = new();
 
         public void Draw()

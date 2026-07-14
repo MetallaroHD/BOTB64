@@ -45,17 +45,18 @@ namespace BOTB64.Entities
         // Statues always use non-animated 3d models (special tiles do what they want)
         public ModelInstance? Model { get; set; }
 
-        public Character? Owner;
-
+        // --- Base data (does not change during game) --- //
         public int ID = 0;
         public string Name = "";
         public int Duration = 0;
-        public int Remaining = 0;
-
         public DispelType Dispel = DispelType.None;
         public TileEffectFlag Flags = TileEffectFlag.None;
         public TileEffectType Type = TileEffectType.None;
 
+        // --- Volatile data --- //
+        public Character? Owner;
+
+        public int Remaining = 0;
         public List<Parameter> Parameters = new();
     }
 }
