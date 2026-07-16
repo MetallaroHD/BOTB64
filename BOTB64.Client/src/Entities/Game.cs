@@ -101,7 +101,7 @@ namespace BOTB64.Entities
             for (int i = 0; i < lI.BlueTeam.Count; i++)
             {
                 var chara = lI.BlueTeam[i];
-                Character character = NewCharacter(chara);
+                Character character = LoadCharacter(chara);
                 character.Faction = Faction.BlueTeam;
                 character.OwnerID = i < lI.BlueOwners.Count ? lI.BlueOwners[i] : -1;
                 Characters.Add(character);
@@ -109,7 +109,7 @@ namespace BOTB64.Entities
             for (int i = 0; i < lI.RedTeam.Count; i++)
             {
                 var chara = lI.RedTeam[i];
-                Character character = NewCharacter(chara);
+                Character character = LoadCharacter(chara);
                 character.Faction = Faction.RedTeam;
                 character.OwnerID = i < lI.RedOwners.Count ? lI.RedOwners[i] : -1;
                 Characters.Add(character);
@@ -138,7 +138,7 @@ namespace BOTB64.Entities
             }
         }
 
-        private Character NewCharacter(CharacterDTO dto)
+        private Character LoadCharacter(CharacterDTO dto)
         {
             (string script, string model, string icon) = CommonURIs.GetCharacterResources(dto);
 

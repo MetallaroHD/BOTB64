@@ -7,6 +7,8 @@ BOTB64.Shared/bin/
 BOTB64.Shared/obj/
 BOTB64.Server/bin/
 BOTB64.Server/obj/
+BOTB64.Editor/bin/
+BOTB64.Editor/obj/
 *.user
 BOTB64.Client/data.b64
 BOTB64.Client/data.zip

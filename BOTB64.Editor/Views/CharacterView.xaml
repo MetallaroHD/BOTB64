@@ -1,0 +1,96 @@
+<UserControl x:Class="BOTB64.Editor.Views.CharacterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:models="clr-namespace:BOTB64.Editor.Models"
+             xmlns:controls="clr-namespace:BOTB64.Editor.Controls"
+             xmlns:entities="clr-namespace:BOTB64.Entities;assembly=BOTB64.Client">
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="ResourceTypeValues" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="entities:ResourceType"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+        <Style TargetType="Label">
+            <Setter Property="Padding" Value="0,4,8,4"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="0,3"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="12">
+            <TextBlock Text="Character" FontSize="18" FontWeight="Bold" Margin="0,0,0,8"/>
+
+            <UniformGrid Columns="4">
+                <Label Content="Max HP"/><TextBox Text="{Binding MaxHP, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Content="Max Resource"/><TextBox Text="{Binding MaxRes, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Content="Resource Type"/>
+                <ComboBox ItemsSource="{Binding Source={StaticResource ResourceTypeValues}}" SelectedItem="{Binding ResType}" Margin="0,3"/>
+                <Label Content="Start Resource"/><TextBox Text="{Binding StartRes, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Content="HP Regen"/><TextBox Text="{Binding HPRegen, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Content="Res Regen"/><TextBox Text="{Binding ResRegen, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Content="Attack Power"/><TextBox Text="{Binding AttackPower, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Content="Spell Power"/><TextBox Text="{Binding SpellPower, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Content="Defense"/><TextBox Text="{Binding Defense, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Content="Magic Defense"/><TextBox Text="{Binding MagicDefense, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Content="Haste"/><TextBox Text="{Binding Haste, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Content="Speed"/><TextBox Text="{Binding Speed, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Content="Armor Pen"/><TextBox Text="{Binding ArmorPen, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Content="Spell Pen"/><TextBox Text="{Binding SpellPen, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Content="Crit"/><TextBox Text="{Binding Crit, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Content="Life Steal"/><TextBox Text="{Binding LifeSteal, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Content="Spell Vamp"/><TextBox Text="{Binding SpellVamp, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Content="AA Range"/><TextBox Text="{Binding AutoAttackRange, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Content="AA AP scaling"/><TextBox Text="{Binding AutoAttackAP, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Content="AA SP scaling"/><TextBox Text="{Binding AutoAttackSP, UpdateSourceTrigger=PropertyChanged}"/>
+            </UniformGrid>
+
+            <TextBlock Text="Autoattack Effect" FontWeight="Bold" Margin="0,16,0,4"/>
+            <controls:EffectRow DataContext="{Binding AutoAttackEffect}" AllowRemove="False"/>
+
+            <TextBlock Text="Permanent Auras (aura IDs applied at game start)" FontWeight="Bold" Margin="0,16,0,4"/>
+            <ItemsControl ItemsSource="{Binding PermanentAuras}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="80" Margin="0,0,6,0"/>
+                            <Button Content="Remove" Padding="6,2" Click="RemoveAura_Click"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Button Content="+ Add Aura" HorizontalAlignment="Left" Margin="0,6" Padding="8,3" Click="AddAura_Click"/>
+
+            <TextBlock Text="Starting Spell Loadout (keybind -&gt; spell ID)" FontWeight="Bold" Margin="0,16,0,4"/>
+            <ItemsControl ItemsSource="{Binding SpellLoadout}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                            <Label Content="Keybind"/>
+                            <TextBox Text="{Binding Keybind, UpdateSourceTrigger=PropertyChanged}" Width="60" Margin="0,0,10,0"/>
+                            <Label Content="Spell ID"/>
+                            <TextBox Text="{Binding SpellId, UpdateSourceTrigger=PropertyChanged}" Width="60" Margin="0,0,10,0"/>
+                            <Button Content="Remove" Padding="6,2" Click="RemoveSpell_Click"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Button Content="+ Add Spell Slot" HorizontalAlignment="Left" Margin="0,6" Padding="8,3" Click="AddSpell_Click"/>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
