@@ -1,9 +1,13 @@
 ﻿using BOTB64.Engine;
 using BOTB64.Engine.Net;
-using BOTB64.Shared.DTOs;
 using BOTB64.Graphics.G3D;
 using BOTB64.Runtime;
+using BOTB64.Shared.DTOs;
+using BOTB64.Shared.Files;
 using MessagePack;
+using MoonSharp.Interpreter;
+using Raylib_cs;
+using System;
 
 namespace BOTB64.Entities
 {
@@ -96,28 +100,16 @@ namespace BOTB64.Entities
             for (int i = 0; i < lI.BlueTeam.Count; i++)
             {
                 var chara = lI.BlueTeam[i];
-                (string script, string model, string icon) = CommonURIs.GetCharacterResources(chara);
-
-                Character character = new Character();
-                character.Name = chara.Name;
-                character.ID = chara.ID;
-                character.Model = new ModelInstance(AssetManager.GetModel(model, ModelPurpose.Game));
+                Character character = NewCharacter(chara);
                 character.Faction = Faction.BlueTeam;
-                // now we fill the rest using the script URI
                 character.OwnerID = i < lI.BlueOwners.Count ? lI.BlueOwners[i] : -1;
                 Characters.Add(character);
             }
             for (int i = 0; i < lI.RedTeam.Count; i++)
             {
                 var chara = lI.RedTeam[i];
-                (string script, string model, string icon) = CommonURIs.GetCharacterResources(chara);
-
-                Character character = new Character();
-                character.Name = chara.Name;
-                character.ID = chara.ID;
-                character.Model = new ModelInstance(AssetManager.GetModel(model, ModelPurpose.Game));
+                Character character = NewCharacter(chara);
                 character.Faction = Faction.RedTeam;
-                // now we fill the rest using the script URI
                 character.OwnerID = i < lI.RedOwners.Count ? lI.RedOwners[i] : -1;
                 Characters.Add(character);
             }
@@ -134,15 +126,35 @@ namespace BOTB64.Entities
             {
                 if (character.Faction == Faction.BlueTeam && blueIndex < Level.LevelBoard.BlueSpawns.Count)
                 {
-                    Level.LevelBoard.SpawnCharacter(ref CharAlloc, character, Level.LevelBoard.BlueSpawns[blueIndex].Position, new Hex(0, -1));
+                    Spawn(character, Level.LevelBoard.BlueSpawns[blueIndex].Position, new Hex(0, -1));
                     blueIndex++;
                 }
                 else if (character.Faction == Faction.RedTeam && redIndex < Level.LevelBoard.RedSpawns.Count)
                 {
-                    Level.LevelBoard.SpawnCharacter(ref CharAlloc, character, Level.LevelBoard.RedSpawns[redIndex].Position, new Hex(0, 1));
+                    Spawn(character, Level.LevelBoard.RedSpawns[redIndex].Position, new Hex(0, 1));
                     redIndex++;
                 }
             }
+        }
+
+        private Character NewCharacter(CharacterDTO dto)
+        {
+            (string script, string model, string icon) = CommonURIs.GetCharacterResources(dto);
+
+            var reader = new CharacterDataFile();
+            DataFile df = new DataFile(script);
+            Character character = reader.Read(df);
+            character.Name = dto.Name;
+            character.ID = dto.ID;
+            character.Model = new ModelInstance(AssetManager.GetModel(model, ModelPurpose.Game));
+            return character;
+        }
+
+        private void Spawn(Character chara, Hex pos, Hex dir)
+        {
+            //Things like setting hp = maxhp
+            //Initialize spells and permanent auras
+            Level.LevelBoard.SpawnCharacter(ref CharAlloc, chara, pos, dir);
         }
 
         internal void AdvanceTurnInternal()

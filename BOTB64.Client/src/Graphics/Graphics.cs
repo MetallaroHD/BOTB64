@@ -26,7 +26,7 @@ namespace BOTB64.Graphics
         public static void EndFrame()
         {
 #if DEBUG
-            Console.WriteLine(RB.GetFrameTime());
+            //Console.WriteLine(RB.GetFrameTime());
 #endif
             RB.EndDrawing();
         }

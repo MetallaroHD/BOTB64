@@ -17,11 +17,11 @@ namespace BOTB64
             if (!DataFile.DirectoryExists())
                 return;
 
-            DatabaseFileManager.Init();
             Settings.Load();
             UIRenderer.Update();
             ResourceManager.Initialize();
             ResourceArchive.Initialize(DataFile.DataDir);
+            DatabaseFileManager.Init();
             LuaEffectRunner.RegisterTypes();
             Graphics.Graphics.Initialize(1280, 720, "BOTB64");
             Engine.Engine.Initialize();
