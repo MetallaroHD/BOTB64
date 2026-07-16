@@ -73,6 +73,7 @@ namespace BOTB64.Entities
         {
             AssetManager.UnloadAll();
             ShaderManager.Unload();
+            LuaRunner.End();
         }
 
         public List<IGameEvent> ExecuteAndResolve(IGameCommand command)

@@ -1,12 +1,15 @@
 ﻿using BOTB64.Engine.Net;
 using BOTB64.Entities;
 using BOTB64.Runtime;
+using BOTB64.Shared.Files;
 using MoonSharp.Interpreter;
 
 namespace BOTB64.Engine
 {
     public class LuaEffectRunner
     {
+        public Dictionary<string, string> ScriptCache;
+
         public readonly Script Lua = new Script();
         private EffectContext CurrentContext;
         private Effect CurrentEffect;
@@ -14,8 +17,8 @@ namespace BOTB64.Engine
         public LuaEffectRunner(Game game) 
         {
             // ACTIONS
-            Lua.Globals["Damage"] = (Action<int, int>)((targetID, amount) => { EffectProcessor.Damage(game, CurrentContext, targetID, amount, CurrentEffect.Type, CurrentEffect.Source, CurrentEffect.Scaling); });
-            Lua.Globals["DamageAt"] = (Action<int, int, int>)((q, r, amount) => { Character? tg = game.FindCharacter(q, r); if (tg == null) return; EffectProcessor.Damage(game, CurrentContext, tg, amount, CurrentEffect.Type, CurrentEffect.Source, CurrentEffect.Scaling); });
+            Lua.Globals["Damage"] = (Action<int, int>)((targetID, amount) => { EffectProcessor.Damage(game, CurrentContext, CurrentEffect, targetID, amount); });
+            Lua.Globals["DamageAt"] = (Action<int, int, int>)((q, r, amount) => { Character? tg = game.FindCharacter(q, r); if (tg == null) return; EffectProcessor.Damage(game, CurrentContext, CurrentEffect, tg, amount); });
             Lua.Globals["Die"] = (Action<int>)(charId => { EffectProcessor.Die(game, charId); });
 
             // OTHER
@@ -46,7 +49,20 @@ namespace BOTB64.Engine
             }
             try
             {
-                Lua.DoString(effect.Script);
+                if (ScriptCache.TryGetValue(effect.Script, out string? code))
+                {
+                    if (code != null)
+                        Lua.DoString(code);
+                    else
+                        throw new Exception("Invalid Script!");
+                }
+                else
+                {
+                    DataFile scriptFile = new DataFile(CommonURIs.ScriptDir + effect.Script + CommonURIs.ScriptExt);
+                    string cd = scriptFile.ReadAll();
+                    ScriptCache.Add(effect.Script, cd);
+                    Lua.DoString(cd);
+                }
             }
             catch (Exception e)
             {
@@ -62,6 +78,11 @@ namespace BOTB64.Engine
         public static void RegisterTypes()
         {
             UserData.RegisterType<Hex>();
+        }
+
+        public void End()
+        {
+            ScriptCache.Clear();
         }
     }
 }

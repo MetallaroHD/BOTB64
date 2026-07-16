@@ -89,7 +89,7 @@ namespace BOTB64.Entities
 
     public class Effect
     {
-        // This is the whole script not just the name
+        // Just the name of the script - no extension
         public string Script = "";
         public EffectTrigger Trigger = 0;
         public EffectSourceType Source = EffectSourceType.Unknown;

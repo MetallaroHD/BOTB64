@@ -12,27 +12,27 @@ namespace BOTB64.Entities
             return game.Random() < thresh;
         }
 
-        public static void Damage(Game game, EffectContext ctx, int targetID, int baseDamage, EffectDamageType dType, EffectSourceType sType, EffectDamageScaling scal)
+        public static void Damage(Game game, EffectContext ctx, Effect eff, int targetID, int baseDamage)
         {
             var target = game.FindCharacter(targetID);
-            Damage(game, ctx, target, baseDamage, dType, sType, scal);
+            Damage(game, ctx, eff, target, baseDamage);
         }
 
-        public static void Damage(Game game, EffectContext ctx, Character target, int baseDamage, EffectDamageType dType, EffectSourceType sType, EffectDamageScaling scal)
+        public static void Damage(Game game, EffectContext ctx, Effect eff, Character target, int baseDamage)
         {
             if (target == null)
                 return;
             var dmgCtx = new DamageContext(ctx.Invoker, ctx.Invoker, target);
             dmgCtx.DamageDone = baseDamage;
-            dmgCtx.DamageType = dType;
-            dmgCtx.SourceType = sType;
+            dmgCtx.DamageType = eff.Type;
+            dmgCtx.SourceType = eff.Source;
             AuraTriggerManager.Execute(dmgCtx, EffectTrigger.OnPreDamageDealt, AuraType.Character | AuraType.Tile);
-            dmgCtx.DamageDone = CalcDamage(dmgCtx.DamageDoer, dmgCtx.DamageTaker, dmgCtx.DamageDone, scal);
+            dmgCtx.DamageDone = CalcDamage(dmgCtx.DamageDoer, dmgCtx.DamageTaker, dmgCtx.DamageDone, eff.Scaling);
             dmgCtx.Crit = Roll(game, dmgCtx.DamageDoer.Crit);
             if (dmgCtx.Crit)
                 dmgCtx.DamageDone = (int)(1.5 * dmgCtx.DamageDone);
             game.RecordAndApply(new DamageEvent { TargetID = dmgCtx.DamageTaker.GameID, Amount = dmgCtx.DamageDone, Crit = dmgCtx.Crit });
-            game.RecordAndApply(new HealEvent { TargetID = dmgCtx.DamageDoer.GameID, Amount = CalcLifeSteal(dmgCtx.DamageDoer, dmgCtx.DamageDone, scal) });
+            game.RecordAndApply(new HealEvent { TargetID = dmgCtx.DamageDoer.GameID, Amount = CalcLifeSteal(dmgCtx.DamageDoer, dmgCtx.DamageDone, eff.Scaling) });
             if (dmgCtx.DamageDone > 0)
             {
                 AuraTriggerManager.Execute(ctx, EffectTrigger.OnDamageDone, AuraType.Character | AuraType.Tile);

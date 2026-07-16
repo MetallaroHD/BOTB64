@@ -11,6 +11,7 @@ namespace BOTB64.Runtime
         public static readonly string LevelDir = "Levels\\";
         public static readonly string TileEffDir = "TileEffects\\";
         public static readonly string GraphicsDir = "Graphics\\";
+        public static readonly string ScriptDir = "Scripts\\";
         public static readonly string GraphicsIconDir = "Graphics\\Icons\\";
         public static readonly string GraphicsAnimDir = "Graphics\\Animations\\";
         public static readonly string GraphicsModelDir = "Graphics\\Models\\";
