@@ -2,7 +2,7 @@
 using System.IO.Compression;
 using System.Security.Cryptography;
 
-namespace BOTB64.Runtime;
+namespace BOTB64.Shared.Files;
 
 public static class ResourceArchive
 {
@@ -21,7 +21,7 @@ public static class ResourceArchive
     {
         string root = DataFile.DataDir;
 
-        absolutePath = System.IO.Path.GetRelativePath(root,absolutePath);
+        absolutePath = Path.GetRelativePath(root,absolutePath);
 
         return absolutePath.Replace('\\', '/');
     }

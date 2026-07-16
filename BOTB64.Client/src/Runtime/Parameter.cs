@@ -66,6 +66,21 @@ namespace BOTB64.Runtime
             _ => ""
         };
 
+        public static Parameter Create(string name, ParameterType type, string raw)
+        {
+            Parameter p = type switch
+            {
+                ParameterType.Boolean => FromBool(name, false),
+                ParameterType.Integer => FromInt(name, 0),
+                ParameterType.Float => FromFloat(name, 0f),
+                ParameterType.String => FromString(name, ""),
+                ParameterType.Vector => FromVector(name, Vector3.Zero),
+                _ => throw new ArgumentOutOfRangeException(nameof(type), $"Unknown parameter type {type}")
+            };
+            p.Parse(raw);
+            return p;
+        }
+
         public void Parse(string raw)
         {
             switch (Type)

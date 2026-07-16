@@ -1,4 +1,4 @@
-﻿namespace BOTB64.Runtime
+﻿namespace BOTB64.Shared.Files
 {
     public interface IDataFileReader<T>
     {

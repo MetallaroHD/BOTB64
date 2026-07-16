@@ -1,5 +1,5 @@
 ﻿using BOTB64.Entities;
-using BOTB64.Entities.DTOs;
+using BOTB64.Shared.DTOs;
 using BOTB64.Runtime;
 using RL = Raylib_cs;
 
@@ -23,7 +23,6 @@ namespace BOTB64.Engine
         public static void Init(Game parent)
         {
             Parent = parent;
-            CacheAllAuras();
         }
 
         public static void Execute(EffectContext ctx, EffectTrigger condition, AuraType type)
@@ -49,22 +48,22 @@ namespace BOTB64.Engine
             }
         }
 
+        public static Aura GetAura(int id)
+        {
+            // If it is already cached in the list we create a copy and give it to the character, otherwise first read the file and add it to the cache 
+            return new Aura();
+        }
+
+        public static TileEffect GetTileEffect(int id)
+        {
+            // same
+            return new TileEffect();
+        }
+
         public static void ClearCache()
         {
             AuraTemplates.Clear();
             TileEffectTemplates.Clear();
-        }
-
-        public static void CacheAllAuras()
-        {
-            //for now it's fine like this, however at some point we may want to give spells a REQUIRE property to only cache necessary auras
-            JsonDataFile<AuraDTO> af = new JsonDataFile<AuraDTO>();
-            List<AuraDTO> auras = af.DeserializeAll(new DataFile(CommonURIs.AuraJSON));
-            //create all auras
-
-            JsonDataFile<TileEffectDTO> tf = new JsonDataFile<TileEffectDTO>();
-            List<TileEffectDTO> tileffs = tf.DeserializeAll(new DataFile(CommonURIs.TileEffJSON));
-            //create all teffs
         }
 
         public static RL.Texture2D? GetAuraIcon(int id)

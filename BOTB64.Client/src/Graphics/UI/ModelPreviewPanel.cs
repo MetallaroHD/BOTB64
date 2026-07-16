@@ -1,4 +1,4 @@
-﻿using BOTB64.Entities.DTOs;
+﻿using BOTB64.Shared.DTOs;
 using BOTB64.Graphics.G3D;
 using BOTB64.Runtime;
 using System.Numerics;

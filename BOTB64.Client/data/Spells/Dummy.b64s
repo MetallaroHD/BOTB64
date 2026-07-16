@@ -1,6 +1,6 @@
 :BOTB64SPELL
 
-:TARGET ANY
+:TARGET 1
 :RANGE 999
 :COOLDOWN 1
 :CHARGES 2
@@ -9,16 +9,15 @@
 :COSTHP 5
 :PREP 1
 
-:PARAM TEST1 FLOAT
-:PARAM TEST2 VEC
+:PARAMETERS 
+TESTb 0 1
+TESTi 1 5
+TESTf 2 0.3
+TESTs 3 sex
+TESTv 4 2,2,2
 
-:EFFECT
-move TEST1 CasterHP
-move TEST2 CasterPos
-dmg Target TEST1
-apply Caster 0
+:TOOLTIP Generic dummy spell
 
-:TOOLTIP Dummy spell
-
-#:VISUAL 0
-#:AUDIO 0
+#there can be any number of effects, they are executed in sequence when cast (trigger condition should be 0)
+:EFFECTS 
+dummy | 0 | 0 | 0

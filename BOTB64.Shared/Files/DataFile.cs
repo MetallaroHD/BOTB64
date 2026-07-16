@@ -1,4 +1,4 @@
-namespace BOTB64.Runtime
+namespace BOTB64.Shared.Files
 {
     public class DataFile
     {
@@ -15,7 +15,7 @@ namespace BOTB64.Runtime
 
         public static bool DirectoryExists()
         {
-            return System.IO.Path.Exists(DataDir);
+            return Path.Exists(DataDir);
         }
 
         public DataFile(string relPath) 
@@ -70,7 +70,7 @@ namespace BOTB64.Runtime
 
         public string GetDirectory()
         {
-            return System.IO.Path.GetDirectoryName(AbsPath) + System.IO.Path.DirectorySeparatorChar;
+            return Path.GetDirectoryName(AbsPath) + Path.DirectorySeparatorChar;
         }
 
         // Casting to string

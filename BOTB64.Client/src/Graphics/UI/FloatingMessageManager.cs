@@ -4,18 +4,33 @@ namespace BOTB64.Graphics.UI
 {
     public static class FloatingMessageManager
     {
-        static Label Message1;
-        static Label Message2;
-        static Label Message3;
+        private static UIScreen Screen;
+        private static readonly List<TimedLabel> Labels = new();
 
-        static UIScreen Screen;
         public static void Init(UIScreen screen)
         {
             Screen = screen;
         }
 
-        public static void AddMessage(string message, int duration = 5, int fontSize = 10, RL.Color? color = null) 
+        public static void AddMessage(string message, float duration = 5f, int size = 24, RL.Color? color = null)
         {
+            var label = new TimedLabel();
+            label.Setup(message, duration, size, color ?? RL.Color.Red);
+
+            Labels.Add(label);
+            Screen.AddElement(label);
+        }
+
+        public static void Update(float dt)
+        {
+            for (int i = Labels.Count - 1; i >= 0; i--)
+            {
+                if (Labels[i].Finished)
+                {
+                    Screen.RemoveElement(Labels[i]);
+                    Labels.RemoveAt(i);
+                }
+            }
         }
     }
 }

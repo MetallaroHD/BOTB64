@@ -33,7 +33,7 @@ public abstract class UIScreen : IUIScreen
 
     public void AddElement(IUIElement element) => Elements.Add(element);
 
-    protected void RemoveElement(IUIElement element) => Elements.Remove(element);
+    public void RemoveElement(IUIElement element) => Elements.Remove(element);
     
     public virtual bool IsMouseBlocked()
     {

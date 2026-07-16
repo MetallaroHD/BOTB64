@@ -1,4 +1,5 @@
 ﻿using BOTB64.Runtime;
+using BOTB64.Shared.Files;
 
 namespace BOTB64.Entities
 { 

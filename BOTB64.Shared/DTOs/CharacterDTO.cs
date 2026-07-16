@@ -1,6 +1,6 @@
 ﻿using MessagePack;
 
-namespace BOTB64.Entities.DTOs
+namespace BOTB64.Shared.DTOs
 {
     [MessagePackObject]
     public class CharacterDTO

@@ -3,6 +3,7 @@ using BOTB64.Graphics;
 using BOTB64.Graphics.UI;
 using BOTB64.Runtime;
 using BOTB64.Shared;
+using BOTB64.Shared.Files;
 
 namespace BOTB64
 {
@@ -16,6 +17,7 @@ namespace BOTB64
             if (!DataFile.DirectoryExists())
                 return;
 
+            DatabaseFileManager.Init();
             Settings.Load();
             UIRenderer.Update();
             ResourceManager.Initialize();

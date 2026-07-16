@@ -34,6 +34,7 @@ namespace BOTB64.Entities
         public string Name = "";
         public int MaxHP = 50;
         public int MaxRes = 25;
+        public int HPRegen = 0;
         public int ResRegen = 0;
         public int StartRes = 15;
         public int AttackPower = 30;
@@ -52,11 +53,12 @@ namespace BOTB64.Entities
         public int AutoAttackRange = 4;
         public float AutoAttackAP = 1f;
         public float AutoAttackSP = 0f;
-        public EffectDamageType AutoAttackDamageType = EffectDamageType.Physical;
         public ResourceType ResType = ResourceType.Mana;
 
         // Ids of auras that are applied at game start
         public List<int> PermanentAuras = new();
+        // Starting spells
+        public Dictionary<int, int> SpellLoadout = new();
 
         // --- Volatile data --- //
         // The incremental in-game id
@@ -69,7 +71,6 @@ namespace BOTB64.Entities
 
         public int CurrentHP = 50;
         public int CurrentResource = 15;
-        public int HPRegen = 0;
 
         public bool HasMovedThisTurn = false;
         public int RemainMovement = 5;

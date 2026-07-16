@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace BOTB64.Runtime
+namespace BOTB64.Shared.Files
 {
     public class JsonDataFile<T> : IDataFileRW<T>
     {

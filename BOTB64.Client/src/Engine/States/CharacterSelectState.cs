@@ -1,11 +1,11 @@
 ﻿using BOTB64.Engine.Net;
 using BOTB64.Entities;
-using BOTB64.Entities.DTOs;
+using BOTB64.Shared.DTOs;
 using BOTB64.Graphics.G3D;
 using BOTB64.Graphics.UI;
 using BOTB64.Runtime;
 using BOTB64.Shared;
-using RB = Raylib_cs.Raylib;
+using BOTB64.Shared.Files;
 using RL = Raylib_cs;
 
 namespace BOTB64.Engine.States
@@ -37,7 +37,6 @@ namespace BOTB64.Engine.States
         private readonly Dictionary<int, RL.Texture2D> CharacterIcons = new();
 
         private LevelDTO Level;
-        private List<CharacterDTO> AllCharacters;
         private List<CharacterDTO> BlueTeam = new();
         private List<CharacterDTO> RedTeam = new();
 
@@ -45,11 +44,7 @@ namespace BOTB64.Engine.States
         {
             ShaderManager.LoadCharSelect("Misc\\champselect.vs", "Misc\\champselect.fs");
 
-            JsonDataFile<LevelDTO> lf = new JsonDataFile<LevelDTO>();
-            Level = lf.DeserializeAll(new DataFile(CommonURIs.LevelJSON))[0];
-
-            JsonDataFile<CharacterDTO> cf = new JsonDataFile<CharacterDTO>();
-            AllCharacters = cf.DeserializeAll(new DataFile(CommonURIs.CharacterJSON));
+            Level = DatabaseFileManager.Levels[0]; //FOR NOW JUST 1 LEVEL
 
             TotalCharacters = GameSizeType switch
             {
@@ -120,7 +115,7 @@ namespace BOTB64.Engine.States
 
         public void ApplyPickEvent(PickEvent evt)
         {
-            var picked = AllCharacters[evt.CharacterIndex];
+            var picked = DatabaseFileManager.Characters[evt.CharacterIndex];
             int ownerId = Session?.Players.FirstOrDefault(p => p.OwnedPickSlots.Contains(evt.PickingIndex))?.PlayerID ?? -1;
 
             if (evt.Faction == Faction.RedTeam) { RedTeam.Add(picked); RedOwners.Add(ownerId); }
@@ -161,7 +156,7 @@ namespace BOTB64.Engine.States
         {
             if (!CharacterIcons.TryGetValue(characterIndex, out var tex))
             {
-                tex = ResourceManager.LoadTexture(CommonURIs.GetCharacterIcon(AllCharacters[characterIndex]));
+                tex = ResourceManager.LoadTexture(CommonURIs.GetCharacterIcon(DatabaseFileManager.Characters[characterIndex]));
                 CharacterIcons[characterIndex] = tex;
             }
             return tex;
@@ -210,9 +205,9 @@ namespace BOTB64.Engine.States
         private void FillCharacterButtons()
         {
             int positionIndex = 0;
-            for (int i = 0; i < AllCharacters.Count; i++)
+            for (int i = 0; i < DatabaseFileManager.Characters.Count; i++)
             {
-                if (AllCharacters[i].Enabled)
+                if (DatabaseFileManager.Characters[i].Enabled)
                 {
                     int index = i;
                     IconButton btn = new IconButton
@@ -222,8 +217,8 @@ namespace BOTB64.Engine.States
                         OnClick = () =>
                         {
                             CurrentSelection = index;
-                            Screen.CharacterPreview.SetCharacter(AllCharacters[index], index);
-                            Screen.CharacterNameLabel.Text = AllCharacters[index].Name;
+                            Screen.CharacterPreview.SetCharacter(DatabaseFileManager.Characters[index], index);
+                            Screen.CharacterNameLabel.Text = DatabaseFileManager.Characters[index].Name;
                         }
                     };
                     Screen.AddElement(btn);

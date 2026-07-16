@@ -1,4 +1,5 @@
-﻿using BOTB64.Graphics.Animations;
+﻿using BOTB64.Engine;
+using BOTB64.Graphics.Animations;
 using BOTB64.Runtime;
 using RL = Raylib_cs;
 
@@ -19,6 +20,7 @@ namespace BOTB64.Entities
         public float CostPct = 0;
         public int CostHP = 0;
         public int Preparation = 0;
+        public TargetingType ExplicitTarget = TargetingType.Direct;
 
         public string Tooltip = "";
 
@@ -28,7 +30,6 @@ namespace BOTB64.Entities
         public int CurrentCD = 0;
         public int CurrentCharges = 0;
 
-        // may only be direct effects
         public List<Parameter> Parameters = new();
     }
 }

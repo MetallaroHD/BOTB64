@@ -21,6 +21,22 @@ namespace BOTB64.Entities
     }
 
     [Flags]
+    public enum TileEffectApplicableTile
+    {
+        // Do not use
+        None = 0,
+
+        // Any floor tile (including bases)
+        Floor = 1 << 0,
+
+        // Permanent wall tiles
+        Wall = 1 << 1,
+
+        // Only tiles that have an effect making them impassable
+        ImpassableTerrain = 1 << 2,
+    }
+
+    [Flags]
     public enum TileEffectFlag
     {
         None = 0,
@@ -50,6 +66,7 @@ namespace BOTB64.Entities
         public string Name = "";
         public int Duration = 0;
         public DispelType Dispel = DispelType.None;
+        public TileEffectApplicableTile TileType = TileEffectApplicableTile.None;
         public TileEffectFlag Flags = TileEffectFlag.None;
         public TileEffectType Type = TileEffectType.None;
 

@@ -89,9 +89,9 @@ namespace BOTB64.Entities
 
     public class Effect
     {
-        public EffectTrigger Trigger = 0;
+        // This is the whole script not just the name
         public string Script = "";
-        public List<Parameter> Parameters = new();
+        public EffectTrigger Trigger = 0;
         public EffectSourceType Source = EffectSourceType.Unknown;
         public EffectDamageType Type = EffectDamageType.None;
         public EffectDamageScaling Scaling = EffectDamageScaling.None;

@@ -1,16 +1,10 @@
 ﻿using BOTB64.Entities;
-using BOTB64.Entities.DTOs;
+using BOTB64.Shared.DTOs;
 
 namespace BOTB64.Runtime
 {
     public static class CommonURIs
     {
-        public static readonly string AuraJSON = "Auras\\auras.json";
-        public static readonly string SpellJSON = "Spells\\spells.json";
-        public static readonly string CharacterJSON = "Characters\\characters.json";
-        public static readonly string LevelJSON = "Levels\\levels.json";
-        public static readonly string TileEffJSON = "TileEffects\\tileEffects.json";
-
         public static readonly string AuraDir = "Auras\\";
         public static readonly string SpellDir = "Spells\\";
         public static readonly string CharacterDir = "Characters\\";

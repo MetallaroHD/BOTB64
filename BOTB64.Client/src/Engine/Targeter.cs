@@ -1,6 +1,5 @@
 ﻿using BOTB64.Entities;
 using BOTB64.Runtime;
-using System.Security.Cryptography;
 
 namespace BOTB64.Engine
 {

@@ -37,6 +37,7 @@ namespace BOTB64.Engine.States
         public void OnEnter()
         {
             Logger.Init(Screen.Log);
+            FloatingMessageManager.Init(Screen);
             Game.Initialize(Initer);
             ShaderManager.UpdateWorld();
             Channel = Session == null ? new LocalCommandChannel(Game) : new NetworkedCommandChannel(Game, Session);
@@ -64,6 +65,7 @@ namespace BOTB64.Engine.States
             Screen.Update(dt);
             Logger.Update();
             FloatingTextManager.Update(dt);
+            FloatingMessageManager.Update(dt);
             AnimationManager.Update(dt);
 
             if (gameOver)
