@@ -18,9 +18,10 @@ namespace BOTB64.Entities
         public int Charges = 0;
         public int Cost = 0;
         public float CostPct = 0;
-        public int CostHP = 0;
         public int Preparation = 0;
         public TargetingType ExplicitTarget = TargetingType.Direct;
+        // 0 = normal action, 1+ = cast, -1 = fast, -2 = free
+        public int CastTime = 0;
 
         public string Tooltip = "";
 

@@ -60,7 +60,7 @@ namespace BOTB64.Editor.IO
                 case "CHARGES": spell.Charges = int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "COST": spell.Cost = int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "COSTPCT": spell.CostPct = float.Parse(rest, CultureInfo.InvariantCulture); break;
-                case "COSTHP": spell.CostHP = int.Parse(rest, CultureInfo.InvariantCulture); break;
+                case "CAST": spell.CastTime = int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "PREP": spell.Preparation = int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "TARGET": spell.ExplicitTarget = (TargetingType)int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "TOOLTIP": spell.Tooltip = BotbParsing.ParseQuotedOrRaw(rest); break;
@@ -79,7 +79,7 @@ namespace BOTB64.Editor.IO
             sb.AppendLine($":CHARGES {s.Charges.ToString(inv)}");
             sb.AppendLine($":COST {s.Cost.ToString(inv)}");
             sb.AppendLine($":COSTPCT {s.CostPct.ToString("G", inv)}");
-            sb.AppendLine($":COSTHP {s.CostHP.ToString(inv)}");
+            sb.AppendLine($":CAST {s.CastTime.ToString(inv)}");
             sb.AppendLine($":PREP {s.Preparation.ToString(inv)}");
 
             if (s.Parameters.Count > 0)

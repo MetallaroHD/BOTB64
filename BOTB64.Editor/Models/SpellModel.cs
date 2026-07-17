@@ -11,7 +11,7 @@ namespace BOTB64.Editor.Models
         private int _charges = 0;
         private int _cost = 0;
         private float _costPct = 0f;
-        private int _costHP = 0;
+        private int _castTime = 0;
         private int _preparation = 0;
         private TargetingType _explicitTarget = TargetingType.Direct;
         private string _tooltip = "";
@@ -21,7 +21,7 @@ namespace BOTB64.Editor.Models
         public int Charges { get => _charges; set => Set(ref _charges, value); }
         public int Cost { get => _cost; set => Set(ref _cost, value); }
         public float CostPct { get => _costPct; set => Set(ref _costPct, value); }
-        public int CostHP { get => _costHP; set => Set(ref _costHP, value); }
+        public int CastTime { get => _castTime; set => Set(ref _castTime, value); }
         public int Preparation { get => _preparation; set => Set(ref _preparation, value); }
         public TargetingType ExplicitTarget { get => _explicitTarget; set => Set(ref _explicitTarget, value); }
         public string Tooltip { get => _tooltip; set => Set(ref _tooltip, value ?? ""); }

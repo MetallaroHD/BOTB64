@@ -38,7 +38,7 @@
                 <Label Content="Cost"/><TextBox Text="{Binding Cost, UpdateSourceTrigger=PropertyChanged}"/>
                 <Label Content="Cost %"/><TextBox Text="{Binding CostPct, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <Label Content="Cost HP"/><TextBox Text="{Binding CostHP, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Content="Cast Time"/><TextBox Text="{Binding CastTime, UpdateSourceTrigger=PropertyChanged}"/>
                 <Label Content="Preparation"/><TextBox Text="{Binding Preparation, UpdateSourceTrigger=PropertyChanged}"/>
             </UniformGrid>
 

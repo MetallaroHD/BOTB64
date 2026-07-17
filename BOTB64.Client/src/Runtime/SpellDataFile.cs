@@ -61,7 +61,7 @@ namespace BOTB64.Runtime
                 case "CHARGES": spell.Charges = int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "COST": spell.Cost = int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "COSTPCT": spell.CostPct = float.Parse(rest, CultureInfo.InvariantCulture); break;
-                case "COSTHP": spell.CostHP = int.Parse(rest, CultureInfo.InvariantCulture); break;
+                case "CAST": spell.CastTime = int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "PREP": spell.Preparation = int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "TARGET": spell.ExplicitTarget = (TargetingType)int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "TOOLTIP": spell.Tooltip = ParseQuotedOrRaw(rest); break;

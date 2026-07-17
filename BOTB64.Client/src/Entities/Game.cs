@@ -153,8 +153,9 @@ namespace BOTB64.Entities
 
         private void Spawn(Character chara, Hex pos, Hex dir)
         {
-            //Things like setting hp = maxhp
-            //Initialize spells and permanent auras
+            chara.CurrentHP = chara.MaxHP;
+            chara.CurrentResource = chara.StartRes;
+            StartLoadout(chara);
             Level.LevelBoard.SpawnCharacter(ref CharAlloc, chara, pos, dir);
         }
 
@@ -175,6 +176,8 @@ namespace BOTB64.Entities
             CurrentCharacter.RemainAction = 1;
             CurrentCharacter.RemainFastAction = 1;
             CurrentCharacter.HasMovedThisTurn = false;
+            CurrentCharacter.CurrentResource = Math.Min(CurrentCharacter.CurrentResource + CurrentCharacter.ResRegen, CurrentCharacter.MaxRes);
+            CurrentCharacter.CurrentHP = Math.Min(CurrentCharacter.CurrentHP + CurrentCharacter.HPRegen, CurrentCharacter.MaxHP);
         }
 
         public Character? FindCharacter(int id) => Characters.FirstOrDefault(c => c.GameID == id);
@@ -242,6 +245,18 @@ namespace BOTB64.Entities
             }
 
             return false;
+        }
+
+        private void StartLoadout(Character character)
+        {
+            foreach ((int key, int val) in character.SpellLoadout)
+            {
+                
+            }
+            foreach (int id in character.PermanentAuras)
+            {
+                
+            }
         }
     }
 }
