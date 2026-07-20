@@ -76,7 +76,7 @@ namespace BOTB64.Engine.Net
             var target = game.FindCharacter(TargetID);
             if (target != null)
             {
-                target.CurrentHP = Math.Max(target.CurrentHP + Amount, target.MaxHP);
+                target.CurrentHP = Math.Max(target.CurrentHP + Amount, target.MaxHP.GetI());
                 FloatingTextManager.Add(Amount.ToString(), HexAlgo.HexToWorld(target.Position), color: Raylib_cs.Color.Green);
                 Logger.Log(target.Name + " heals " + Amount + " damage." + (Crit ? " A critical hit!" : ""));
             }
@@ -121,6 +121,26 @@ namespace BOTB64.Engine.Net
             var c = game.FindCharacter(CharacterID);
             if (c == null) return;
             if (FastAction) c.RemainFastAction--; else c.RemainAction--;
+        }
+    }
+
+    [MessagePackObject]
+    public struct ApplyAuraEvent : IGameEvent
+    {
+        [Key(0)] public int OwnerID;
+        [Key(1)] public int TargetID;
+        [Key(2)] public int AuraID;
+        [Key(3)] public int Stacks;
+        public void Apply(Game game)
+        {
+            var o = game.FindCharacter(OwnerID);
+            var t = game.FindCharacter(TargetID);
+            if (o == null || t == null)
+                return;
+            var aura = AuraTriggerManager.GetAura(AuraID);
+            aura.Owner = o;
+            aura.Wearer = t;
+            t.ApplyAura(aura, Stacks);
         }
     }
 }

@@ -11,8 +11,8 @@ namespace BOTB64.Entities
         Magic = 1 << 0,
         Poison = 1 << 1,
         Bleed = 1 << 2,
-        Root = 1 << 3,
-        Slow = 1 << 4
+        Disease = 1 << 3,
+        Hex = 1 << 4
     }
 
     public class Aura : ExecutableBase, IReadable
@@ -37,5 +37,11 @@ namespace BOTB64.Entities
         public int CurrentStacks = 0;
 
         public List<Parameter> Parameters = new();
+
+        public void AddStacks(int stacks)
+        {
+            CurrentStacks = Math.Min(CurrentStacks + stacks, MaxStacks);
+            Remaining = Duration;
+        }
     }
 }

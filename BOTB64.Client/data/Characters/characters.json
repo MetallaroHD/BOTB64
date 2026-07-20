@@ -47,5 +47,15 @@
         "ModelURI" : "fairy",
         "ScriptURI" : "character",
         "IconURI" : "dummy"
+    },
+
+    {
+        "ID" : 5,
+        "Enabled" : true,
+        "Subdir" : "Pilaf",
+        "Name" : "Pilaf",
+        "ModelURI" : "Pilaf",
+        "ScriptURI" : "character",
+        "IconURI" : "dummy"
     }
 ]

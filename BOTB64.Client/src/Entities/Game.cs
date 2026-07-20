@@ -153,7 +153,7 @@ namespace BOTB64.Entities
 
         private void Spawn(Character chara, Hex pos, Hex dir)
         {
-            chara.CurrentHP = chara.MaxHP;
+            chara.CurrentHP = chara.MaxHP.GetI();
             chara.CurrentResource = chara.StartRes;
             StartLoadout(chara);
             Level.LevelBoard.SpawnCharacter(ref CharAlloc, chara, pos, dir);
@@ -172,12 +172,12 @@ namespace BOTB64.Entities
             Logger.Log("Turn " + CurrentTurn.Number + " - " + next.Name);
             if (!CurrentCharacter.Alive)
                 return;
-            CurrentCharacter.RemainMovement = CurrentCharacter.Speed;
+            CurrentCharacter.RemainMovement = CurrentCharacter.Speed.GetI();
             CurrentCharacter.RemainAction = 1;
             CurrentCharacter.RemainFastAction = 1;
             CurrentCharacter.HasMovedThisTurn = false;
-            CurrentCharacter.CurrentResource = Math.Min(CurrentCharacter.CurrentResource + CurrentCharacter.ResRegen, CurrentCharacter.MaxRes);
-            CurrentCharacter.CurrentHP = Math.Min(CurrentCharacter.CurrentHP + CurrentCharacter.HPRegen, CurrentCharacter.MaxHP);
+            CurrentCharacter.CurrentResource = Math.Min(CurrentCharacter.CurrentResource + CurrentCharacter.ResRegen.GetI(), CurrentCharacter.MaxRes.GetI());
+            CurrentCharacter.CurrentHP = Math.Min(CurrentCharacter.CurrentHP + CurrentCharacter.HPRegen.GetI(), CurrentCharacter.MaxHP.GetI());
         }
 
         public Character? FindCharacter(int id) => Characters.FirstOrDefault(c => c.GameID == id);

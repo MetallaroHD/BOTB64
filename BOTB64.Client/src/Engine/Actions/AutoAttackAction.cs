@@ -23,7 +23,7 @@ namespace BOTB64.Engine.Actions
             {
                 Type = TargetingType.Direct,
                 Source = Character.Position,
-                Radius = Character.AutoAttackRange,
+                Radius = Character.AutoAttackRange.GetI(),
             });
             Update();
         }

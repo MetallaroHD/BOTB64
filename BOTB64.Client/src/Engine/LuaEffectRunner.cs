@@ -1,5 +1,4 @@
-﻿using BOTB64.Engine.Net;
-using BOTB64.Entities;
+﻿using BOTB64.Entities;
 using BOTB64.Runtime;
 using BOTB64.Shared.Files;
 using MoonSharp.Interpreter;
@@ -20,19 +19,21 @@ namespace BOTB64.Engine
             Lua.Globals["Damage"] = (Action<int, int>)((targetID, amount) => { EffectProcessor.Damage(game, CurrentContext, CurrentEffect, targetID, amount); });
             Lua.Globals["DamageAt"] = (Action<int, int, int>)((q, r, amount) => { Character? tg = game.FindCharacter(q, r); if (tg == null) return; EffectProcessor.Damage(game, CurrentContext, CurrentEffect, tg, amount); });
             Lua.Globals["Die"] = (Action<int>)(charId => { EffectProcessor.Die(game, charId); });
+            Lua.Globals["ApplyAura"] = (Action<int, int, int, int>)((ownerID, targetID, auraID, stacks) => { EffectProcessor.ApplyAura(game, ownerID, targetID, auraID, stacks); });
 
             // OTHER
             Lua.Globals["Roll"] = (Func<float, bool>)(chance => EffectProcessor.Roll(game, chance));
             Lua.Globals["Log"] = (Action<string>)(text => Logger.Log(text));
 
             // GETTERS
+            Lua.Globals["GetCharacterAt"] = (Func<int, int, int>)((q, r) => { var c = game.FindCharacter(q, r); if (c != null) return c.GameID; return -1; });
             Lua.Globals["GetHP"] = (Func<int, int>)(charId => game.FindCharacter(charId)?.CurrentHP ?? 0);
-            Lua.Globals["GetAttackPower"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.AttackPower ?? 0);
-            Lua.Globals["GetSpellPower"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.SpellPower ?? 0);
-            Lua.Globals["GetAutoAttackAP"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.AutoAttackAP ?? 0);
-            Lua.Globals["GetAutoAttackSP"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.AutoAttackSP ?? 0);
-            Lua.Globals["GetDefense"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.Defense ?? 0);
-            Lua.Globals["GetCritChance"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.Crit ?? 0);
+            Lua.Globals["GetAttackPower"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.AttackPower.GetF() ?? 0);
+            Lua.Globals["GetSpellPower"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.SpellPower.GetF() ?? 0);
+            Lua.Globals["GetAutoAttackAP"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.AutoAttackAP.GetF() ?? 0);
+            Lua.Globals["GetAutoAttackSP"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.AutoAttackSP.GetF() ?? 0);
+            Lua.Globals["GetDefense"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.Defense.GetF() ?? 0);
+            Lua.Globals["GetCritChance"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.Crit.GetF() ?? 0);
             Lua.Globals["IsAlive"] = (Func<int, bool>)(charId => game.FindCharacter(charId)?.Alive ?? false);
         }
 

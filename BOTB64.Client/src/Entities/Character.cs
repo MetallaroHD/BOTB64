@@ -32,28 +32,29 @@ namespace BOTB64.Entities
         // The database id
         public int ID = 0;
         public string Name = "";
-        public int MaxHP = 50;
-        public int MaxRes = 25;
-        public int HPRegen = 0;
-        public int ResRegen = 0;
-        public int StartRes = 15;
-        public int AttackPower = 30;
-        public int SpellPower = 0;
-        public int Defense = 5;
-        public int MagicDefense = 0;
-        public int Haste = 4;
-        public int Speed = 5;
-        public float ArmorPen = 0f; //these are all 0-1
-        public float SpellPen = 0f;
-        public float Crit = 0f;
-        public float LifeSteal = 0f;
-        public float SpellVamp = 0f;
+        public CharacterStat MaxHP = new CharacterStat(1);
+        public CharacterStat MaxRes = new CharacterStat(1);
+        public CharacterStat HPRegen = new CharacterStat(0);
+        public CharacterStat ResRegen = new CharacterStat(0);
+        public CharacterStat AttackPower = new CharacterStat(1);
+        public CharacterStat SpellPower = new CharacterStat(0);
+        public CharacterStat Defense = new CharacterStat(0);
+        public CharacterStat MagicDefense = new CharacterStat(0);
+        public CharacterStat Haste = new CharacterStat(1);
+        public CharacterStat Speed = new CharacterStat(3);
+        public CharacterStat ArmorPen = new CharacterStat(0); //these are all 0-1
+        public CharacterStat SpellPen = new CharacterStat(0 );
+        public CharacterStat Crit = new CharacterStat(0);
+        public CharacterStat LifeSteal = new CharacterStat(0);
+        public CharacterStat SpellVamp = new CharacterStat(0);
 
         public Effect AutoAttackEffect = new();
-        public int AutoAttackRange = 4;
-        public float AutoAttackAP = 1f;
-        public float AutoAttackSP = 0f;
+        public CharacterStat AutoAttackRange = new CharacterStat(4);
+        public CharacterStat AutoAttackAP = new CharacterStat(1);
+        public CharacterStat AutoAttackSP = new CharacterStat(0);
+
         public ResourceType ResType = ResourceType.Mana;
+        public int StartRes = 0;
 
         // Ids of auras that are applied at game start
         public List<int> PermanentAuras = new();
@@ -111,6 +112,20 @@ namespace BOTB64.Entities
                 default:
                     return RL.Color.Blue;
             }
+        }
+
+        public void ApplyAura(Aura aura, int stacks)
+        {
+            foreach (var myaura in CurrentAuras)
+            {
+                if (myaura.ID == aura.ID)
+                {
+                    myaura.AddStacks(stacks);
+                    return;
+                }
+            }
+            aura.AddStacks(stacks);
+            CurrentAuras.Add(aura);
         }
     }
 }

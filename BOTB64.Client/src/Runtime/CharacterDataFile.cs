@@ -60,26 +60,26 @@ namespace BOTB64.Runtime
         {
             switch (tag)
             {
-                case "MAXHP": c.MaxHP = int.Parse(rest, CultureInfo.InvariantCulture); break;
-                case "MAXRES": c.MaxRes = int.Parse(rest, CultureInfo.InvariantCulture); break;
-                case "HPREGEN": c.HPRegen = int.Parse(rest, CultureInfo.InvariantCulture); break;
-                case "RESREGEN": c.ResRegen = int.Parse(rest, CultureInfo.InvariantCulture); break;
+                case "MAXHP": c.MaxHP.Set(int.Parse(rest, CultureInfo.InvariantCulture)); break;
+                case "MAXRES": c.MaxRes.Set(int.Parse(rest, CultureInfo.InvariantCulture)); break;
+                case "HPREGEN": c.HPRegen.Set(int.Parse(rest, CultureInfo.InvariantCulture)); break;
+                case "RESREGEN": c.ResRegen.Set(int.Parse(rest, CultureInfo.InvariantCulture)); break;
                 case "STARTRES": c.StartRes = int.Parse(rest, CultureInfo.InvariantCulture); break;
-                case "ATTACKPOWER": c.AttackPower = int.Parse(rest, CultureInfo.InvariantCulture); break;
-                case "SPELLPOWER": c.SpellPower = int.Parse(rest, CultureInfo.InvariantCulture); break;
-                case "DEFENSE": c.Defense = int.Parse(rest, CultureInfo.InvariantCulture); break;
-                case "MAGDEFENSE": c.MagicDefense = int.Parse(rest, CultureInfo.InvariantCulture); break;
-                case "HASTE": c.Haste = int.Parse(rest, CultureInfo.InvariantCulture); break;
-                case "SPEED": c.Speed = int.Parse(rest, CultureInfo.InvariantCulture); break;
-                case "ARMORPEN": c.ArmorPen = float.Parse(rest, CultureInfo.InvariantCulture); break;
-                case "SPELLPEN": c.SpellPen = float.Parse(rest, CultureInfo.InvariantCulture); break;
-                case "CRIT": c.Crit = float.Parse(rest, CultureInfo.InvariantCulture); break;
-                case "LIFESTEAL": c.LifeSteal = float.Parse(rest, CultureInfo.InvariantCulture); break;
-                case "SPELLVAMP": c.SpellVamp = float.Parse(rest, CultureInfo.InvariantCulture); break;
+                case "ATTACKPOWER": c.AttackPower.Set(int.Parse(rest, CultureInfo.InvariantCulture)); break;
+                case "SPELLPOWER": c.SpellPower.Set(int.Parse(rest, CultureInfo.InvariantCulture)); break;
+                case "DEFENSE": c.Defense.Set(int.Parse(rest, CultureInfo.InvariantCulture)); break;
+                case "MAGDEFENSE": c.MagicDefense.Set(int.Parse(rest, CultureInfo.InvariantCulture)); break;
+                case "HASTE": c.Haste.Set(int.Parse(rest, CultureInfo.InvariantCulture)); break;
+                case "SPEED": c.Speed.Set(int.Parse(rest, CultureInfo.InvariantCulture)); break;
+                case "ARMORPEN": c.ArmorPen.Set(float.Parse(rest, CultureInfo.InvariantCulture)); break;
+                case "SPELLPEN": c.SpellPen.Set(float.Parse(rest, CultureInfo.InvariantCulture)); break;
+                case "CRIT": c.Crit.Set(float.Parse(rest, CultureInfo.InvariantCulture)); break;
+                case "LIFESTEAL": c.LifeSteal.Set(float.Parse(rest, CultureInfo.InvariantCulture)); break;
+                case "SPELLVAMP": c.SpellVamp.Set(float.Parse(rest, CultureInfo.InvariantCulture)); break;
                 case "RESTYPE": c.ResType = (ResourceType)int.Parse(rest, CultureInfo.InvariantCulture); break;
-                case "AARANGE": c.AutoAttackRange = int.Parse(rest, CultureInfo.InvariantCulture); break;
-                case "AAAP": c.AutoAttackAP = float.Parse(rest, CultureInfo.InvariantCulture); break;
-                case "AASP": c.AutoAttackSP = float.Parse(rest, CultureInfo.InvariantCulture); break;
+                case "AARANGE": c.AutoAttackRange.Set(int.Parse(rest, CultureInfo.InvariantCulture)); break;
+                case "AAAP": c.AutoAttackAP.Set(float.Parse(rest, CultureInfo.InvariantCulture)); break;
+                case "AASP": c.AutoAttackSP.Set(float.Parse(rest, CultureInfo.InvariantCulture)); break;
             }
         }
 

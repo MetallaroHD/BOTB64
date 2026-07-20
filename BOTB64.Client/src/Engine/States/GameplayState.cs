@@ -214,8 +214,8 @@ namespace BOTB64.Engine.States
         private void UpdatePlayerGUI()
         {
             var current = CurrentCharacter;
-            Screen.PlayerStatus.SetHealth(current.CurrentHP, current.MaxHP);
-            Screen.PlayerStatus.SetResource(current.CurrentResource, current.MaxRes);
+            Screen.PlayerStatus.SetHealth(current.CurrentHP, current.MaxHP.GetI());
+            Screen.PlayerStatus.SetResource(current.CurrentResource, current.MaxRes.GetI());
             Screen.PlayerStatus.SetName(current.Name);
             Screen.PlayerStatus.Effects.Sync(current.CurrentAuras, getId: a => a.ID, getDuration: a => a.Remaining, getTooltip: a => a.Tooltip, getIcon: a => a.Icon);
         }
@@ -230,8 +230,8 @@ namespace BOTB64.Engine.States
             }
             var target = Target;
             Screen.TargetStatus.Visible = true;
-            Screen.TargetStatus.SetHealth(target.CurrentHP, target.MaxHP);
-            Screen.TargetStatus.SetResource(target.CurrentResource, target.MaxRes);
+            Screen.TargetStatus.SetHealth(target.CurrentHP, target.MaxHP.GetI());
+            Screen.TargetStatus.SetResource(target.CurrentResource, target.MaxRes.GetI());
             Screen.TargetStatus.SetName(target.Name);
             Screen.PlayerStatus.Effects.Sync(target.CurrentAuras, getId: a => a.ID, getDuration: a => a.Remaining, getTooltip: a => a.Tooltip, getIcon: a => a.Icon);
         }

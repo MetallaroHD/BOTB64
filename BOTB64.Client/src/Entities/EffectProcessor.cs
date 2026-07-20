@@ -28,7 +28,7 @@ namespace BOTB64.Entities
             dmgCtx.SourceType = eff.Source;
             AuraTriggerManager.Execute(dmgCtx, EffectTrigger.OnPreDamageDealt, AuraType.Character | AuraType.Tile);
             dmgCtx.DamageDone = CalcDamage(dmgCtx.DamageDoer, dmgCtx.DamageTaker, dmgCtx.DamageDone, eff.Scaling);
-            dmgCtx.Crit = Roll(game, dmgCtx.DamageDoer.Crit);
+            dmgCtx.Crit = Roll(game, dmgCtx.DamageDoer.Crit.GetF());
             if (dmgCtx.Crit)
                 dmgCtx.DamageDone = (int)(1.5 * dmgCtx.DamageDone);
             game.RecordAndApply(new DamageEvent { TargetID = dmgCtx.DamageTaker.GameID, Amount = dmgCtx.DamageDone, Crit = dmgCtx.Crit });
@@ -41,6 +41,11 @@ namespace BOTB64.Entities
             }
             if (dmgCtx.DamageTaker.CurrentHP <= 0)
                 Die(game, dmgCtx.DamageTaker.GameID);
+        }
+
+        public static void ApplyAura(Game game, int ownerID, int targetID, int auraID, int stacks)
+        {
+            
         }
 
         public static void Die(Game game, int charID)
@@ -59,13 +64,13 @@ namespace BOTB64.Entities
                 case EffectDamageScaling.None:
                     break;
                 case EffectDamageScaling.AttackDamage:
-                    tot -= (1 - atker.ArmorPen) * target.Defense;
+                    tot -= (1 - atker.ArmorPen.GetF()) * target.Defense.GetI();
                     break;
                 case EffectDamageScaling.SpellDamage:
-                    tot -= (1 - atker.SpellPen) * target.MagicDefense;
+                    tot -= (1 - atker.SpellPen.GetF()) * target.MagicDefense.GetI();
                     break;
                 case EffectDamageScaling.Hybrid:
-                    tot -= (1 - atker.ArmorPen) * target.Defense + (1 - atker.SpellPen) * target.MagicDefense;
+                    tot -= (1 - atker.ArmorPen.GetF()) * target.Defense.GetI() + (1 - atker.SpellPen.GetF()) * target.MagicDefense.GetI();
                     break;
             }
             return (int)Math.Max(1, tot);
@@ -78,13 +83,13 @@ namespace BOTB64.Entities
                 case EffectDamageScaling.None:
                     break;
                 case EffectDamageScaling.AttackDamage:
-                    ls = atker.LifeSteal * bd;
+                    ls = atker.LifeSteal.GetF() * bd;
                     break;
                 case EffectDamageScaling.SpellDamage:
-                    ls = atker.SpellVamp * bd;
+                    ls = atker.SpellVamp.GetF() * bd;
                     break;
                 case EffectDamageScaling.Hybrid:
-                    ls = atker.LifeSteal * bd + atker.SpellVamp * bd;
+                    ls = atker.LifeSteal.GetF() * bd + atker.SpellVamp.GetF() * bd;
                     break;
             }
             return (int)Math.Max(0, ls);
