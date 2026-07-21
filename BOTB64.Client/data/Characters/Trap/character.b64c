@@ -1,5 +1,4 @@
 :BOTB64CHARACTER
-
 :MAXHP 1000
 :MAXRES 500
 :RESTYPE 0
@@ -12,26 +11,19 @@
 :MAGDEFENSE 5
 :HASTE 2
 :SPEED 3
-:ARMORPEN 0.0
-:SPELLPEN 0.0
+:ARMORPEN 0
+:SPELLPEN 0
 :CRIT 0.05
 :LIFESTEAL 0.01
 :SPELLVAMP 0.02
-
 :AARANGE 5
-:AAAP 1.0
-:AASP 0.0
-
-#Effect of the autoattack action
-#In order: Name of the script from the Scripts folder, trigger mask, damage type, scaling type
-:EFFECTS 
-autoattack_generic | 0 | 1 | 1
-
-#The permanent auras
-:AURAS 
+:AAAP 1
+:AASP 0
+:EFFECTS
+auto_generic | 0 | 1 | 1 | 1
+:AURAS
 1
-#Spells present in the action bar at the start of the game (up to 5)
-:SPELLS 
+:SPELLS
 1 1
 2 1
 3 1

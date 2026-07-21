@@ -7,7 +7,7 @@ namespace BOTB64.Engine
 {
     public class LuaEffectRunner
     {
-        public Dictionary<string, string> ScriptCache;
+        public Dictionary<string, string> ScriptCache = new();
 
         public readonly Script Lua = new Script();
         private EffectContext CurrentContext;

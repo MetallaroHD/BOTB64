@@ -36,7 +36,7 @@ namespace BOTB64.Runtime
                     i++;
                     i = ParseSpellLoadout(lines, i, character.SpellLoadout);
                 }
-                else if (line.StartsWith(":AUTOATTACK"))
+                else if (line.StartsWith(":EFFECTS"))
                 {
                     i++;
                     i = ParseAutoAttack(lines, i, character);
