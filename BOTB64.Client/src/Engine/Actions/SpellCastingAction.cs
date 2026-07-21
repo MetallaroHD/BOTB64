@@ -16,6 +16,8 @@ namespace BOTB64.Engine.Actions
         public override void Enter()
         {
             CursorManager.SetCursor("Spell");
+            // set appropriate targeter
+            base.Enter();
         }
 
         public override void Exit()

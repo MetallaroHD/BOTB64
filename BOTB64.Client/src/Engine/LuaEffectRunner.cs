@@ -2,6 +2,7 @@
 using BOTB64.Runtime;
 using BOTB64.Shared.Files;
 using MoonSharp.Interpreter;
+using MoonSharp.Interpreter.Loaders;
 
 namespace BOTB64.Engine
 {
@@ -35,6 +36,8 @@ namespace BOTB64.Engine
             Lua.Globals["GetDefense"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.Defense.GetF() ?? 0);
             Lua.Globals["GetCritChance"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.Crit.GetF() ?? 0);
             Lua.Globals["IsAlive"] = (Func<int, bool>)(charId => game.FindCharacter(charId)?.Alive ?? false);
+
+            Lua.Options.ScriptLoader = new ArchiveScriptLoader(LoadScript);
         }
 
         public void Run(Effect effect, EffectContext context)
@@ -50,20 +53,7 @@ namespace BOTB64.Engine
             }
             try
             {
-                if (ScriptCache.TryGetValue(effect.Script, out string? code))
-                {
-                    if (code != null)
-                        Lua.DoString(code);
-                    else
-                        throw new Exception("Invalid Script!");
-                }
-                else
-                {
-                    DataFile scriptFile = new DataFile(CommonURIs.ScriptDir + effect.Script + CommonURIs.ScriptExt);
-                    string cd = scriptFile.ReadAll();
-                    ScriptCache.Add(effect.Script, cd);
-                    Lua.DoString(cd);
-                }
+                Lua.DoString(LoadScript(effect.Script));
             }
             catch (Exception e)
             {
@@ -84,6 +74,25 @@ namespace BOTB64.Engine
         public void End()
         {
             ScriptCache.Clear();
+        }
+
+        private string LoadScript(string module)
+        {
+            module = Path.GetFileNameWithoutExtension(module);
+
+            if (ScriptCache.TryGetValue(module, out var code))
+                return code;
+
+            DataFile scriptFile = new DataFile(CommonURIs.ScriptDir + module + CommonURIs.ScriptExt);
+
+            code = scriptFile.ReadAll();
+
+            if (string.IsNullOrWhiteSpace(code))
+                throw new FileNotFoundException($"Lua module '{module}' not found.");
+
+            ScriptCache[module] = code;
+
+            return code;
         }
     }
 }

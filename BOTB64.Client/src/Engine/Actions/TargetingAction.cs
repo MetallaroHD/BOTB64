@@ -1,5 +1,6 @@
 ﻿using BOTB64.Engine.States;
 using BOTB64.Runtime;
+using System.Threading.Channels;
 using RL = Raylib_cs;
 
 namespace BOTB64.Engine.Actions
@@ -15,19 +16,18 @@ namespace BOTB64.Engine.Actions
 
         public override void Enter()
         {
-
+            UpdateMouseAxial(out bool changed, out bool valid);
+            if (valid)
+                Targeter.UpdateTarget(MouseAxial);
         }
 
         public override void Exit()
         {
-
         }
 
         public override void Update()
         {
-            bool changed = false;
-            bool valid = false;
-            UpdateMouseAxial(out changed, out valid);
+            UpdateMouseAxial(out bool changed, out bool valid);
             if (changed && valid)
                 Targeter.UpdateTarget(MouseAxial);
             Bindings.Check();

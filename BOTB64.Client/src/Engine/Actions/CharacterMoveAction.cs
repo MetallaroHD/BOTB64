@@ -26,6 +26,7 @@ namespace BOTB64.Engine.Actions
                 Source = Character.Position,
             });
             Update();
+            base.Enter();
         }
 
         public override void Update()

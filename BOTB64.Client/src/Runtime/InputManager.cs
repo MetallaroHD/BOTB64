@@ -8,10 +8,11 @@ namespace BOTB64.Runtime
     {
         public static bool WantsClose = false;
         private static bool ClickUsed = false;
+        private static bool KeyUsed = false;
         public static bool IsMouseButtonPressed(RL.MouseButton btn) => RB.IsMouseButtonPressed(btn);
         public static bool IsMouseButtonDown(RL.MouseButton btn) => RB.IsMouseButtonDown(btn);
         public static bool IsKeyDown(RL.KeyboardKey key) => RB.IsKeyDown(key);
-        public static bool IsKeyPressed(RL.KeyboardKey key) => RB.IsKeyPressed(key);
+        public static bool IsKeyPressed(RL.KeyboardKey key) => !KeyUsed && RB.IsKeyPressed(key);
         public static bool IsKeyReleased(RL.KeyboardKey key) => RB.IsKeyReleased(key);
         public static float ScrollDelta => RB.GetMouseWheelMove();
         public static Vector2 MouseDelta => RB.GetMouseDelta();
@@ -22,7 +23,12 @@ namespace BOTB64.Runtime
         public static bool IsRMD => IsMouseButtonDown(RL.MouseButton.Right);
 
         public static void UseClick() => ClickUsed = true;
-        public static void NewFrame() => ClickUsed = false;
+        public static void UseKey() => KeyUsed = true;
+        public static void NewFrame()
+        {
+            ClickUsed = false; 
+            KeyUsed = false;
+        }
 
         public static bool ShouldClose()
         {

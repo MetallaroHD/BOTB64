@@ -20,7 +20,7 @@
 :AAAP 1
 :AASP 0
 :EFFECTS
-auto_scoper | 0 | 1 | 1 | 1
+auto_generic | 0 | 1 | 1 | 1
 :AURAS
 1
 :SPELLS

@@ -21,6 +21,7 @@ namespace BOTB64.Engine.Actions
                 Source = new Hex(0, 0)
             });
             Update();
+            base.Enter();
         }
 
         public override void Update()

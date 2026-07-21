@@ -26,6 +26,7 @@ namespace BOTB64.Engine.Actions
                 Radius = Character.AutoAttackRange.GetI(),
             });
             Update();
+            base.Enter();
         }
 
         public override void Update()
