@@ -14,6 +14,9 @@ namespace BOTB64.Engine.Net
     [Union(5, typeof(TeamEliminatedEvent))]
     [Union(6, typeof(ActionSpentEvent))]
     [Union(7, typeof(HealEvent))]
+    [Union(8, typeof(ApplyAuraEvent))]
+    [Union(9, typeof(ApplyTileEffectEvent))]
+    [Union(10, typeof(SpellCastEvent))]
     public interface IGameEvent
     {
         void Apply(Game game);
@@ -130,17 +133,89 @@ namespace BOTB64.Engine.Net
         [Key(0)] public int OwnerID;
         [Key(1)] public int TargetID;
         [Key(2)] public int AuraID;
-        [Key(3)] public int Stacks;
+        [Key(3)] public int FinalStacks;
+
         public void Apply(Game game)
         {
             var o = game.FindCharacter(OwnerID);
             var t = game.FindCharacter(TargetID);
-            if (o == null || t == null)
-                return;
-            var aura = AuraTriggerManager.GetAura(AuraID);
-            aura.Owner = o;
-            aura.Wearer = t;
-            t.ApplyAura(aura, Stacks);
+            if (o == null || t == null) return;
+
+            int id = AuraID;
+            var existing = t.CurrentAuras.FirstOrDefault(a => a.ID == id);
+            if (existing != null)
+            {
+                existing.CurrentStacks = FinalStacks;
+                existing.Remaining = existing.Duration;
+            }
+            else
+            {
+                var aura = AuraTriggerManager.GetAura(AuraID);
+                aura.Owner = o;
+                aura.Wearer = t;
+                aura.CurrentStacks = FinalStacks;
+                aura.Remaining = aura.Duration;
+                t.CurrentAuras.Add(aura);
+            }
+        }
+    }
+
+    [MessagePackObject]
+    public struct ApplyTileEffectEvent : IGameEvent
+    {
+        [Key(0)] public int OwnerID;
+        [Key(1)] public Hex Position;
+        [Key(2)] public int TileEffectID;
+        [Key(3)] public int Duration;
+
+        public void Apply(Game game)
+        {
+            var tile = game.GetBoard().GetTile(Position);
+            var owner = game.FindCharacter(OwnerID);
+            if (tile == null) return;
+
+            var template = AuraTriggerManager.GetTileEffect(TileEffectID);
+            if (template == null) return;
+
+            var instance = new TileEffect
+            {
+                ID = template.ID,
+                Name = template.Name,
+                Duration = template.Duration,
+                Dispel = template.Dispel,
+                TileType = template.TileType,
+                Flags = template.Flags,
+                Type = template.Type,
+                Owner = owner,
+                Remaining = Duration
+            };
+            tile.Effects.Add(instance);
+        }
+    }
+
+    [MessagePackObject]
+    public struct SpellCastEvent : IGameEvent
+    {
+        [Key(0)] public int CharacterID;
+        [Key(1)] public int SpellID;
+        [Key(2)] public int CostSpent;
+
+        public void Apply(Game game)
+        {
+            var character = game.FindCharacter(CharacterID);
+            if (character == null) return;
+
+            character.CurrentResource -= CostSpent;
+
+            int spellId = SpellID;
+            var spell = character.ActiveSpells.Values.FirstOrDefault(s => s.ID == spellId);
+            if (spell != null)
+            {
+                spell.CurrentCD = spell.Cooldown;
+                spell.CurrentCharges--;
+                if (spell.Animation != null)
+                    AnimationManager.Play(spell.Animation);
+            }
         }
     }
 }

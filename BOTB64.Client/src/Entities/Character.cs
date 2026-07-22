@@ -113,19 +113,5 @@ namespace BOTB64.Entities
                     return RL.Color.Blue;
             }
         }
-
-        public void ApplyAura(Aura aura, int stacks)
-        {
-            foreach (var myaura in CurrentAuras)
-            {
-                if (myaura.ID == aura.ID)
-                {
-                    myaura.AddStacks(stacks);
-                    return;
-                }
-            }
-            aura.AddStacks(stacks);
-            CurrentAuras.Add(aura);
-        }
     }
 }

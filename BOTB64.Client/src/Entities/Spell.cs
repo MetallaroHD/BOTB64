@@ -1,6 +1,7 @@
 ﻿using BOTB64.Engine;
 using BOTB64.Graphics.Animations;
 using BOTB64.Runtime;
+using System.Text;
 using RL = Raylib_cs;
 
 namespace BOTB64.Entities
@@ -25,6 +26,8 @@ namespace BOTB64.Entities
 
         public string Tooltip = "";
 
+        public bool IsPassive => Effects.Count < 1;
+
         // --- Volatile data --- //
         public Character? Owner;
 
@@ -32,5 +35,19 @@ namespace BOTB64.Entities
         public int CurrentCharges = 0;
 
         public List<Parameter> Parameters = new();
+        public LuaResult Cast(Game game, SpellCastContext ctx)
+        {
+            LuaResult ret = new LuaResult { Success = false, ErrorMessage = "Spell is passive!" };
+            if (IsPassive)
+                return ret;
+
+            var runner = game.GetLuaRunner();
+            ret = runner.Run(Effects[0], ctx);
+
+            for (int i = 1; i <Effects.Count; i++)
+                runner.Run(Effects[i], ctx);
+
+            return ret;
+        }
     }
 }

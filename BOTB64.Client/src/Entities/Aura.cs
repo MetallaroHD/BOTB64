@@ -37,11 +37,5 @@ namespace BOTB64.Entities
         public int CurrentStacks = 0;
 
         public List<Parameter> Parameters = new();
-
-        public void AddStacks(int stacks)
-        {
-            CurrentStacks = Math.Min(CurrentStacks + stacks, MaxStacks);
-            Remaining = Duration;
-        }
     }
 }

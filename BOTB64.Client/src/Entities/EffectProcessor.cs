@@ -1,5 +1,6 @@
 ﻿using BOTB64.Engine;
 using BOTB64.Engine.Net;
+using BOTB64.Runtime;
 using System;
 
 namespace BOTB64.Entities
@@ -12,16 +13,16 @@ namespace BOTB64.Entities
             return game.Random() < thresh;
         }
 
-        public static void Damage(Game game, EffectContext ctx, Effect eff, int targetID, int baseDamage)
+        public static bool Damage(Game game, EffectContext ctx, Effect eff, int targetID, int baseDamage)
         {
             var target = game.FindCharacter(targetID);
-            Damage(game, ctx, eff, target, baseDamage);
+            return Damage(game, ctx, eff, target, baseDamage);
         }
 
-        public static void Damage(Game game, EffectContext ctx, Effect eff, Character target, int baseDamage)
+        public static bool Damage(Game game, EffectContext ctx, Effect eff, Character target, int baseDamage)
         {
             if (target == null)
-                return;
+                return false;
             var dmgCtx = new DamageContext(ctx.Invoker, ctx.Invoker, target);
             dmgCtx.DamageDone = baseDamage;
             dmgCtx.DamageType = eff.Type;
@@ -41,11 +42,46 @@ namespace BOTB64.Entities
             }
             if (dmgCtx.DamageTaker.CurrentHP <= 0)
                 Die(game, dmgCtx.DamageTaker.GameID);
+            return true;
         }
 
-        public static void ApplyAura(Game game, int ownerID, int targetID, int auraID, int stacks)
+        public static bool ApplyAura(Game game, int ownerID, int targetID, int auraID, int stacksToAdd)
         {
-            
+            Character? owner = game.FindCharacter(ownerID);
+            Character? target = game.FindCharacter(targetID);
+            if (owner == null || target == null)
+                return false;
+
+            Aura? template = AuraTriggerManager.GetAura(auraID);
+            if (template == null)
+                return false;
+
+            var existing = target.CurrentAuras.FirstOrDefault(a => a.ID == auraID);
+            int currentStacks = existing?.CurrentStacks ?? 0;
+            int finalStacks = Math.Min(currentStacks + stacksToAdd, template.MaxStacks);
+
+            var auraCtx = new ApplyAuraContext(owner, owner, target, template);
+            game.RecordAndApply(new ApplyAuraEvent { OwnerID = ownerID, TargetID = targetID, AuraID = auraID, FinalStacks = finalStacks });
+            AuraTriggerManager.Execute(auraCtx, EffectTrigger.OnApply, AuraType.Character);
+            AuraTriggerManager.Execute(auraCtx, EffectTrigger.OnOtherAuraApplied, AuraType.Character);
+            return true;
+        }
+
+        // EffectProcessor.cs — new method, alongside ApplyAura
+        public static bool ApplyTileEffect(Game game, int ownerID, Hex position, int tileEffectID, int duration)
+        {
+            Character? owner = game.FindCharacter(ownerID);
+            var tile = game.GetBoard().GetTile(position);
+            if (owner == null || tile == null)
+                return false;
+            TileEffect? template = AuraTriggerManager.GetTileEffect(tileEffectID); // mirrors GetAura
+            if (template == null)
+                return false;
+            game.RecordAndApply(new ApplyTileEffectEvent { OwnerID = ownerID, Position = position, TileEffectID = tileEffectID, Duration = duration });
+            var tileCtx = new EffectContext(owner);
+            AuraTriggerManager.Execute(tileCtx, EffectTrigger.OnApply, AuraType.Tile);
+            AuraTriggerManager.Execute(tileCtx, EffectTrigger.OnApplyTileEffect, AuraType.Character);
+            return true;
         }
 
         public static void Die(Game game, int charID)

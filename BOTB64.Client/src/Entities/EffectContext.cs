@@ -45,4 +45,17 @@ namespace BOTB64.Entities
             DamageTaker = dmged;
         }
     }
+    public class ApplyAuraContext : EffectContext
+    {
+        public Character Owner;
+        public Character Wearer;
+        public Aura Aura;
+
+        public ApplyAuraContext(Character invoker, Character owner, Character target, Aura aura) : base(invoker)
+        {
+            Owner = owner;
+            Wearer = target;
+            Aura = aura;
+        }
+    }
 }
