@@ -17,6 +17,13 @@ namespace BOTB64.Engine.Net
     [Union(8, typeof(ApplyAuraEvent))]
     [Union(9, typeof(ApplyTileEffectEvent))]
     [Union(10, typeof(SpellCastEvent))]
+    [Union(11, typeof(ResourcesRefreshedEvent))]
+    [Union(12, typeof(RegenTickEvent))]
+    [Union(13, typeof(AuraDurationTickEvent))]
+    [Union(14, typeof(AuraExpiredEvent))]
+    [Union(15, typeof(TileEffectDurationTickEvent))]
+    [Union(16, typeof(TileEffectExpiredEvent))]
+    [Union(17, typeof(AuraParamSetEvent))]
     public interface IGameEvent
     {
         void Apply(Game game);
@@ -51,7 +58,46 @@ namespace BOTB64.Engine.Net
     }
 
     [MessagePackObject]
-    public struct DamageEvent : IGameEvent 
+    public struct ResourcesRefreshedEvent : IGameEvent
+    {
+        [Key(0)] public int CharacterID;
+        [Key(1)] public int Movement;
+        [Key(2)] public int Action;
+        [Key(3)] public int FastAction;
+
+        // Reusable on its own — a "refresh all actions" spell/aura could call this directly,
+        // not just turn-start.
+        public void Apply(Game game)
+        {
+            var c = game.FindCharacter(CharacterID);
+            if (c == null) return;
+            c.RemainMovement = Movement;
+            c.RemainAction = Action;
+            c.RemainFastAction = FastAction;
+            c.HasMovedThisTurn = false;
+        }
+    }
+
+    [MessagePackObject]
+    public struct RegenTickEvent : IGameEvent
+    {
+        [Key(0)] public int CharacterID;
+        [Key(1)] public int HPAmount;
+        [Key(2)] public int ResourceAmount;
+
+        // Reusable — a "regen aura" or a Lua-driven DoT-in-reverse could call this same event
+        // without needing a turn to advance at all.
+        public void Apply(Game game)
+        {
+            var c = game.FindCharacter(CharacterID);
+            if (c == null) return;
+            c.CurrentHP = Math.Min(c.CurrentHP + HPAmount, c.MaxHP.GetI());
+            c.CurrentResource = Math.Min(c.CurrentResource + ResourceAmount, c.MaxRes.GetI());
+        }
+    }
+
+    [MessagePackObject]
+    public struct DamageEvent : IGameEvent
     {
         [Key(0)] public int TargetID;
         [Key(1)] public int Amount;
@@ -212,10 +258,139 @@ namespace BOTB64.Engine.Net
             if (spell != null)
             {
                 spell.CurrentCD = spell.Cooldown;
-                spell.CurrentCharges--;
+                if (spell.Charges != 0)
+                    spell.CurrentCharges = Math.Max(0, spell.CurrentCharges - 1);
                 if (spell.Animation != null)
                     AnimationManager.Play(spell.Animation);
+                Logger.Log(character.Name + " casts " + spell.Name + "!");
             }
+        }
+    }
+
+    [MessagePackObject]
+    public struct AuraDurationTickEvent : IGameEvent
+    {
+        [Key(0)] public int CharacterID;
+        [Key(1)] public int AuraID;
+        [Key(2)] public int NewRemaining;
+
+        public void Apply(Game game)
+        {
+            var c = game.FindCharacter(CharacterID);
+            int id = AuraID;
+            var aura = c?.CurrentAuras.FirstOrDefault(a => a.ID == id);
+            if (aura != null) aura.Remaining = NewRemaining;
+        }
+    }
+
+    [MessagePackObject]
+    public struct AuraExpiredEvent : IGameEvent
+    {
+        [Key(0)] public int CharacterID;
+        [Key(1)] public int AuraID;
+
+        public void Apply(Game game)
+        {
+            var c = game.FindCharacter(CharacterID);
+            int id = AuraID;
+            c?.CurrentAuras.RemoveAll(a => a.ID == id);
+        }
+    }
+
+    [MessagePackObject]
+    public struct TileEffectDurationTickEvent : IGameEvent
+    {
+        [Key(0)] public int CharacterID;
+        [Key(1)] public int AuraID;
+        [Key(2)] public int NewRemaining;
+
+        public void Apply(Game game)
+        {
+            var c = game.FindCharacter(CharacterID);
+            int id = AuraID;
+            var aura = c?.CurrentAuras.FirstOrDefault(a => a.ID == id);
+            if (aura != null) aura.Remaining = NewRemaining;
+        }
+    }
+
+    [MessagePackObject]
+    public struct TileEffectExpiredEvent : IGameEvent
+    {
+        [Key(0)] public int CharacterID;
+        [Key(1)] public int AuraID;
+
+        public void Apply(Game game)
+        {
+            var c = game.FindCharacter(CharacterID);
+            int id = AuraID;
+            c?.CurrentAuras.RemoveAll(a => a.ID == id);
+        }
+    }
+
+    [MessagePackObject]
+    public struct StatModifiedEvent : IGameEvent
+    {
+        [Key(0)] public int CharacterID;
+        [Key(1)] public StatType Stat;
+        [Key(2)] public float AddDelta;
+        [Key(3)] public float MulDelta;
+
+        public void Apply(Game game)
+        {
+            var c = game.FindCharacter(CharacterID);
+            if (c == null) return;
+
+            var stat = Resolve(c, Stat);
+            if (stat == null) return;
+
+            if (AddDelta != 0) stat.Add(AddDelta);
+            if (MulDelta != 0) stat.Mul(MulDelta);
+        }
+
+        private static CharacterStat? Resolve(Character c, StatType type) => type switch
+        {
+            StatType.MaxHP => c.MaxHP,
+            StatType.MaxRes => c.MaxRes,
+            StatType.HPRegen => c.HPRegen,
+            StatType.ResRegen => c.ResRegen,
+            StatType.AttackPower => c.AttackPower,
+            StatType.SpellPower => c.SpellPower,
+            StatType.Defense => c.Defense,
+            StatType.MagicDefense => c.MagicDefense,
+            StatType.Haste => c.Haste,
+            StatType.Speed => c.Speed,
+            StatType.ArmorPen => c.ArmorPen,
+            StatType.SpellPen => c.SpellPen,
+            StatType.Crit => c.Crit,
+            StatType.LifeSteal => c.LifeSteal,
+            StatType.SpellVamp => c.SpellVamp,
+            StatType.AutoAttackAP => c.AutoAttackAP,
+            StatType.AutoAttackSP => c.AutoAttackSP,
+            _ => null
+        };
+    }
+
+    [MessagePackObject]
+    public struct AuraParamSetEvent : IGameEvent
+    {
+        [Key(0)] public int CharacterID;
+        [Key(1)] public int AuraID;
+        [Key(2)] public string Key;
+        [Key(3)] public float Value;
+
+        public void Apply(Game game)
+        {
+            var c = game.FindCharacter(CharacterID);
+            int id = AuraID;
+            var aura = c?.CurrentAuras.FirstOrDefault(a => a.ID == id);
+            if (aura == null) return;
+
+            string key = Key;
+            var existing = aura.Parameters.FirstOrDefault(p => p.Name == key);
+            if (existing != null)
+                existing.Set(Value); // Parameter.Set(float) — retypes to Float and stores the value, mutates in place
+            else
+                aura.Parameters.Add(Parameter.FromFloat(Key, Value)); // Parameter's constructor is private; FromFloat is the correct factory
         }
     }
 }

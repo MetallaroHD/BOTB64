@@ -8,6 +8,12 @@ namespace BOTB64.Entities
     /* Contains the internals for all effects in the game */
     public static class EffectProcessor
     {
+        public static float Random(Game game, float min, float max)
+        {
+            double rng = game.Random();
+            return (float)rng * max + (1 - (float)rng) * min;
+        }
+
         public static bool Roll(Game game, float thresh)
         {
             return game.Random() < thresh;
@@ -90,6 +96,43 @@ namespace BOTB64.Entities
             var character = game.FindCharacter(charID); 
             if (character != null) 
                 AuraTriggerManager.Execute(new EffectContext(character), EffectTrigger.OnDeath, AuraType.Character | AuraType.Tile);
+        }
+
+        public static void SetAuraParam(Game game, int wearerId, int auraId, string key, float value)
+        {
+            var wearer = game.FindCharacter(wearerId);
+            var aura = wearer?.CurrentAuras.FirstOrDefault(a => a.ID == auraId);
+            if (aura == null) return;
+            game.RecordAndApply(new AuraParamSetEvent { CharacterID = wearerId, AuraID = auraId, Key = key, Value = value });
+        }
+
+        public static float GetAuraParam(Game game, int wearerId, int auraId, string key)
+        {
+            var wearer = game.FindCharacter(wearerId);
+            var aura = wearer?.CurrentAuras.FirstOrDefault(a => a.ID == auraId);
+            var param = aura?.Parameters.FirstOrDefault(p => p.Name == key);
+            return param?.GetFloat(0f) ?? 0f; // read-only — no event needed, same tier as GetHP
+        }
+
+        public static bool ModifyStat(Game game, int characterId, string statName, float addDelta, float mulDelta)
+        {
+            var character = game.FindCharacter(characterId);
+            if (character == null) return false;
+
+            if (!Enum.TryParse<StatType>(statName, ignoreCase: true, out var stat))
+            {
+                Logger.Log($"ModifyStat: unknown stat '{statName}'");
+                return false;
+            }
+
+            game.RecordAndApply(new StatModifiedEvent
+            {
+                CharacterID = characterId,
+                Stat = stat,
+                AddDelta = addDelta,
+                MulDelta = mulDelta
+            });
+            return true;
         }
 
         private static int CalcDamage(Character atker, Character target, int bd, EffectDamageScaling scal)

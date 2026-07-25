@@ -2,6 +2,27 @@
 
 namespace BOTB64.Entities
 {
+    public enum StatType
+    {
+        MaxHP,
+        MaxRes,
+        HPRegen,
+        ResRegen,
+        AttackPower,
+        SpellPower,
+        Defense,
+        MagicDefense,
+        Haste,
+        Speed,
+        ArmorPen,
+        SpellPen,
+        Crit,
+        LifeSteal,
+        SpellVamp,
+        AutoAttackAP,
+        AutoAttackSP
+    }
+
     public class CharacterStat
     {
         private float BaseVal = 0f;

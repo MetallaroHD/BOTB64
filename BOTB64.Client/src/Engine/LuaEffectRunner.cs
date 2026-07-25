@@ -28,13 +28,17 @@ namespace BOTB64.Engine
             Lua.Globals["Die"] = (Action<int>)(charId => { EffectProcessor.Die(game, charId); });
             Lua.Globals["ApplyAura"] = (Func<int, int, int, int, bool>)((ownerID, targetID, auraID, stacks) => { return EffectProcessor.ApplyAura(game, ownerID, targetID, auraID, stacks); });
             Lua.Globals["ApplyTileEffect"] = (Func<int, int, int, int, int, bool>)((ownerID, q, r, tileEffectID, duration) => EffectProcessor.ApplyTileEffect(game, ownerID, new Hex(q, r), tileEffectID, duration));
+            Lua.Globals["ModifyStat"] = (Func<int, string, float, float, bool>)((charId, statName, addDelta, mulDelta) => EffectProcessor.ModifyStat(game, charId, statName, addDelta, mulDelta));
+            Lua.Globals["SetAuraParam"] = (Action<int, int, string, float>)((wearerId, auraId, key, value) => EffectProcessor.SetAuraParam(game, wearerId, auraId, key, value));
+            Lua.Globals["GetAuraParam"] = (Func<int, int, string, float>)((wearerId, auraId, key) => EffectProcessor.GetAuraParam(game, wearerId, auraId, key));
 
             // OTHER
+            Lua.Globals["Random"] = (Func<float, float, float>)((min, max) => EffectProcessor.Random(game, min, max));
             Lua.Globals["Roll"] = (Func<float, bool>)(chance => EffectProcessor.Roll(game, chance));
             Lua.Globals["Log"] = (Action<string>)(text => Logger.Log(text));
 
             // GETTERS
-            Lua.Globals["IsDirect"] = CurrentEffect.IsDirect;
+            Lua.Globals["IsDirect"] = (Func<bool>)(() => CurrentEffect.IsDirect);
             Lua.Globals["HasTrigger"] = (Func<EffectTrigger, bool>)(t => { return CurrentEffect.Trigger.HasFlag(t); });
             Lua.Globals["GetCharacterAt"] = (Func<int, int, int>)((q, r) => { var c = game.FindCharacter(q, r); if (c != null) return c.GameID; return -1; });
             Lua.Globals["GetHP"] = (Func<int, int>)(charId => game.FindCharacter(charId)?.CurrentHP ?? 0);
@@ -45,6 +49,9 @@ namespace BOTB64.Engine
             Lua.Globals["GetDefense"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.Defense.GetF() ?? 0);
             Lua.Globals["GetCritChance"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.Crit.GetF() ?? 0);
             Lua.Globals["IsAlive"] = (Func<int, bool>)(charId => game.FindCharacter(charId)?.Alive ?? false);
+
+            // TYPES
+            Lua.Globals["EffectTrigger"] = UserData.CreateStatic<EffectTrigger>();
 
             Lua.Options.ScriptLoader = new ArchiveScriptLoader(LoadScript);
         }
