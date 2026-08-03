@@ -159,7 +159,8 @@ public static class ResourceManager
 
             if (extension is ".gltf"
                 or ".bin"
-                or ".png")
+                or ".png"
+                or ".glb")
             {
                 string relative =
                     entryPath

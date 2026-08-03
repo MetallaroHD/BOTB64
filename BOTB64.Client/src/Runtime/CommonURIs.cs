@@ -22,7 +22,7 @@ namespace BOTB64.Runtime
         public static readonly string LevelEXT = ".b64m";
         public static readonly string TileEffEXT = ".b64t";
 
-        public static readonly string ModelEXT = ".gltf";
+        public static readonly string ModelEXT = ".glb";
         public static readonly string ShaderVSEXT = ".vs";
         public static readonly string ShaderFSEXT = ".fs";
         public static readonly string ImageEXT = ".png";

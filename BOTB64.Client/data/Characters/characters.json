@@ -14,7 +14,7 @@
         "Enabled" : true,
         "Subdir" : "Soldato",
         "Name" : "Soldatosolitario",
-        "ModelURI" : "crab",
+        "ModelURI" : "soldato",
         "ScriptURI" : "character",
         "IconURI" : "dummy"
     },
@@ -33,8 +33,8 @@
         "ID" : 3,
         "Enabled" : true,
         "Subdir" : "Rag",
-        "Name" : "Ragnarass",
-        "ModelURI" : "rag",
+        "Name" : "Rassarang",
+        "ModelURI" : "rassarang",
         "ScriptURI" : "character",
         "IconURI" : "dummy"
     },
@@ -44,7 +44,7 @@
         "Enabled" : true,
         "Subdir" : "Trap",
         "Name" : "Trappus",
-        "ModelURI" : "fairy",
+        "ModelURI" : "trappus",
         "ScriptURI" : "character",
         "IconURI" : "dummy"
     },
@@ -54,7 +54,57 @@
         "Enabled" : true,
         "Subdir" : "Pilaf",
         "Name" : "Pilaf",
-        "ModelURI" : "Pilaf",
+        "ModelURI" : "pilaf",
+        "ScriptURI" : "character",
+        "IconURI" : "dummy"
+    },
+
+    {
+        "ID" : 6,
+        "Enabled" : true,
+        "Subdir" : "Oliver",
+        "Name" : "Oliver",
+        "ModelURI" : "oliver",
+        "ScriptURI" : "character",
+        "IconURI" : "dummy"
+    },
+
+    {
+        "ID" : 7,
+        "Enabled" : true,
+        "Subdir" : "Gravitus",
+        "Name" : "Gravitus",
+        "ModelURI" : "gravitus",
+        "ScriptURI" : "character",
+        "IconURI" : "dummy"
+    },
+
+    {
+        "ID" : 8,
+        "Enabled" : true,
+        "Subdir" : "Akano",
+        "Name" : "Akano",
+        "ModelURI" : "akano",
+        "ScriptURI" : "character",
+        "IconURI" : "dummy"
+    },
+
+    {
+        "ID" : 9,
+        "Enabled" : true,
+        "Subdir" : "Lei",
+        "Name" : "Lei Stess",
+        "ModelURI" : "lei",
+        "ScriptURI" : "character",
+        "IconURI" : "dummy"
+    },
+
+    {
+        "ID" : 10,
+        "Enabled" : true,
+        "Subdir" : "Lee",
+        "Name" : "Lee Sis",
+        "ModelURI" : "leesis",
         "ScriptURI" : "character",
         "IconURI" : "dummy"
     }
