@@ -29,6 +29,12 @@ function Die(charId) end
 ---@return boolean success
 function ApplyAura(ownerId, targetId, auraId, stacks) end
 
+---Drops stacks of (or whole) aura on a target.
+---@param charId integer
+---@param auraId integer
+---@param stacks integer
+function DropAura(charId, auraId, stacks) end
+
 ---Applies a tile effect to the tile at hex (q, r).
 ---@param ownerId integer
 ---@param q integer
@@ -60,6 +66,11 @@ function SetAuraParam(wearerId, auraId, key, value) end
 ---@param key string
 ---@return number
 function GetAuraParam(wearerId, auraId, key) end
+
+---Spends a normal or fast action.
+---@param charId integer
+---@param fast boolean
+function SpendAction(wearerId, auraId, key) end
 
 --- OTHER ---
 
@@ -124,8 +135,33 @@ function GetDefense(charId) end
 function GetCritChance(charId) end
 
 ---@param charId integer
+---@return Hex
+function GetPosition(charId) end
+
+---@param charId integer
 ---@return boolean
 function IsAlive(charId) end
+
+---@param charId integer
+---@return boolean
+function IsRooted(charId) end
+
+---@param charId integer
+---@return boolean
+function IsStunned(charId) end
+
+---@param charId integer
+---@return boolean
+function IsDisarmed(charId) end
+
+---@param charId integer
+---@return boolean
+function IsSilenced(charId) end
+
+---@param fromId integer
+---@param toId integer
+---@return boolean
+function HasLineOfSight(fromId, toId) end
 
 --- TYPES ---
 

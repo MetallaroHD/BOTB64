@@ -28,6 +28,11 @@
                 <StackPanel Orientation="Horizontal">
                     <controls:FlagsPicker EnumType="{x:Type entities:DispelType}" Value="{Binding Dispel, Mode=TwoWay}"/>
                 </StackPanel>
+
+                <Label Content="Special Effect"/>
+                <StackPanel Orientation="Horizontal">
+                    <controls:FlagsPicker EnumType="{x:Type entities:AuraSpecialEffect}" Value="{Binding SpecialEffect, Mode=TwoWay}"/>
+                </StackPanel>
             </UniformGrid>
 
             <Label Content="Tooltip" Margin="0,10,0,0"/>

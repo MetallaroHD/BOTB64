@@ -17,13 +17,14 @@ namespace BOTB64.Engine.Net
     [Union(8, typeof(ApplyAuraEvent))]
     [Union(9, typeof(ApplyTileEffectEvent))]
     [Union(10, typeof(SpellCastEvent))]
-    [Union(11, typeof(ResourcesRefreshedEvent))]
+    [Union(11, typeof(ActionRefreshEvent))]
     [Union(12, typeof(RegenTickEvent))]
     [Union(13, typeof(AuraDurationTickEvent))]
     [Union(14, typeof(AuraExpiredEvent))]
     [Union(15, typeof(TileEffectDurationTickEvent))]
     [Union(16, typeof(TileEffectExpiredEvent))]
     [Union(17, typeof(AuraParamSetEvent))]
+    [Union(18, typeof(SpellCooldownReduceEvent))]
     public interface IGameEvent
     {
         void Apply(Game game);
@@ -58,7 +59,7 @@ namespace BOTB64.Engine.Net
     }
 
     [MessagePackObject]
-    public struct ResourcesRefreshedEvent : IGameEvent
+    public struct ActionRefreshEvent : IGameEvent
     {
         [Key(0)] public int CharacterID;
         [Key(1)] public int Movement;
@@ -193,6 +194,8 @@ namespace BOTB64.Engine.Net
             {
                 existing.CurrentStacks = FinalStacks;
                 existing.Remaining = existing.Duration;
+                if (FinalStacks <= 0)
+                    t.CurrentAuras.Remove(existing);
             }
             else
             {
@@ -201,7 +204,8 @@ namespace BOTB64.Engine.Net
                 aura.Wearer = t;
                 aura.CurrentStacks = FinalStacks;
                 aura.Remaining = aura.Duration;
-                t.CurrentAuras.Add(aura);
+                if (FinalStacks > 0)
+                    t.CurrentAuras.Add(aura);
             }
         }
     }
@@ -280,6 +284,26 @@ namespace BOTB64.Engine.Net
             int id = AuraID;
             var aura = c?.CurrentAuras.FirstOrDefault(a => a.ID == id);
             if (aura != null) aura.Remaining = NewRemaining;
+        }
+    }
+
+    [MessagePackObject]
+    public struct SpellCooldownReduceEvent : IGameEvent
+    {
+        [Key(0)] public int CharacterID;
+        [Key(1)] public int SpellID;
+        [Key(2)] public int NewRemaining;
+
+        public void Apply(Game game)
+        {
+            var c = game.FindCharacter(CharacterID);
+            int id = SpellID;
+            var spell = c?.ActiveSpells.FirstOrDefault(s => s.Value.ID == id).Value;
+            if (spell == null)
+                return;
+            spell.Cooldown = NewRemaining;
+            if(NewRemaining <= 0)
+                spell.CurrentCharges = Math.Min(Math.Max(0, spell.CurrentCharges + 1), spell.Charges);
         }
     }
 

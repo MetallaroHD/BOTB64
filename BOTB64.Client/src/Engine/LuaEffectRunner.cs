@@ -31,6 +31,8 @@ namespace BOTB64.Engine
             Lua.Globals["ModifyStat"] = (Func<int, string, float, float, bool>)((charId, statName, addDelta, mulDelta) => EffectProcessor.ModifyStat(game, charId, statName, addDelta, mulDelta));
             Lua.Globals["SetAuraParam"] = (Action<int, int, string, float>)((wearerId, auraId, key, value) => EffectProcessor.SetAuraParam(game, wearerId, auraId, key, value));
             Lua.Globals["GetAuraParam"] = (Func<int, int, string, float>)((wearerId, auraId, key) => EffectProcessor.GetAuraParam(game, wearerId, auraId, key));
+            Lua.Globals["SpendAction"] = (Action<int, bool>)((charId, fast) => EffectProcessor.SpendAction(game, charId, fast));
+            Lua.Globals["DropAura"] = (Action<int, int, int>)((charId, auraId, stacks) => EffectProcessor.DropAura(game, charId, auraId, stacks));
 
             // OTHER
             Lua.Globals["Random"] = (Func<float, float, float>)((min, max) => EffectProcessor.Random(game, min, max));
@@ -48,7 +50,13 @@ namespace BOTB64.Engine
             Lua.Globals["GetAutoAttackSP"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.AutoAttackSP.GetF() ?? 0);
             Lua.Globals["GetDefense"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.Defense.GetF() ?? 0);
             Lua.Globals["GetCritChance"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.Crit.GetF() ?? 0);
+            Lua.Globals["GetPosition"] = (Func<int, Hex>)(charId => game.FindCharacter(charId)?.Position ?? new Hex(-999, -999));
             Lua.Globals["IsAlive"] = (Func<int, bool>)(charId => game.FindCharacter(charId)?.Alive ?? false);
+            Lua.Globals["IsRooted"] = (Func<int, bool>)(charId => game.FindCharacter(charId)?.HasSpecialEffect(AuraSpecialEffect.Root) ?? false);
+            Lua.Globals["IsStunned"] = (Func<int, bool>)(charId => game.FindCharacter(charId)?.HasSpecialEffect(AuraSpecialEffect.Stun) ?? false);
+            Lua.Globals["IsSilenced"] = (Func<int, bool>)(charId => game.FindCharacter(charId)?.HasSpecialEffect(AuraSpecialEffect.Silence) ?? false);
+            Lua.Globals["IsDisarmed"] = (Func<int, bool>)(charId => game.FindCharacter(charId)?.HasSpecialEffect(AuraSpecialEffect.Disarm) ?? false);
+            Lua.Globals["HasLineOfSight"] = (Func<int, int, bool>)((fromChar, toChar) => EffectProcessor.CheckLOS(game, fromChar, toChar));
 
             // TYPES
             Lua.Globals["EffectTrigger"] = UserData.CreateStatic<EffectTrigger>();

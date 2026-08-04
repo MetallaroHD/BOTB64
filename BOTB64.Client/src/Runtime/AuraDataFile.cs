@@ -57,6 +57,7 @@ public class AuraDataFile : ScriptDataFile<Aura>
             case "DURATION": aura.Duration = int.Parse(rest, CultureInfo.InvariantCulture); break;
             case "MAXSTACKS": aura.MaxStacks = int.Parse(rest, CultureInfo.InvariantCulture); break;
             case "DISPEL": aura.Dispel = (DispelType)int.Parse(rest, CultureInfo.InvariantCulture); break;
+            case "SPECIALEFFECT": aura.SpecialEffect = (AuraSpecialEffect)int.Parse(rest, CultureInfo.InvariantCulture); break;
             case "TOOLTIP": aura.Tooltip = ParseQuotedOrRaw(rest); break;
         }
     }

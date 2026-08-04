@@ -1,7 +1,6 @@
 ﻿using BOTB64.Engine;
 using BOTB64.Engine.Net;
 using BOTB64.Runtime;
-using System;
 
 namespace BOTB64.Entities
 {
@@ -17,6 +16,27 @@ namespace BOTB64.Entities
         public static bool Roll(Game game, float thresh)
         {
             return game.Random() < thresh;
+        }
+
+        public static bool CheckLOS(Game game, int from, int to)
+        {
+            Character? fromChar = game.FindCharacter(from);
+            Character? toChar = game.FindCharacter(to);
+
+            if (fromChar == null || toChar == null)
+                return false;
+
+            var beam = HexAlgo.Beam(fromChar.Position, toChar.Position);
+            foreach (Hex h in beam)
+            {
+                Tile? t = game.GetBoard().GetTile(h);
+                if (t == null)
+                    return false;
+                if (!t.AllowsLos())
+                    return false;
+            }
+
+            return true;
         }
 
         public static bool Damage(Game game, EffectContext ctx, Effect eff, int targetID, int baseDamage)
@@ -133,6 +153,31 @@ namespace BOTB64.Entities
                 MulDelta = mulDelta
             });
             return true;
+        }
+
+        public static void DropAura(Game game, int charId, int auraId, int stacks)
+        {
+            Character? character = game.FindCharacter(charId);
+            if(character == null) return;
+
+            var existing = character.CurrentAuras.FirstOrDefault(a => a.ID == auraId);
+
+            if(existing == null) 
+                return;
+
+            int currentStacks = existing?.CurrentStacks ?? 0;
+            int finalStacks = Math.Min(currentStacks - stacks, existing.MaxStacks);
+
+            var auraCtx = new ApplyAuraContext(existing.Wearer, existing.Owner, existing.Wearer, existing);
+            game.RecordAndApply(new ApplyAuraEvent { OwnerID = existing.Owner.GameID, TargetID = existing.Wearer.GameID, AuraID = existing.ID, FinalStacks = finalStacks });
+            AuraTriggerManager.Execute(auraCtx, EffectTrigger.OnDropStack, AuraType.Character);
+            if(finalStacks <= 0)
+                AuraTriggerManager.Execute(auraCtx, EffectTrigger.OnDrop, AuraType.Character);
+        }
+
+        public static void SpendAction(Game game, int characterID, bool fast)
+        {
+            game.RecordAndApply(new ActionSpentEvent { CharacterID = characterID, FastAction = fast });
         }
 
         private static int CalcDamage(Character atker, Character target, int bd, EffectDamageScaling scal)

@@ -15,6 +15,20 @@ namespace BOTB64.Entities
         Hex = 1 << 4
     }
 
+    [Flags]
+    public enum AuraSpecialEffect
+    {
+        None = 0,
+        // Prevents movement
+        Root = 1 << 0,
+        // Prevents all actions
+        Stun = 2 << 0,
+        // Prevents autoattacking
+        Disarm = 3 << 0,
+        // Prevents spellcasting
+        Silence = 4 << 0,
+    }
+
     public class Aura : ExecutableBase, IReadable
     {
         public AuraVfxAnimation Animation { get; set; }
@@ -26,6 +40,7 @@ namespace BOTB64.Entities
         public int Duration = 0;
         public int MaxStacks = 0;
         public DispelType Dispel = DispelType.None;
+        public AuraSpecialEffect SpecialEffect = AuraSpecialEffect.None;
 
         public string Tooltip = "";
 

@@ -164,11 +164,7 @@ namespace BOTB64.Engine.Net
         public bool Validate(Game game) => game.CurrentCharacter.GameID == ActingCharacterID;
         public void Resolve(Game game)
         {
-            if (game.CurrentCharacter.Alive)
-                AuraTriggerManager.Execute(new EffectContext(game.CurrentCharacter), EffectTrigger.OnEndTurn, AuraType.Character | AuraType.Tile);
             game.AdvanceTurnInternal();
-            if(game.CurrentCharacter.Alive)
-                AuraTriggerManager.Execute(new EffectContext(game.CurrentCharacter), EffectTrigger.OnStartTurn, AuraType.Character | AuraType.Tile);
         }
     }
 }

@@ -72,6 +72,7 @@ namespace BOTB64.Entities
 
         public int CurrentHP = 50;
         public int CurrentResource = 15;
+        public int CurrentShield = 0;
 
         public bool HasMovedThisTurn = false;
         public int RemainMovement = 5;
@@ -112,6 +113,20 @@ namespace BOTB64.Entities
                 default:
                     return RL.Color.Blue;
             }
+        }
+
+        public bool HasSpecialEffect(AuraSpecialEffect sp)
+        {
+            bool ret = false;
+            foreach (Aura a in CurrentAuras)
+            {
+                if (a.SpecialEffect.HasFlag(sp))
+                {
+                    ret = true;
+                    break;
+                }
+            }
+            return ret;
         }
     }
 }

@@ -161,8 +161,36 @@ namespace BOTB64.Entities
 
         internal void AdvanceTurnInternal()
         {
+            if (CurrentCharacter.Alive)
+                AuraTriggerManager.Execute(new EffectContext(CurrentCharacter), EffectTrigger.OnEndTurn, AuraType.Character | AuraType.Tile);
+
             var next = GetNextLivingCharacter(CurrentTurn.ActiveCharacter);
             RecordAndApply(new TurnAdvancedEvent { NextCharacterID = next.GameID, TurnNumber = CurrentTurn.Number + 1 });
+
+            if (!next.Alive) return;
+
+            RecordAndApply(new ActionRefreshEvent
+            {
+                CharacterID = next.GameID,
+                Movement = next.Speed.GetI(),
+                Action = 1,
+                FastAction = 1
+            });
+
+            RecordAndApply(new RegenTickEvent
+            {
+                CharacterID = next.GameID,
+                HPAmount = next.HPRegen.GetI(),
+                ResourceAmount = next.ResRegen.GetI()
+            });
+
+            if (CurrentCharacter.Alive)
+                AuraTriggerManager.Execute(new EffectContext(CurrentCharacter), EffectTrigger.OnStartTurn, AuraType.Character | AuraType.Tile);
+
+            foreach (Spell s in next.ActiveSpells.Values)
+            {
+                RecordAndApply(new SpellCooldownReduceEvent { CharacterID = next.GameID, SpellID = s.ID, NewRemaining = Math.Max(0, s.CurrentCD - 1) });
+            }
         }
 
         public void ApplyTurnAdvance(int nextCharacterId, int turnNumber)
@@ -170,14 +198,6 @@ namespace BOTB64.Entities
             var next = FindCharacter(nextCharacterId);
             CurrentTurn = new Turn(turnNumber, next, this);
             Logger.Log("Turn " + CurrentTurn.Number + " - " + next.Name);
-            if (!CurrentCharacter.Alive)
-                return;
-            CurrentCharacter.RemainMovement = CurrentCharacter.Speed.GetI();
-            CurrentCharacter.RemainAction = 1;
-            CurrentCharacter.RemainFastAction = 1;
-            CurrentCharacter.HasMovedThisTurn = false;
-            CurrentCharacter.CurrentResource = Math.Min(CurrentCharacter.CurrentResource + CurrentCharacter.ResRegen.GetI(), CurrentCharacter.MaxRes.GetI());
-            CurrentCharacter.CurrentHP = Math.Min(CurrentCharacter.CurrentHP + CurrentCharacter.HPRegen.GetI(), CurrentCharacter.MaxHP.GetI());
         }
 
         public Character? FindCharacter(int id) => Characters.FirstOrDefault(c => c.GameID == id);

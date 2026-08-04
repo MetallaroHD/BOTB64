@@ -58,6 +58,7 @@ namespace BOTB64.Editor.IO
                 case "DURATION": aura.Duration = int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "MAXSTACKS": aura.MaxStacks = int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "DISPEL": aura.Dispel = (DispelType)int.Parse(rest, CultureInfo.InvariantCulture); break;
+                case "SPECIALEFFECT": aura.SpecialEffect = (AuraSpecialEffect)int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "TOOLTIP": aura.Tooltip = BotbParsing.ParseQuotedOrRaw(rest); break;
             }
         }
@@ -71,6 +72,7 @@ namespace BOTB64.Editor.IO
             sb.AppendLine($":DURATION {a.Duration.ToString(inv)}");
             sb.AppendLine($":MAXSTACKS {a.MaxStacks.ToString(inv)}");
             sb.AppendLine($":DISPEL {((int)a.Dispel).ToString(inv)}");
+            sb.AppendLine($":SPECIALEFFECT {((int)a.SpecialEffect).ToString(inv)}");
 
             if (a.Parameters.Count > 0)
             {
