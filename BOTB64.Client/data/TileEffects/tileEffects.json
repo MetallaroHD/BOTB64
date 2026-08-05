@@ -3,8 +3,112 @@
         "ID" : 0,
         "Name" : "Dummy",
         "ScriptURI" : "Dummy",
-        "ImageURI" : "dummy",
-        "AnimationURI" : "dummy",
-        "ModelURI" : "dummy"
+        "ImageURI" : "",
+        "AnimationURI" : "",
+        "ModelURI" : ""
+    },
+    {
+        "ID" : 1,
+        "Name" : "Trap",
+        "ScriptURI" : "trap",
+        "ImageURI" : "",
+        "AnimationURI" : "",
+        "ModelURI" : ""
+    },
+    {
+        "ID" : 2,
+        "Name" : "Ammo Package",
+        "ScriptURI" : "ammopackage",
+        "ImageURI" : "",
+        "AnimationURI" : "",
+        "ModelURI" : ""
+    },
+    {
+        "ID" : 3,
+        "Name" : "Hot Spot",
+        "ScriptURI" : "hotspot",
+        "ImageURI" : "",
+        "AnimationURI" : "",
+        "ModelURI" : ""
+    },
+    {
+        "ID" : 4,
+        "Name" : "Storm",
+        "ScriptURI" : "storm",
+        "ImageURI" : "",
+        "AnimationURI" : "",
+        "ModelURI" : ""
+    },
+    {
+        "ID" : 5,
+        "Name" : "Shuriken",
+        "ScriptURI" : "shuriken",
+        "ImageURI" : "",
+        "AnimationURI" : "",
+        "ModelURI" : ""
+    },
+    {
+        "ID" : 6,
+        "Name" : "Blood Blossom",
+        "ScriptURI" : "bloodblossom",
+        "ImageURI" : "",
+        "AnimationURI" : "",
+        "ModelURI" : ""
+    },
+    {
+        "ID" : 7,
+        "Name" : "Venom Trail",
+        "ScriptURI" : "venomtrail",
+        "ImageURI" : "",
+        "AnimationURI" : "",
+        "ModelURI" : ""
+    },
+    {
+        "ID" : 8,
+        "Name" : "Enhanced Venom Trail",
+        "ScriptURI" : "enhancedvenomtrail",
+        "ImageURI" : "",
+        "AnimationURI" : "",
+        "ModelURI" : ""
+    },
+    {
+        "ID" : 9,
+        "Name" : "Scorched Earth",
+        "ScriptURI" : "scorchedearth",
+        "ImageURI" : "",
+        "AnimationURI" : "",
+        "ModelURI" : ""
+    },
+    {
+        "ID" : 10,
+        "Name" : "Ashen Earth",
+        "ScriptURI" : "ashenearth",
+        "ImageURI" : "",
+        "AnimationURI" : "",
+        "ModelURI" : ""
+    },
+    {
+        "ID" : 11,
+        "Name" : "Flame Pillar",
+        "ScriptURI" : "flamepillar",
+        "ImageURI" : "",
+        "AnimationURI" : "",
+        "ModelURI" : ""
+    },
+    {
+        "ID" : 12,
+        "Name" : "Staff",
+        "ScriptURI" : "staff",
+        "ImageURI" : "",
+        "AnimationURI" : "",
+        "ModelURI" : ""
+    },
+    {
+        "ID" : 13,
+        "Name" : "Black Hole",
+        "ScriptURI" : "blackhole",
+        "ImageURI" : "",
+        "AnimationURI" : "",
+        "ModelURI" : ""
     }
 ]

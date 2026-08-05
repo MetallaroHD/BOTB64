@@ -59,6 +59,7 @@ public class TileEffectDataFile : ScriptDataFile<TileEffect>
             case "TILETYPE": fx.TileType = (TileEffectApplicableTile)int.Parse(rest, CultureInfo.InvariantCulture); break;
             case "FLAGS": fx.Flags = (TileEffectFlag)int.Parse(rest, CultureInfo.InvariantCulture); break;
             case "TYPE": fx.Type = (TileEffectType)int.Parse(rest, CultureInfo.InvariantCulture); break;
+            case "SECRET": fx.Secret = rest.Trim().ToLowerInvariant() is "true" or "1" or "yes"; break;
         }
     }
 

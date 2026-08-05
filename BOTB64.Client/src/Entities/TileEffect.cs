@@ -65,6 +65,7 @@ namespace BOTB64.Entities
         public int ID = 0;
         public string Name = "";
         public int Duration = 0;
+        public bool Secret = false;
         public DispelType Dispel = DispelType.None;
         public TileEffectApplicableTile TileType = TileEffectApplicableTile.None;
         public TileEffectFlag Flags = TileEffectFlag.None;

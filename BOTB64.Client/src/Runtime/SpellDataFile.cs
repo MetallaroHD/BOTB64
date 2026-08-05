@@ -64,6 +64,7 @@ namespace BOTB64.Runtime
                 case "CAST": spell.CastTime = int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "PREP": spell.Preparation = int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "TARGET": spell.ExplicitTarget = (TargetingType)int.Parse(rest, CultureInfo.InvariantCulture); break;
+                case "SECRET": spell.Secret = rest.Trim().ToLowerInvariant() is "true" or "1" or "yes"; break;
                 case "TOOLTIP": spell.Tooltip = ParseQuotedOrRaw(rest); break;
             }
         }

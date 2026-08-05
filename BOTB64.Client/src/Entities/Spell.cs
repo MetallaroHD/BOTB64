@@ -23,6 +23,7 @@ namespace BOTB64.Entities
         public TargetingType ExplicitTarget = TargetingType.Direct;
         // 0 = normal action, 1+ = cast, -1 = fast, -2 = free
         public int CastTime = 0;
+        public bool Secret = false;
 
         public string Tooltip = "";
 

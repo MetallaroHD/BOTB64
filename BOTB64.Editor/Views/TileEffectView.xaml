@@ -39,6 +39,7 @@
 
                 <Label Content="Flags"/>
                 <controls:FlagsPicker EnumType="{x:Type entities:TileEffectFlag}" Value="{Binding Flags, Mode=TwoWay}"/>
+                <CheckBox Content="Secret (only visible to the creating team)" IsChecked="{Binding Secret, Mode=TwoWay}" Margin="0,10,0,0"/>
             </UniformGrid>
 
             <TextBlock Text="Parameters" FontWeight="Bold" Margin="0,16,0,4"/>

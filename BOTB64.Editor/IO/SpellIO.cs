@@ -1,8 +1,9 @@
-using System.Globalization;
-using System.Text;
 using BOTB64.Editor.Models;
 using BOTB64.Engine;
+using BOTB64.Entities;
+using System.Globalization;
 using System.IO;
+using System.Text;
 
 namespace BOTB64.Editor.IO
 {
@@ -81,6 +82,7 @@ namespace BOTB64.Editor.IO
             sb.AppendLine($":COSTPCT {s.CostPct.ToString("G", inv)}");
             sb.AppendLine($":CAST {s.CastTime.ToString(inv)}");
             sb.AppendLine($":PREP {s.Preparation.ToString(inv)}");
+            sb.AppendLine($":SECRET {(s.Secret ? "true" : "false")}");
 
             if (s.Parameters.Count > 0)
             {

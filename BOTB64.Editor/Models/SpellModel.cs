@@ -15,6 +15,7 @@ namespace BOTB64.Editor.Models
         private int _preparation = 0;
         private TargetingType _explicitTarget = TargetingType.Direct;
         private string _tooltip = "";
+        private bool _secret = false;
 
         public int Range { get => _range; set => Set(ref _range, value); }
         public int Cooldown { get => _cooldown; set => Set(ref _cooldown, value); }
@@ -25,6 +26,7 @@ namespace BOTB64.Editor.Models
         public int Preparation { get => _preparation; set => Set(ref _preparation, value); }
         public TargetingType ExplicitTarget { get => _explicitTarget; set => Set(ref _explicitTarget, value); }
         public string Tooltip { get => _tooltip; set => Set(ref _tooltip, value ?? ""); }
+        public bool Secret { get => _secret; set => Set(ref _secret, value); }
 
         public ObservableCollection<ParameterModel> Parameters { get; } = new();
         public ObservableCollection<EffectModel> Effects { get; } = new();

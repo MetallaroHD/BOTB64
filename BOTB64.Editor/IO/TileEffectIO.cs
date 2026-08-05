@@ -74,6 +74,7 @@ namespace BOTB64.Editor.IO
             sb.AppendLine($":TILETYPE {((int)fx.TileType).ToString(inv)}");
             sb.AppendLine($":FLAGS {((int)fx.Flags).ToString(inv)}");
             sb.AppendLine($":TYPE {((int)fx.Type).ToString(inv)}");
+            sb.AppendLine($":SECRET {(fx.Secret ? "true" : "false")}");
 
             if (fx.Parameters.Count > 0)
             {
