@@ -1,0 +1,11 @@
+:BOTB64SPELL
+:TARGET 1
+:RANGE 2
+:COOLDOWN 2
+:CHARGES 1
+:COST 0
+:COSTPCT 0
+:CAST -1
+:PREP 0
+:SECRET false
+:TOOLTIP An ally spends their fast action to clean Scoper's scope lens. Her Attack Power increases for 1 turn.

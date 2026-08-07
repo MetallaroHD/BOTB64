@@ -1,9 +1,9 @@
--- Scoper ondeath - apply/drop
--- ID 2
+-- lens clean buff
+--
 
 local applydrop = require("a_applydrop")
 
-if applydrop.run(Invoker, "AttackPower", 0, 2) then
+if applydrop.run(Invoker, "AttackPower", 15, 0) then
     Success()
 else
     Fail("Bad stat name!")

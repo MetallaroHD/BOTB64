@@ -1,0 +1,8 @@
+:BOTB64AURA
+:DURATION 1
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP At the beginning of her next turn, Scoper will shoot a deadly shot at her target.
+:EFFECTS
+a_snipecast | 4 | 3 | 0 | 0

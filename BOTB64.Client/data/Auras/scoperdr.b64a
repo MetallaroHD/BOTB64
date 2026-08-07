@@ -1,0 +1,8 @@
+:BOTB64AURA
+:DURATION 999
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP Upon death, leaves behind a package of ammunition. Allies picking up the package gain greatly increased Attack Power.
+:EFFECTS
+a_scoperdeathrattle | 16 | 3 | 0 | 0

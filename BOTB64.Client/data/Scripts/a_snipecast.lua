@@ -1,5 +1,5 @@
 -- Scoper snipe cast - on start turn
--- ID 5
+-- ID 7
 
 local target = GetAuraParam(Invoker, 5, "CastTarget")
 local shouldFire = IsAlive(target) and not IsStunned(Invoker) and not IsSilenced(Invoker) and HasLineOfSight(Invoker, target)

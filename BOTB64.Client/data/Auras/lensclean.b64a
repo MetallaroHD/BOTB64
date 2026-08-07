@@ -1,0 +1,9 @@
+:BOTB64AURA
+:DURATION 1
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP Scope lens has been cleaned. Attack Power increased.
+:EFFECTS
+a_lensclean | 1 | 3 | 0 | 0
+a_lensclean | 2 | 3 | 0 | 0

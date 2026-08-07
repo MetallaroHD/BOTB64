@@ -1,0 +1,8 @@
+:BOTB64AURA
+:DURATION 1
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP Spent a fast action to clean Scoper's scope lens.
+:EFFECTS
+a_lenscleaned | 4 | 3 | 0 | 0
