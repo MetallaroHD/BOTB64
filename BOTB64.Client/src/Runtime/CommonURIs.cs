@@ -15,6 +15,7 @@ namespace BOTB64.Runtime
         public static readonly string GraphicsIconDir = "Graphics\\Icons\\";
         public static readonly string GraphicsAnimDir = "Graphics\\Animations\\";
         public static readonly string GraphicsModelDir = "Graphics\\Models\\";
+        public static readonly string GraphicsTextureDir = "Graphics\\Textures\\";
 
         public static readonly string AuraEXT = ".b64a";
         public static readonly string SpellEXT = ".b64s";

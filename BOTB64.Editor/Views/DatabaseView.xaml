@@ -1,0 +1,258 @@
+<UserControl x:Class="BOTB64.Editor.Views.DatabaseView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <Style TargetType="Button" x:Key="ToolbarButton">
+            <Setter Property="Padding" Value="8,3"/>
+            <Setter Property="Margin" Value="0,0,6,0"/>
+        </Style>
+        <Style TargetType="Button" x:Key="BrowseButton">
+            <Setter Property="Width" Value="26"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="4,2,0,2"/>
+        </Style>
+        <Style TargetType="DataGrid">
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserDeleteRows" Value="False"/>
+            <Setter Property="RowHeight" Value="30"/>
+        </Style>
+    </UserControl.Resources>
+
+    <TabControl Margin="8">
+
+        <!-- ============================= CHARACTERS ============================= -->
+        <TabItem Header="Characters">
+            <DockPanel Margin="8">
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="0,0,0,8">
+                    <Button Content="+ Add Character" Style="{StaticResource ToolbarButton}" Click="AddCharacter_Click"/>
+                    <Button Content="Remove Selected" Style="{StaticResource ToolbarButton}" Click="RemoveCharacter_Click"/>
+                    <Button Content="Save characters.json" Style="{StaticResource ToolbarButton}" Click="SaveCharacters_Click"/>
+                    <TextBlock Text="Double-click a row to open (or create) its .b64c script."
+                               Foreground="Gray" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                </StackPanel>
+
+                <DataGrid x:Name="CharactersGrid" ItemsSource="{Binding Characters}"
+                          MouseDoubleClick="CharactersGrid_MouseDoubleClick">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding ID}" Width="50" IsReadOnly="True"/>
+                        <DataGridCheckBoxColumn Header="Enabled" Binding="{Binding Enabled}" Width="60"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="150"/>
+                        <DataGridTextColumn Header="Subdir" Binding="{Binding Subdir, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
+
+                        <DataGridTemplateColumn Header="Script (Characters\Subdir\)" Width="180">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DockPanel LastChildFill="True">
+                                        <Button DockPanel.Dock="Right" Content="..." Style="{StaticResource BrowseButton}" Click="BrowseCharacterScript_Click"/>
+                                        <TextBox Text="{Binding ScriptURI, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" BorderThickness="0" Background="Transparent"/>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="Model (.glb)" Width="150">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DockPanel LastChildFill="True">
+                                        <Button DockPanel.Dock="Right" Content="..." Style="{StaticResource BrowseButton}" Click="BrowseCharacterModel_Click"/>
+                                        <TextBox Text="{Binding ModelURI, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" BorderThickness="0" Background="Transparent"/>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="Icon (.png)" Width="150">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DockPanel LastChildFill="True">
+                                        <Button DockPanel.Dock="Right" Content="..." Style="{StaticResource BrowseButton}" Click="BrowseCharacterIcon_Click"/>
+                                        <TextBox Text="{Binding IconURI, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" BorderThickness="0" Background="Transparent"/>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </TabItem>
+
+        <!-- =============================== SPELLS =============================== -->
+        <TabItem Header="Spells">
+            <DockPanel Margin="8">
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="0,0,0,8">
+                    <Button Content="+ Add Spell" Style="{StaticResource ToolbarButton}" Click="AddSpell_Click"/>
+                    <Button Content="Remove Selected" Style="{StaticResource ToolbarButton}" Click="RemoveSpell_Click"/>
+                    <Button Content="Save spells.json" Style="{StaticResource ToolbarButton}" Click="SaveSpells_Click"/>
+                    <TextBlock Text="Double-click a row to open (or create) its .b64s script."
+                               Foreground="Gray" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                </StackPanel>
+
+                <DataGrid x:Name="SpellsGrid" ItemsSource="{Binding Spells}"
+                          MouseDoubleClick="SpellsGrid_MouseDoubleClick">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding ID}" Width="50" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="150"/>
+
+                        <DataGridTemplateColumn Header="Script (Spells\)" Width="180">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DockPanel LastChildFill="True">
+                                        <Button DockPanel.Dock="Right" Content="..." Style="{StaticResource BrowseButton}" Click="BrowseSpellScript_Click"/>
+                                        <TextBox Text="{Binding ScriptURI, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" BorderThickness="0" Background="Transparent"/>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="Icon (Graphics\Icons\)" Width="170">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DockPanel LastChildFill="True">
+                                        <Button DockPanel.Dock="Right" Content="..." Style="{StaticResource BrowseButton}" Click="BrowseSpellIcon_Click"/>
+                                        <TextBox Text="{Binding IconURI, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" BorderThickness="0" Background="Transparent"/>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="Animation (Graphics\Animations\)" Width="200">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DockPanel LastChildFill="True">
+                                        <Button DockPanel.Dock="Right" Content="..." Style="{StaticResource BrowseButton}" Click="BrowseSpellAnimation_Click"/>
+                                        <TextBox Text="{Binding AnimationURI, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" BorderThickness="0" Background="Transparent"/>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </TabItem>
+
+        <!-- ================================ AURAS ================================ -->
+        <TabItem Header="Auras">
+            <DockPanel Margin="8">
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="0,0,0,8">
+                    <Button Content="+ Add Aura" Style="{StaticResource ToolbarButton}" Click="AddAura_Click"/>
+                    <Button Content="Remove Selected" Style="{StaticResource ToolbarButton}" Click="RemoveAura_Click"/>
+                    <Button Content="Save auras.json" Style="{StaticResource ToolbarButton}" Click="SaveAuras_Click"/>
+                    <TextBlock Text="Double-click a row to open (or create) its .b64a script."
+                               Foreground="Gray" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                </StackPanel>
+
+                <DataGrid x:Name="AurasGrid" ItemsSource="{Binding Auras}"
+                          MouseDoubleClick="AurasGrid_MouseDoubleClick">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding ID}" Width="50" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="150"/>
+
+                        <DataGridTemplateColumn Header="Script (Auras\)" Width="180">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DockPanel LastChildFill="True">
+                                        <Button DockPanel.Dock="Right" Content="..." Style="{StaticResource BrowseButton}" Click="BrowseAuraScript_Click"/>
+                                        <TextBox Text="{Binding ScriptURI, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" BorderThickness="0" Background="Transparent"/>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="Icon (Graphics\Icons\)" Width="170">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DockPanel LastChildFill="True">
+                                        <Button DockPanel.Dock="Right" Content="..." Style="{StaticResource BrowseButton}" Click="BrowseAuraIcon_Click"/>
+                                        <TextBox Text="{Binding IconURI, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" BorderThickness="0" Background="Transparent"/>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="Animation (Graphics\Animations\)" Width="200">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DockPanel LastChildFill="True">
+                                        <Button DockPanel.Dock="Right" Content="..." Style="{StaticResource BrowseButton}" Click="BrowseAuraAnimation_Click"/>
+                                        <TextBox Text="{Binding AnimationURI, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" BorderThickness="0" Background="Transparent"/>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </TabItem>
+
+        <!-- ============================= TILE EFFECTS ============================= -->
+        <TabItem Header="Tile Effects">
+            <DockPanel Margin="8">
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="0,0,0,8">
+                    <Button Content="+ Add Tile Effect" Style="{StaticResource ToolbarButton}" Click="AddTileEffect_Click"/>
+                    <Button Content="Remove Selected" Style="{StaticResource ToolbarButton}" Click="RemoveTileEffect_Click"/>
+                    <Button Content="Save tileEffects.json" Style="{StaticResource ToolbarButton}" Click="SaveTileEffects_Click"/>
+                    <TextBlock Text="Double-click a row to open (or create) its .b64t script."
+                               Foreground="Gray" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                </StackPanel>
+
+                <DataGrid x:Name="TileEffectsGrid" ItemsSource="{Binding TileEffects}"
+                          MouseDoubleClick="TileEffectsGrid_MouseDoubleClick">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding ID}" Width="50" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="150"/>
+
+                        <DataGridTemplateColumn Header="Script (TileEffects\)" Width="160">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DockPanel LastChildFill="True">
+                                        <Button DockPanel.Dock="Right" Content="..." Style="{StaticResource BrowseButton}" Click="BrowseTileEffectScript_Click"/>
+                                        <TextBox Text="{Binding ScriptURI, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" BorderThickness="0" Background="Transparent"/>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="Image (Graphics\Icons\)" Width="160">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DockPanel LastChildFill="True">
+                                        <Button DockPanel.Dock="Right" Content="..." Style="{StaticResource BrowseButton}" Click="BrowseTileEffectImage_Click"/>
+                                        <TextBox Text="{Binding ImageURI, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" BorderThickness="0" Background="Transparent"/>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="Model (Graphics\Models\)" Width="170">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DockPanel LastChildFill="True">
+                                        <Button DockPanel.Dock="Right" Content="..." Style="{StaticResource BrowseButton}" Click="BrowseTileEffectModel_Click"/>
+                                        <TextBox Text="{Binding ModelURI, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" BorderThickness="0" Background="Transparent"/>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn Header="Animation (Graphics\Animations\)" Width="190">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DockPanel LastChildFill="True">
+                                        <Button DockPanel.Dock="Right" Content="..." Style="{StaticResource BrowseButton}" Click="BrowseTileEffectAnimation_Click"/>
+                                        <TextBox Text="{Binding AnimationURI, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" BorderThickness="0" Background="Transparent"/>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </TabItem>
+
+    </TabControl>
+</UserControl>

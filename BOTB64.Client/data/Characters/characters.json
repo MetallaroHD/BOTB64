@@ -1,111 +1,101 @@
 [
-    {
-        "ID" : 0,
-        "Enabled" : false,
-        "Subdir" : "Dummy",
-        "Name" : "Dummy",
-        "ModelURI" : "GenericCharacter",
-        "ScriptURI" : "character",
-        "IconURI" : "dummy"
-    },
-
-    {
-        "ID" : 1,
-        "Enabled" : true,
-        "Subdir" : "Soldato",
-        "Name" : "Soldatosolitario",
-        "ModelURI" : "soldato",
-        "ScriptURI" : "character",
-        "IconURI" : "dummy"
-    },
-
-    {
-        "ID" : 2,
-        "Enabled" : true,
-        "Subdir" : "Scoper",
-        "Name" : "Scoper",
-        "ModelURI" : "scoper",
-        "ScriptURI" : "character",
-        "IconURI" : "dummy"
-    },
-        
-    {
-        "ID" : 3,
-        "Enabled" : true,
-        "Subdir" : "Rag",
-        "Name" : "Rassarang",
-        "ModelURI" : "rassarang",
-        "ScriptURI" : "character",
-        "IconURI" : "dummy"
-    },
-
-    {
-        "ID" : 4,
-        "Enabled" : true,
-        "Subdir" : "Trap",
-        "Name" : "Trappus",
-        "ModelURI" : "trappus",
-        "ScriptURI" : "character",
-        "IconURI" : "dummy"
-    },
-
-    {
-        "ID" : 5,
-        "Enabled" : true,
-        "Subdir" : "Pilaf",
-        "Name" : "Pilaf",
-        "ModelURI" : "pilaf",
-        "ScriptURI" : "character",
-        "IconURI" : "dummy"
-    },
-
-    {
-        "ID" : 6,
-        "Enabled" : true,
-        "Subdir" : "Oliver",
-        "Name" : "Oliver",
-        "ModelURI" : "oliver",
-        "ScriptURI" : "character",
-        "IconURI" : "dummy"
-    },
-
-    {
-        "ID" : 7,
-        "Enabled" : true,
-        "Subdir" : "Gravitus",
-        "Name" : "Gravitus",
-        "ModelURI" : "gravitus",
-        "ScriptURI" : "character",
-        "IconURI" : "dummy"
-    },
-
-    {
-        "ID" : 8,
-        "Enabled" : true,
-        "Subdir" : "Akano",
-        "Name" : "Akano",
-        "ModelURI" : "akano",
-        "ScriptURI" : "character",
-        "IconURI" : "dummy"
-    },
-
-    {
-        "ID" : 9,
-        "Enabled" : true,
-        "Subdir" : "Lei",
-        "Name" : "Lei Stess",
-        "ModelURI" : "lei",
-        "ScriptURI" : "character",
-        "IconURI" : "dummy"
-    },
-
-    {
-        "ID" : 10,
-        "Enabled" : true,
-        "Subdir" : "Lee",
-        "Name" : "Lee Sis",
-        "ModelURI" : "leesis",
-        "ScriptURI" : "character",
-        "IconURI" : "dummy"
-    }
+  {
+    "ID": 0,
+    "Name": "Dummy",
+    "Subdir": "Dummy",
+    "ModelURI": "GenericCharacter",
+    "ScriptURI": "character",
+    "IconURI": "dummy",
+    "Enabled": false
+  },
+  {
+    "ID": 1,
+    "Name": "Soldatosolitario",
+    "Subdir": "Soldato",
+    "ModelURI": "soldato",
+    "ScriptURI": "character",
+    "IconURI": "dummy",
+    "Enabled": true
+  },
+  {
+    "ID": 2,
+    "Name": "Scoper",
+    "Subdir": "Scoper",
+    "ModelURI": "scoper",
+    "ScriptURI": "character",
+    "IconURI": "dummy",
+    "Enabled": true
+  },
+  {
+    "ID": 3,
+    "Name": "Rassarang",
+    "Subdir": "Rag",
+    "ModelURI": "rassarang",
+    "ScriptURI": "character",
+    "IconURI": "dummy",
+    "Enabled": true
+  },
+  {
+    "ID": 4,
+    "Name": "Trappus",
+    "Subdir": "Trap",
+    "ModelURI": "trappus",
+    "ScriptURI": "character",
+    "IconURI": "dummy",
+    "Enabled": true
+  },
+  {
+    "ID": 5,
+    "Name": "Pilaf",
+    "Subdir": "Pilaf",
+    "ModelURI": "pilaf",
+    "ScriptURI": "character",
+    "IconURI": "dummy",
+    "Enabled": true
+  },
+  {
+    "ID": 6,
+    "Name": "Oliver",
+    "Subdir": "Oliver",
+    "ModelURI": "oliver",
+    "ScriptURI": "character",
+    "IconURI": "dummy",
+    "Enabled": true
+  },
+  {
+    "ID": 7,
+    "Name": "Gravitus",
+    "Subdir": "Gravitus",
+    "ModelURI": "gravitus",
+    "ScriptURI": "character",
+    "IconURI": "dummy",
+    "Enabled": true
+  },
+  {
+    "ID": 8,
+    "Name": "Akano",
+    "Subdir": "Akano",
+    "ModelURI": "akano",
+    "ScriptURI": "character",
+    "IconURI": "dummy",
+    "Enabled": true
+  },
+  {
+    "ID": 9,
+    "Name": "Lei Stess",
+    "Subdir": "Lei",
+    "ModelURI": "lei",
+    "ScriptURI": "character",
+    "IconURI": "dummy",
+    "Enabled": true
+  },
+  {
+    "ID": 10,
+    "Name": "Lee Sis",
+    "Subdir": "Lee",
+    "ModelURI": "leesis",
+    "ScriptURI": "character",
+    "IconURI": "dummy",
+    "Enabled": true
+  }
 ]

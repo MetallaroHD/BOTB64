@@ -46,6 +46,8 @@
                     <MenuItem Header="Tile Effect (.b64t)" Command="{Binding NewCommand}"
                               CommandParameter="{x:Static io:FileKind.TileEffect}"/>
                 </MenuItem>
+                <Separator/>
+                <MenuItem Header="_Data Root..." Command="{Binding ChooseDataRootCommand}"/>
             </MenuItem>
         </Menu>
 
@@ -54,6 +56,8 @@
                 <Button Content="Open" Command="{Binding OpenCommand}" Padding="8,3"/>
                 <Button Content="Save" Command="{Binding SaveCommand}" Padding="8,3" Margin="4,0,0,0"/>
                 <Button Content="Save As" Command="{Binding SaveAsCommand}" Padding="8,3" Margin="4,0,0,0"/>
+                <Separator/>
+                <Button Content="Data Root..." Command="{Binding ChooseDataRootCommand}" Padding="8,3" Margin="4,0,0,0"/>
             </ToolBar>
         </ToolBarTray>
 
@@ -61,13 +65,21 @@
             <StatusBarItem Content="{Binding StatusText}"/>
         </StatusBar>
 
-        <Grid>
-            <ContentControl Content="{Binding CurrentEntity}"/>
+        <TabControl x:Name="MainTabs">
+            <TabItem Header="Editor">
+                <Grid>
+                    <ContentControl Content="{Binding CurrentEntity}"/>
 
-            <TextBlock Text="Open a .b64c / .b64s / .b64a / .b64t file, or use File &gt; New, to start editing."
-                       HorizontalAlignment="Center" VerticalAlignment="Center"
-                       Foreground="Gray" FontSize="16"
-                       Visibility="{Binding CurrentEntity, Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Visible}"/>
-        </Grid>
+                    <TextBlock Text="Open a .b64c / .b64s / .b64a / .b64t file, or use File &gt; New, to start editing."
+                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                               Foreground="Gray" FontSize="16"
+                               Visibility="{Binding CurrentEntity, Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Visible}"/>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Database">
+                <views:DatabaseView x:Name="DbPanel" DataContext="{Binding Database}"/>
+            </TabItem>
+        </TabControl>
     </DockPanel>
 </Window>
