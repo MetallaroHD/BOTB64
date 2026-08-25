@@ -1,4 +1,5 @@
 ﻿using BOTB64.Graphics.UI;
+using BOTB64.Graphics;
 using BOTB64.Shared;
 using BOTB64.Runtime;
 
@@ -13,8 +14,9 @@ namespace BOTB64.Engine.States
 
         public void OnEnter()
         {
-            CursorManager.SetCursor("Idle");
             ResourceManager.ClearCache();
+            CursorManager.Start();
+            CursorManager.SetCursor("Idle");
             Screen.Controller = this;
             Screen.Enter();
         }

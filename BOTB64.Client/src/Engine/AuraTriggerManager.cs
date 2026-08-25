@@ -2,6 +2,7 @@
 using BOTB64.Shared.DTOs;
 using BOTB64.Runtime;
 using RL = Raylib_cs;
+using BOTB64.Shared.Files;
 
 namespace BOTB64.Engine
 {
@@ -48,16 +49,70 @@ namespace BOTB64.Engine
             }
         }
 
+        public static Spell GetSpell(int id)
+        {
+            // No caching (for now)
+            SpellDTO? spellD = DatabaseFileManager.Spells.FirstOrDefault(s => s.ID == id);
+
+            if (spellD == null)
+                throw new InvalidDataException("Spell not found!");
+
+            SpellDataFile reader = new SpellDataFile();
+            DataFile file = new DataFile(CommonURIs.GetSpellScript(spellD));
+            Spell ret = reader.Read(file);
+
+            ret.ID = spellD.ID;
+            ret.Name = spellD.Name;
+            ret.Icon = ResourceManager.GetSpellIcon(spellD.ID);
+
+            return ret.Instance();
+        }
+
         public static Aura GetAura(int id)
         {
-            // If it is already cached in the list we create a copy and give it to the character, otherwise first read the file and add it to the cache 
-            return new Aura();
+            Aura? aura = AuraTemplates.FirstOrDefault(a => a.ID == id);
+
+            if (aura != null)
+                return aura.Instance();
+
+            AuraDTO? auraD = DatabaseFileManager.Auras.FirstOrDefault(a => a.ID == id);
+
+            if (auraD == null)
+                throw new InvalidDataException("Aura not found!");
+
+            AuraDataFile reader = new AuraDataFile();
+            DataFile file = new DataFile(CommonURIs.GetAuraScript(auraD));
+            aura = reader.Read(file);
+
+            aura.ID = auraD.ID;
+            aura.Name = auraD.Name;
+            aura.Icon = ResourceManager.GetSpellIcon(aura.ID);
+
+            AuraTemplates.Add(aura);
+            return aura.Instance();
         }
 
         public static TileEffect GetTileEffect(int id)
         {
-            // same
-            return new TileEffect();
+            TileEffect? teff = TileEffectTemplates.FirstOrDefault(a => a.ID == id);
+
+            if (teff != null)
+                return teff.Instance();
+
+            TileEffectDTO? tileD = DatabaseFileManager.TileEffects.FirstOrDefault(a => a.ID == id);
+
+            if (tileD == null)
+                throw new InvalidDataException("Tileeffect not found!");
+
+            TileEffectDataFile reader = new TileEffectDataFile();
+            DataFile file = new DataFile(CommonURIs.GetTileEffectScript(tileD));
+            teff = reader.Read(file);
+
+            teff.ID = tileD.ID;
+            teff.Name = tileD.Name;
+
+            TileEffectTemplates.Add(teff);
+            return teff.Instance();
         }
 
         public static void ClearCache()

@@ -59,5 +59,25 @@ namespace BOTB64.Runtime
         {
             return GraphicsIconDir + aura.IconURI + ImageEXT;
         }
+
+        public static string GetSpellIcon(SpellDTO spell)
+        {
+            return GraphicsIconDir + spell.IconURI + ImageEXT;
+        }
+
+        public static string GetAuraScript(AuraDTO aura)
+        {
+            return AuraDir + aura.ScriptURI + AuraEXT;
+        }
+
+        public static string GetSpellScript(SpellDTO spell)
+        {
+            return SpellDir + spell.ScriptURI + SpellEXT;
+        }
+
+        public static string GetTileEffectScript(TileEffectDTO teff)
+        {
+            return TileEffDir + teff.ScriptURI + TileEffEXT;
+        }
     }
 }

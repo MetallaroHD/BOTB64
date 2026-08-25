@@ -76,6 +76,10 @@ namespace BOTB64.Engine
                 Lua.Globals["Caster"] = sc.Caster.GameID;
                 Lua.Globals["Targets"] = sc.ExplicitTarget;
             }
+            else if (context is TileEffectContext tc)
+            {
+                Lua.Globals["Position"] = tc.Position;
+            }
             try
             {
                 ret = RunCode(LoadScript(effect.Script));

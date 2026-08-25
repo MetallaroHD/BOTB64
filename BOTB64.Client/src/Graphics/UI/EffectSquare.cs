@@ -9,19 +9,14 @@ namespace BOTB64.Graphics.UI
     public class EffectSquare : UIElement
     {
         public RL.Rectangle Bounds;
-
         public RL.Texture2D Icon;
         public bool HasIcon = false;
-
-        public int Duration = 0;
-        public bool ShowDuration = true;
-
+        public int Stacks = 0;      // shown on the icon, only if > 1
         public RL.Color BackgroundColor = new RL.Color(50, 50, 50, 255);
         public RL.Color BorderColor = RL.Color.Black;
         public int BorderThickness = 1;
-
-        public int DurationFontSize = 12;
-        public RL.Color DurationColor = RL.Color.White;
+        public int StackFontSize = 12;
+        public RL.Color StackColor = RL.Color.White;
 
         private readonly TooltipBox Tooltip = new();
         private bool HasTooltip = false;
@@ -32,10 +27,15 @@ namespace BOTB64.Graphics.UI
             HasIcon = true;
         }
 
-        public void SetTooltip(string text)
+        public void SetInfo(string name, string tooltip, int remaining)
         {
-            HasTooltip = !string.IsNullOrEmpty(text);
-            Tooltip.SetText(text);
+            var lines = new List<string>();
+            if (!string.IsNullOrEmpty(name)) lines.Add(name);
+            if (!string.IsNullOrEmpty(tooltip)) lines.Add(tooltip);
+            if (remaining > 0) lines.Add($"Remaining: {remaining}");
+
+            HasTooltip = lines.Count > 0;
+            Tooltip.SetContent(lines);
         }
 
         private bool IsHovered() => RB.CheckCollisionPointRec(InputManager.MousePosition, Bounds);
@@ -48,31 +48,24 @@ namespace BOTB64.Graphics.UI
 
             if (HasIcon)
             {
-                float scale = MathF.Min(
-                    Bounds.Width / Icon.Width,
-                    Bounds.Height / Icon.Height
-                );
-
+                float scale = MathF.Min(Bounds.Width / Icon.Width, Bounds.Height / Icon.Height);
                 float drawW = Icon.Width * scale;
                 float drawH = Icon.Height * scale;
                 float drawX = Bounds.X + (Bounds.Width - drawW) * 0.5f;
                 float drawY = Bounds.Y + (Bounds.Height - drawH) * 0.5f;
-
-                RL.Rectangle source = new RL.Rectangle(0, 0, Icon.Width, Icon.Height);
-                RL.Rectangle dest = new RL.Rectangle(drawX, drawY, drawW, drawH);
-
-                RB.DrawTexturePro(Icon, source, dest, new Vector2(0, 0), 0f, RL.Color.White);
+                RB.DrawTexturePro(Icon,
+                    new RL.Rectangle(0, 0, Icon.Width, Icon.Height),
+                    new RL.Rectangle(drawX, drawY, drawW, drawH),
+                    Vector2.Zero, 0f, RL.Color.White);
             }
 
-            if (ShowDuration && Duration > 0)
+            if (Stacks > 1)
             {
-                string text = Duration.ToString();
-                int textWidth = RB.MeasureText(text, DurationFontSize);
-
+                string text = Stacks.ToString();
+                int textWidth = RB.MeasureText(text, StackFontSize);
                 float textX = Bounds.X + Bounds.Width - textWidth - 2;
-                float textY = Bounds.Y + Bounds.Height - DurationFontSize - 2;
-
-                RB.DrawText(text, (int)textX, (int)textY, DurationFontSize, DurationColor);
+                float textY = Bounds.Y + Bounds.Height - StackFontSize - 2;
+                RB.DrawText(text, (int)textX, (int)textY, StackFontSize, StackColor);
             }
 
             if (BorderThickness > 0)

@@ -13,26 +13,17 @@ namespace BOTB64.Graphics.UI
         private bool _dirty = true;
         public IReadOnlyList<EffectSquare> Effects => _effects;
 
-        public void Sync<T>(IReadOnlyList<T> effects, Func<T, int> getId, Func<T, int> getDuration, Func<T, string> getTooltip, Func<T, RL.Texture2D> getIcon)
+        public void Sync<T>(IReadOnlyList<T> effects, Func<T, EffectDisplayInfo> selector)
         {
-            while (_effects.Count > effects.Count)
-            {
-                _effects.RemoveAt(_effects.Count - 1);
-                _dirty = true;
-            }
-            while (_effects.Count < effects.Count)
-            {
-                _effects.Add(new EffectSquare { Bounds = new RL.Rectangle(0, 0, SquareSize, SquareSize) });
-                _dirty = true;
-            }
+            while (_effects.Count > effects.Count) { _effects.RemoveAt(_effects.Count - 1); _dirty = true; }
+            while (_effects.Count < effects.Count) { _effects.Add(new EffectSquare { Bounds = new RL.Rectangle(0, 0, SquareSize, SquareSize) }); _dirty = true; }
 
             for (int i = 0; i < effects.Count; i++)
             {
-                var e = effects[i];
-                int id = getId(e);
-                _effects[i].SetIcon(getIcon(e));
-                _effects[i].SetTooltip(getTooltip(e));
-                _effects[i].Duration = getDuration(e);
+                var info = selector(effects[i]);
+                _effects[i].SetIcon(info.Icon);
+                _effects[i].Stacks = info.Stacks;
+                _effects[i].SetInfo(info.Name, info.Tooltip, info.Remaining);
             }
         }
 

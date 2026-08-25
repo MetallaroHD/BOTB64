@@ -51,6 +51,16 @@ namespace BOTB64.Runtime
             _initialized = false;
         }
 
+        public static void Start()
+        {
+            Init();
+            LoadCursor("Idle", "Misc\\Cursor_Default.png");
+            LoadCursor("Move", "Misc\\Cursor_Move.png");
+            LoadCursor("Attack", "Misc\\Cursor_Attack.png");
+            LoadCursor("Spell", "Misc\\Cursor_Spell.png");
+            SetCursor("Idle");
+        }
+
         // hotspot: pixel offset within the image that represents the actual "tip" of the
         // cursor (e.g. an arrow's point). Defaults to (0,0) - the top-left corner.
         public static void LoadCursor(string name, string pngPath, Vector2 hotspot = default)

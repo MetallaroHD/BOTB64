@@ -1,0 +1,11 @@
+:BOTB64SPELL
+:TARGET 1
+:RANGE 10
+:COOLDOWN 8
+:CHARGES 1
+:COST 0
+:COSTPCT 0
+:CAST 0
+:PREP 6
+:SECRET false
+:TOOLTIP Scoper takes aim, shooting a deadly shot at the start of her next turn.

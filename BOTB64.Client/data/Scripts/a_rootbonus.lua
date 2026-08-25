@@ -7,3 +7,4 @@ local targetChar = GetCharacterAt(target.Q, target.R)
 if IsRooted(targetChar) then
     Damage(targetChar, 55)
 end
+Success()

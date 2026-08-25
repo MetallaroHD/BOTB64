@@ -1,0 +1,8 @@
+:BOTB64AURA
+:DURATION 999
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP Scoper deals bonus damage to rooted enemies.
+:EFFECTS
+a_rootbonus | 32 | 3 | 1 | 0

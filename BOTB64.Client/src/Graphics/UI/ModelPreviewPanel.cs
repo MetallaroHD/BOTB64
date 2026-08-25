@@ -44,7 +44,7 @@ namespace BOTB64.Graphics.UI
             if (!ModelCache.ContainsKey(characterIndex))
             {
                 string path = CommonURIs.GetCharacterModel(character);
-                ModelCache[characterIndex] = new ModelInstance(AssetManager.GetModel(path, ModelPurpose.CharSelect));
+                ModelCache[characterIndex] = new ModelInstance(ResourceManager.GetModel(path, ModelPurpose.CharSelect));
             }
         }
 
@@ -87,7 +87,7 @@ namespace BOTB64.Graphics.UI
         public void Unload()
         {
             ModelCache.Clear();
-            AssetManager.UnloadAll();
+            ResourceManager.ClearModels();
             RB.UnloadRenderTexture(RenderTarget);
         }
     }

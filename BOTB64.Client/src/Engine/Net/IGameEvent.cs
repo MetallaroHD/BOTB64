@@ -25,6 +25,7 @@ namespace BOTB64.Engine.Net
     [Union(16, typeof(TileEffectExpiredEvent))]
     [Union(17, typeof(AuraParamSetEvent))]
     [Union(18, typeof(SpellCooldownReduceEvent))]
+    [Union(19, typeof(RoundStartedEvent))]
     public interface IGameEvent
     {
         void Apply(Game game);
@@ -227,18 +228,21 @@ namespace BOTB64.Engine.Net
             var template = AuraTriggerManager.GetTileEffect(TileEffectID);
             if (template == null) return;
 
-            var instance = new TileEffect
+            // Terrain and Statue are singleton-per-tile within their own category; Special is unlimited.
+            if (template.Type == TileEffectType.Terrain || template.Type == TileEffectType.Statue)
             {
-                ID = template.ID,
-                Name = template.Name,
-                Duration = template.Duration,
-                Dispel = template.Dispel,
-                TileType = template.TileType,
-                Flags = template.Flags,
-                Type = template.Type,
-                Owner = owner,
-                Remaining = Duration
-            };
+                var existing = tile.Effects.FirstOrDefault(e => e.Type == template.Type);
+                if (existing != null)
+                {
+                    if (existing.Flags.HasFlag(TileEffectFlag.Unbreakable))
+                        return; // blocked — existing one wins, new application fails silently
+                    tile.Effects.Remove(existing);
+                }
+            }
+
+            var instance = template.Instance();
+            instance.Owner = owner;
+            instance.Remaining = Duration;
             tile.Effects.Add(instance);
         }
     }
@@ -324,30 +328,30 @@ namespace BOTB64.Engine.Net
     [MessagePackObject]
     public struct TileEffectDurationTickEvent : IGameEvent
     {
-        [Key(0)] public int CharacterID;
-        [Key(1)] public int AuraID;
+        [Key(0)] public Hex Position;
+        [Key(1)] public int TileEffectID;
         [Key(2)] public int NewRemaining;
 
         public void Apply(Game game)
         {
-            var c = game.FindCharacter(CharacterID);
-            int id = AuraID;
-            var aura = c?.CurrentAuras.FirstOrDefault(a => a.ID == id);
-            if (aura != null) aura.Remaining = NewRemaining;
+            var tile = game.GetBoard().GetTile(Position);
+            int id = TileEffectID;
+            var effect = tile?.Effects.FirstOrDefault(e => e.ID == id);
+            if (effect != null) effect.Remaining = NewRemaining;
         }
     }
 
     [MessagePackObject]
     public struct TileEffectExpiredEvent : IGameEvent
     {
-        [Key(0)] public int CharacterID;
-        [Key(1)] public int AuraID;
+        [Key(0)] public Hex Position;
+        [Key(1)] public int TileEffectID;
 
         public void Apply(Game game)
         {
-            var c = game.FindCharacter(CharacterID);
-            int id = AuraID;
-            c?.CurrentAuras.RemoveAll(a => a.ID == id);
+            var tile = game.GetBoard().GetTile(Position);
+            int id = TileEffectID;
+            tile?.Effects.RemoveAll(e => e.ID == id);
         }
     }
 
@@ -416,5 +420,13 @@ namespace BOTB64.Engine.Net
             else
                 aura.Parameters.Add(Parameter.FromFloat(Key, Value)); // Parameter's constructor is private; FromFloat is the correct factory
         }
+    }
+
+    [MessagePackObject]
+    public struct RoundStartedEvent : IGameEvent
+    {
+        [Key(0)] public int RoundNumber;
+        [Key(1)] public List<int> TurnOrder;
+        public void Apply(Game game) => game.ApplyRoundStart(RoundNumber, TurnOrder);
     }
 }

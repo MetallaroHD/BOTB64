@@ -20,12 +20,13 @@
 :AAAP 1
 :AASP 0
 :EFFECTS
-auto_generic | 0 | 1 | 1 | 1
+auto_scoper | 0 | 1 | 1 | 1
 :AURAS
-1
+2
+8
 :SPELLS
 1 1
-2 1
-3 1
-4 1
-5 1
+2 2
+3 3
+4 4
+5 5

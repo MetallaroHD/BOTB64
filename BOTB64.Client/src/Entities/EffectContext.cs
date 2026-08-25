@@ -58,4 +58,13 @@ namespace BOTB64.Entities
             Aura = aura;
         }
     }
+
+    public class TileEffectContext : EffectContext
+    {
+        public Hex Position { get; set; }
+        public TileEffectContext(Character invoker, Hex position) : base(invoker)
+        {
+            Position = position;
+        }
+    }
 }

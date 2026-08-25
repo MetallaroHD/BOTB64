@@ -50,5 +50,27 @@ namespace BOTB64.Entities
 
             return ret;
         }
+
+        public Spell Instance()
+        {
+            Spell ret = new Spell();
+            ret.Animation = Animation;
+            ret.ID = ID;
+            ret.Name = Name;
+            ret.Icon = Icon;
+            ret.Range = Range;
+            ret.Cooldown = Cooldown;
+            ret.Charges = Charges;
+            ret.Cost = Cost;
+            ret.CostPct = CostPct;
+            ret.Preparation = Preparation;
+            ret.ExplicitTarget = ExplicitTarget;
+            ret.CastTime = CastTime;
+            ret.Secret = Secret;
+            ret.Tooltip = Tooltip;
+            ret.Parameters = Parameters;
+            ret.Effects = Effects;
+            return ret;
+        }
     }
 }

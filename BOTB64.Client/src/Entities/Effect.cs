@@ -56,6 +56,9 @@ namespace BOTB64.Entities
         // On autoattack done
         OnAutoAttack = 1 << 18,
 
+        // On global turn passed
+        OnRoundStart = 1 << 19,
+
         All = -0,
     }
     public enum EffectSourceType

@@ -1,4 +1,5 @@
-﻿using RL = Raylib_cs;
+﻿using BOTB64.Runtime;
+using RL = Raylib_cs;
 
 namespace BOTB64.Graphics.UI
 {
@@ -22,16 +23,16 @@ namespace BOTB64.Graphics.UI
             Icon = texture;
         }
 
-        public void SetTooltip(string text)
+        public void SetTooltip(List<string> lines)
         {
-            HasTooltip = !string.IsNullOrEmpty(text);
-            Tooltip.SetText(text);
+            HasTooltip = lines.Count > 0;
+            Tooltip.SetContent(lines);
         }
 
         public void Empty()
         {
             Icon = new RL.Texture2D();
-            SetTooltip("");
+            SetTooltip(new());
         }
     }
 }

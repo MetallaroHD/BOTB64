@@ -1,9 +1,65 @@
 [
-    {
-        "ID" : 0,
-        "Name" : "Dummy",
-        "ScriptURI" : "Dummy",
-        "IconURI" : "dummy",
-        "AnimationURI" : "dummy"
-    }
+  {
+    "ID": 0,
+    "Name": "Dummy",
+    "ScriptURI": "Dummy",
+    "IconURI": "dummy",
+    "AnimationURI": "dummy"
+  },
+  {
+    "ID": 1,
+    "Name": "Reload",
+    "ScriptURI": "reload",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  },
+  {
+    "ID": 2,
+    "Name": "Drop Ammo",
+    "ScriptURI": "scoperdr",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  },
+  {
+    "ID": 3,
+    "Name": "Ammo Package",
+    "ScriptURI": "ammopackage",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  },
+  {
+    "ID": 4,
+    "Name": "Clean Scope",
+    "ScriptURI": "lensclean",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  },
+  {
+    "ID": 5,
+    "Name": "Cleaned Scope",
+    "ScriptURI": "lenscleaned",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  },
+  {
+    "ID": 6,
+    "Name": "Trapped",
+    "ScriptURI": "trapped",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  },
+  {
+    "ID": 7,
+    "Name": "Taking Aim",
+    "ScriptURI": "snipecast",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  },
+  {
+    "ID": 8,
+    "Name": "Precise Shots",
+    "ScriptURI": "rootbonus",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  }
 ]

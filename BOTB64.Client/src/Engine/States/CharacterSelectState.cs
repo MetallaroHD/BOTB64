@@ -181,6 +181,9 @@ namespace BOTB64.Engine.States
 
         private void StartGame()
         {
+            if (BlueTeam.Count + RedTeam.Count < TotalCharacters)
+                return;
+
             GameInitializer init = new GameInitializer
             {
                 Level = Level,

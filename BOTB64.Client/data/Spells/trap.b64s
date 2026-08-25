@@ -1,0 +1,11 @@
+:BOTB64SPELL
+:TARGET 1
+:RANGE 4
+:COOLDOWN 3
+:CHARGES 2
+:COST 0
+:COSTPCT 0
+:CAST -1
+:PREP 0
+:SECRET true
+:TOOLTIP Places a hidden trap which roots enemies upon contact. Scoper's attacks deal bonus damage to rooted enemies.

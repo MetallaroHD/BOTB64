@@ -1,0 +1,11 @@
+:BOTB64SPELL
+:TARGET 1
+:RANGE 2
+:COOLDOWN 3
+:CHARGES 1
+:COST 0
+:COSTPCT 0
+:CAST -1
+:PREP 0
+:SECRET false
+:TOOLTIP Expend an ally's fast action in order to have Scoper's scope cleaned, increasing Attack Power.

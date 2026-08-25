@@ -52,5 +52,22 @@ namespace BOTB64.Entities
         public int CurrentStacks = 0;
 
         public List<Parameter> Parameters = new();
+
+        public Aura Instance()
+        {
+            Aura ret = new Aura();
+            ret.Animation = Animation;
+            ret.Icon = Icon;
+            ret.ID = ID;
+            ret.Name = Name;
+            ret.Duration = Duration;
+            ret.MaxStacks = MaxStacks;
+            ret.Dispel = Dispel;
+            ret.SpecialEffect = SpecialEffect;
+            ret.Tooltip = Tooltip;
+            ret.Parameters = Parameters;    
+            ret.Effects = Effects;
+            return ret;
+        }
     }
 }

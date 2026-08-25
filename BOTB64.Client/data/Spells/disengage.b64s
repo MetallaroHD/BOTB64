@@ -1,0 +1,11 @@
+:BOTB64SPELL
+:TARGET 1
+:RANGE 4
+:COOLDOWN 3
+:CHARGES 1
+:COST 0
+:COSTPCT 0
+:CAST -1
+:PREP 0
+:SECRET false
+:TOOLTIP Scoper quickly leaps to target location.

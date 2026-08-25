@@ -32,17 +32,15 @@ namespace BOTB64.Engine.States
         private Character CurrentCharacter => Game.CurrentCharacter;
         private Character? Target;
 
-        private readonly Dictionary<int, RL.Texture2D> AuraIconCache = new();
-
         public void OnEnter()
         {
             Logger.Init(Screen.Log);
             FloatingMessageManager.Init(Screen);
+            AuraTriggerManager.Init(Game);
             Game.Initialize(Initer);
             ShaderManager.UpdateWorld();
             Channel = Session == null ? new LocalCommandChannel(Game) : new NetworkedCommandChannel(Game, Session);
             Targeter.SetBoard(Game.GetBoard());
-            AuraTriggerManager.Init(Game);
             InitActions();
         }
 
@@ -119,13 +117,19 @@ namespace BOTB64.Engine.States
             RegisterBinding([Idle], null, RL.KeyboardKey.Escape, () => { Pause.Mode = PauseMode.Esc;  ChangeAction(Pause); }, KeyBindingType.Press);
             RegisterBinding([Idle], Screen.MoveButton, RL.KeyboardKey.M, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Move.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Move); }, KeyBindingType.Press);
             RegisterBinding([Idle], Screen.AttackButton, RL.KeyboardKey.K, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Atk); }, KeyBindingType.Press);
+            RegisterBinding([Idle], Screen.Spell1Button, RL.KeyboardKey.One, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Spell); }, KeyBindingType.Press);
+            RegisterBinding([Idle], Screen.Spell2Button, RL.KeyboardKey.Two, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Spell); }, KeyBindingType.Press);
+            RegisterBinding([Idle], Screen.Spell3Button, RL.KeyboardKey.Three, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Spell); }, KeyBindingType.Press);
+            RegisterBinding([Idle], Screen.Spell4Button, RL.KeyboardKey.Four, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Spell); }, KeyBindingType.Press);
+            RegisterBinding([Idle], Screen.Spell5Button, RL.KeyboardKey.Five, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Spell); }, KeyBindingType.Press);
             RegisterBinding([Idle], Screen.TurnButton, RL.KeyboardKey.Space, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; if (!Settings.AskEndTurn) { SubmitEndTurn(); } else { Pause.Mode = PauseMode.Turn; ChangeAction(Pause); } }, KeyBindingType.Press);
             RegisterBinding([Move], null, RL.KeyboardKey.Tab, () => { Move.CycleToNextPath(); }, KeyBindingType.Press);
-            RegisterBinding([Move, Atk], null, RL.KeyboardKey.Escape, () => { InputManager.UseKey(); ChangeAction(Idle); }, KeyBindingType.Press);
+            RegisterBinding([Move, Atk, Spell], null, RL.KeyboardKey.Escape, () => { InputManager.UseKey(); ChangeAction(Idle); }, KeyBindingType.Press);
 
             Idle.SetLMBinding(SetTarget);
             Move.SetLMBinding(SubmitMove);
             Atk.SetLMBinding(SubmitAttack);
+            Spell.SetLMBinding(SubmitSpellCast);
             Screen.ResumeButton.OnClick = () => { ChangeAction(Idle); };
             Screen.NoButton.OnClick = () => { ChangeAction(Idle); };
             Screen.YesButton.OnClick = () => { SubmitEndTurn(); InputManager.UseClick(); ChangeAction(Idle); };
@@ -167,6 +171,21 @@ namespace BOTB64.Engine.States
             Character? tg = Atk.ConfirmTarget(); 
             if (tg != null) 
                 Channel.Submit(new AutoAttackCommand { ActingCharacterID = Game.CurrentCharacter.GameID, TargetID = tg.GameID }); 
+            InputManager.UseClick(); 
+            ChangeAction(Idle);
+        }
+
+        public void SubmitSpellCast()
+        {
+            if (!Enabled) 
+                return; 
+            if (Screen.IsMouseBlocked()) 
+                return;
+            if (!Game.CurrentCharacter.ActiveSpells.TryGetValue(Spell.SpellBind, out Spell sp))
+                return;
+            List<Hex>? tg = Spell.GetExplicitTarget(); 
+            if (tg != null) 
+                Channel.Submit(new SpellCastCommand { ActingCharacterID = Game.CurrentCharacter.GameID, ExplicitTarget = Spell.GetExplicitTarget(), SpellID = sp.ID }); 
             InputManager.UseClick(); 
             ChangeAction(Idle);
         }
@@ -217,7 +236,8 @@ namespace BOTB64.Engine.States
             Screen.PlayerStatus.SetHealth(current.CurrentHP, current.MaxHP.GetI());
             Screen.PlayerStatus.SetResource(current.CurrentResource, current.MaxRes.GetI());
             Screen.PlayerStatus.SetName(current.Name);
-            Screen.PlayerStatus.Effects.Sync(current.CurrentAuras, getId: a => a.ID, getDuration: a => a.Remaining, getTooltip: a => a.Tooltip, getIcon: a => a.Icon);
+            Screen.PlayerStatus.Effects.Sync(current.CurrentAuras, a => new EffectDisplayInfo(a.ID, a.Name, a.Tooltip, a.CurrentStacks, a.Remaining, a.Icon));
+            UpdateSpellButtons();
         }
 
         private void UpdateTargetGUI()
@@ -233,7 +253,38 @@ namespace BOTB64.Engine.States
             Screen.TargetStatus.SetHealth(target.CurrentHP, target.MaxHP.GetI());
             Screen.TargetStatus.SetResource(target.CurrentResource, target.MaxRes.GetI());
             Screen.TargetStatus.SetName(target.Name);
-            Screen.PlayerStatus.Effects.Sync(target.CurrentAuras, getId: a => a.ID, getDuration: a => a.Remaining, getTooltip: a => a.Tooltip, getIcon: a => a.Icon);
+            Screen.PlayerStatus.Effects.Sync(target.CurrentAuras, a => new EffectDisplayInfo(a.ID, a.Name, a.Tooltip, a.CurrentStacks, a.Remaining, a.Icon));
+        }
+
+        public static List<string> BuildSpellTooltip(Spell spell)
+        {
+            var lines = new List<string>();
+
+            if (!string.IsNullOrEmpty(spell.Name))
+                lines.Add(spell.Name);
+
+            if (spell.IsPassive)
+            {
+                lines.Add("Passive");
+            }
+            else
+            {
+                if (spell.Cost > 0)
+                    lines.Add($"Cost: {spell.Cost}");
+                if (spell.Cooldown > 0)
+                    lines.Add($"Cooldown: {spell.Cooldown}");
+            }
+
+            if (!string.IsNullOrEmpty(spell.Tooltip))
+                lines.Add(spell.Tooltip);
+
+            if (spell.CurrentCD > 0)
+                lines.Add($"Remaining: {spell.CurrentCD}");
+
+            if (spell.Charges > 1)
+                lines.Add($"Charges: {spell.CurrentCharges}/{spell.Charges}");
+
+            return lines;
         }
 
         private void UpdateSpellButtons()
@@ -242,7 +293,7 @@ namespace BOTB64.Engine.States
             if (current.ActiveSpells.TryGetValue(1, out Spell spell1))
             {
                 Screen.Spell1Button.SetIcon(spell1.Icon);
-                Screen.Spell1Button.SetTooltip(spell1.Tooltip);
+                Screen.Spell1Button.SetTooltip(BuildSpellTooltip(spell1));
             }
             else
             {
@@ -251,7 +302,7 @@ namespace BOTB64.Engine.States
             if (current.ActiveSpells.TryGetValue(2, out Spell spell2))
             {
                 Screen.Spell2Button.SetIcon(spell2.Icon);
-                Screen.Spell2Button.SetTooltip(spell2.Tooltip);
+                Screen.Spell2Button.SetTooltip(BuildSpellTooltip(spell2));
             }
             else
             {
@@ -260,7 +311,7 @@ namespace BOTB64.Engine.States
             if (current.ActiveSpells.TryGetValue(3, out Spell spell3))
             {
                 Screen.Spell3Button.SetIcon(spell3.Icon);
-                Screen.Spell3Button.SetTooltip(spell3.Tooltip);
+                Screen.Spell3Button.SetTooltip(BuildSpellTooltip(spell3));
             }
             else
             {
@@ -269,7 +320,7 @@ namespace BOTB64.Engine.States
             if (current.ActiveSpells.TryGetValue(4, out Spell spell4))
             {
                 Screen.Spell4Button.SetIcon(spell4.Icon);
-                Screen.Spell4Button.SetTooltip(spell4.Tooltip);
+                Screen.Spell4Button.SetTooltip(BuildSpellTooltip(spell4));
             }
             else
             {
@@ -278,7 +329,7 @@ namespace BOTB64.Engine.States
             if (current.ActiveSpells.TryGetValue(5, out Spell spell5))
             {
                 Screen.Spell5Button.SetIcon(spell5.Icon);
-                Screen.Spell5Button.SetTooltip(spell5.Tooltip);
+                Screen.Spell5Button.SetTooltip(BuildSpellTooltip(spell5));
             }
             else
             {

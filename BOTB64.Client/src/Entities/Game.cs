@@ -1,5 +1,6 @@
 ﻿using BOTB64.Engine;
 using BOTB64.Engine.Net;
+using BOTB64.Graphics;
 using BOTB64.Graphics.G3D;
 using BOTB64.Runtime;
 using BOTB64.Shared.DTOs;
@@ -37,6 +38,9 @@ namespace BOTB64.Entities
         private bool ForcedGameOver = false;
         private Faction ForcedWinner = Faction.Neutral;
 
+        public int RoundNumber = 0;
+        private List<int> TurnOrder = new();
+        private int TurnIndex = -1;
         public Turn CurrentTurn;
         public Character CurrentCharacter => CurrentTurn.ActiveCharacter;
 
@@ -51,8 +55,8 @@ namespace BOTB64.Entities
             LoadStartingCharacters(lI);
             if (Characters.Count < 1)
                 throw new Exception("Must pick at least one character.");
-            CurrentTurn = new Turn(1, Characters[0], this);
-            Logger.Log("Turn " + CurrentTurn.Number + " - " + Characters[0].Name);
+            CurrentTurn = new Turn(0, Characters[0], this);
+            AdvanceTurnInternal();
         }
 
         public void Update(float dt, out bool gameOver)
@@ -71,7 +75,6 @@ namespace BOTB64.Entities
 
         public void Unload() 
         {
-            AssetManager.UnloadAll();
             ShaderManager.Unload();
             LuaRunner.End();
         }
@@ -147,7 +150,7 @@ namespace BOTB64.Entities
             Character character = reader.Read(df);
             character.Name = dto.Name;
             character.ID = dto.ID;
-            character.Model = new ModelInstance(AssetManager.GetModel(model, ModelPurpose.Game));
+            character.Model = new ModelInstance(ResourceManager.GetModel(model, ModelPurpose.Game));
             return character;
         }
 
@@ -164,32 +167,81 @@ namespace BOTB64.Entities
             if (CurrentCharacter.Alive)
                 AuraTriggerManager.Execute(new EffectContext(CurrentCharacter), EffectTrigger.OnEndTurn, AuraType.Character | AuraType.Tile);
 
-            var next = GetNextLivingCharacter(CurrentTurn.ActiveCharacter);
+            var next = GetNextInTurnOrder();
+            if (next == null)
+            {
+                BeginRound();
+                next = GetNextInTurnOrder();
+                if (next == null) return; // no living characters at all — CheckGameOver will catch this
+            }
+
             RecordAndApply(new TurnAdvancedEvent { NextCharacterID = next.GameID, TurnNumber = CurrentTurn.Number + 1 });
 
             if (!next.Alive) return;
 
-            RecordAndApply(new ActionRefreshEvent
-            {
-                CharacterID = next.GameID,
-                Movement = next.Speed.GetI(),
-                Action = 1,
-                FastAction = 1
-            });
-
-            RecordAndApply(new RegenTickEvent
-            {
-                CharacterID = next.GameID,
-                HPAmount = next.HPRegen.GetI(),
-                ResourceAmount = next.ResRegen.GetI()
-            });
+            RecordAndApply(new ActionRefreshEvent { CharacterID = next.GameID, Movement = next.Speed.GetI(), Action = 1, FastAction = 1 });
+            RecordAndApply(new RegenTickEvent { CharacterID = next.GameID, HPAmount = next.HPRegen.GetI(), ResourceAmount = next.ResRegen.GetI() });
 
             if (CurrentCharacter.Alive)
                 AuraTriggerManager.Execute(new EffectContext(CurrentCharacter), EffectTrigger.OnStartTurn, AuraType.Character | AuraType.Tile);
 
             foreach (Spell s in next.ActiveSpells.Values)
-            {
                 RecordAndApply(new SpellCooldownReduceEvent { CharacterID = next.GameID, SpellID = s.ID, NewRemaining = Math.Max(0, s.CurrentCD - 1) });
+        }
+
+        private void BeginRound()
+        {
+            RoundNumber++;
+            var order = Characters.Where(c => c.Alive)
+                .OrderByDescending(c => c.Haste.GetF())
+                .ThenBy(c => c.GameID)
+                .Select(c => c.GameID)
+                .ToList();
+
+            RecordAndApply(new RoundStartedEvent { RoundNumber = RoundNumber, TurnOrder = order });
+            ProcessWorldTick();
+        }
+
+        public void ApplyRoundStart(int roundNumber, List<int> turnOrder)
+        {
+            RoundNumber = roundNumber;
+            TurnOrder = turnOrder;
+            TurnIndex = -1;
+        }
+
+        private Character? GetNextInTurnOrder()
+        {
+            while (TurnIndex + 1 < TurnOrder.Count)
+            {
+                TurnIndex++;
+                var c = FindCharacter(TurnOrder[TurnIndex]);
+                if (c != null && c.Alive) return c;
+            }
+            return null; // exhausted this round
+        }
+
+        private void ProcessWorldTick()
+        {
+            foreach (var row in GetBoard().Tiles)
+            {
+                foreach (var tile in row)
+                {
+                    // iterate a snapshot — effects may expire/remove themselves mid-loop
+                    foreach (var effect in tile.Effects.ToList())
+                    {
+                        if (effect.Duration >= 0) // convention: Duration < 0 = permanent, never ticks
+                        {
+                            int newRemaining = Math.Max(0, effect.Remaining - 1);
+                            if (newRemaining <= 0)
+                                RecordAndApply(new TileEffectExpiredEvent { Position = tile.AxialPosition, TileEffectID = effect.ID });
+                            else
+                                RecordAndApply(new TileEffectDurationTickEvent { Position = tile.AxialPosition, TileEffectID = effect.ID, NewRemaining = newRemaining });
+                        }
+
+                        var ctx = new TileEffectContext(effect.Owner ?? CurrentCharacter, tile.AxialPosition);
+                        effect.Execute(this, ctx, EffectTrigger.OnRoundStart);
+                    }
+                }
             }
         }
 
@@ -271,11 +323,15 @@ namespace BOTB64.Entities
         {
             foreach ((int key, int val) in character.SpellLoadout)
             {
-                
+                Spell sp = AuraTriggerManager.GetSpell(val);
+
+                character.ActiveSpells.Add(key, sp);
             }
             foreach (int id in character.PermanentAuras)
             {
-                
+                Aura aura = AuraTriggerManager.GetAura(id);
+
+                character.CurrentAuras.Add(aura);
             }
         }
     }

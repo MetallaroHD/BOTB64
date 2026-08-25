@@ -76,5 +76,24 @@ namespace BOTB64.Entities
 
         public int Remaining = 0;
         public List<Parameter> Parameters = new();
+
+        public TileEffect Instance()
+        {
+            TileEffect ret = new TileEffect();
+            ret.Animation = Animation;
+            ret.Texture = Texture;
+            ret.Model = Model;
+            ret.ID = ID;
+            ret.Name = Name;
+            ret.Duration = Duration;
+            ret.Secret = Secret;
+            ret.Dispel = Dispel;
+            ret.TileType = TileType;
+            ret.Flags = Flags;
+            ret.Type = Type;
+            ret.Parameters = Parameters;
+            ret.Effects = Effects;
+            return ret;
+        }
     }
 }

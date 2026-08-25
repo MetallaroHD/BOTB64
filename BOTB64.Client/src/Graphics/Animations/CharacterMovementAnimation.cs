@@ -19,7 +19,7 @@ namespace BOTB64.Graphics.Animations
         private readonly float Duration;
         private float Elapsed;
 
-        private const float LiftHeight = 1f;
+        private const float LiftHeight = 0f;
         private const float LiftFraction = 0.2f;
         private const float LowerFraction = 0.2f;
         private const float TravelFraction = 1 - LiftFraction - LowerFraction;

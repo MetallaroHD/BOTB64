@@ -1,5 +1,6 @@
 local generic = require("auto_generic")
 
+Log("Scoper attacks.")
 generic.run()
-
-print("other things")
+ApplyAura(Invoker, Invoker, 1, 1)
+Success()

@@ -33,9 +33,9 @@ namespace BOTB64.Graphics.UI
             AttackButton.Icon = ResourceManager.LoadTexture("Misc\\attack.png");
             TurnButton.Icon = ResourceManager.LoadTexture("Misc\\turn.png");
 
-            MoveButton.SetTooltip("Move");
-            AttackButton.SetTooltip("Attack");
-            TurnButton.SetTooltip("End Turn");
+            MoveButton.SetTooltip(["Move"]);
+            AttackButton.SetTooltip(["Attack"]);
+            TurnButton.SetTooltip(["End Turn"]);
 
             TargetStatus.Visible = false;
 

@@ -1,9 +1,44 @@
 [
-    {
-        "ID" : 0,
-        "Name" : "Dummy",
-        "ScriptURI" : "Dummy",
-        "IconURI" : "dummy",
-        "AnimationURI" : "dummy"
-    }
+  {
+    "ID": 0,
+    "Name": "Dummy",
+    "ScriptURI": "Dummy",
+    "IconURI": "dummy",
+    "AnimationURI": "dummy"
+  },
+  {
+    "ID": 1,
+    "Name": "Reload",
+    "ScriptURI": "reload",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  },
+  {
+    "ID": 2,
+    "Name": "Clean Scope",
+    "ScriptURI": "cleanscope",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  },
+  {
+    "ID": 3,
+    "Name": "Disengage",
+    "ScriptURI": "disengage",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  },
+  {
+    "ID": 4,
+    "Name": "Trap",
+    "ScriptURI": "trap",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  },
+  {
+    "ID": 5,
+    "Name": "Snipe",
+    "ScriptURI": "snipe",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  }
 ]

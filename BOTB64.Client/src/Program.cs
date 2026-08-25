@@ -36,6 +36,7 @@ namespace BOTB64
 
             Graphics.Graphics.Unload();
             ResourceManager.ClearCache();
+            CursorManager.Shutdown();
         }
     }
 }

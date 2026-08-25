@@ -1,5 +1,5 @@
 local generic = require("auto_generic")
 
+Log("Gravitus attacks.")
 generic.run()
-
-print("other things")
+Success()
