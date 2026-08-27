@@ -1,0 +1,14 @@
+:BOTB64SPELL
+:TARGET 1
+:RANGE 0
+:COOLDOWN 0
+:CHARGES 0
+:COST 0
+:COSTPCT 0
+:CAST -2
+:PREP 0
+:SECRET false
+:TRACKEDSOURCEAURA 9
+:TOOLTIP Move the Hotspot toward the targeted tile, up to your remaining movement budget this turn (equal to your Speed, refreshed each turn).
+:EFFECTS
+s_hotspot | 0 | 2 | 0 | 0

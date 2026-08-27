@@ -54,11 +54,14 @@ namespace BOTB64.Entities
     public class TileEffect : ExecutableBase, IReadable
     {
         // Usually only assign 1 of the three visuals
-        // Terrain tiles may have animated visuals or static pngs 
+        // Terrain tiles may have animated visuals or static pngs
         public TileVfxAnimation? Animation { get; set; }
         public RL.Texture2D? Texture { get; set; }
 
         // Statues always use non-animated 3d models (special tiles do what they want)
+        // Asset is the shared template-level model; Model is a per-instance ModelInstance
+        // built from it in Instance() so each placed effect gets its own Transform.
+        public ModelAsset? Asset { get; set; }
         public ModelInstance? Model { get; set; }
 
         // --- Base data (does not change during game) --- //
@@ -82,7 +85,8 @@ namespace BOTB64.Entities
             TileEffect ret = new TileEffect();
             ret.Animation = Animation;
             ret.Texture = Texture;
-            ret.Model = Model;
+            ret.Asset = Asset;
+            ret.Model = Asset != null ? new ModelInstance(Asset) : null;
             ret.ID = ID;
             ret.Name = Name;
             ret.Duration = Duration;

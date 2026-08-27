@@ -71,6 +71,24 @@ namespace BOTB64.Entities
             return true;
         }
 
+        public static bool ForceMove(Game game, int charID, Hex destination)
+        {
+            Character? character = game.FindCharacter(charID);
+            if (character == null)
+                return false;
+
+            Tile? tile = game.GetBoard().GetTile(destination);
+            if (tile == null || !tile.IsPassable())
+                return false;
+
+            game.RecordAndApply(new ForcedMoveEvent { CharacterID = charID, Step = destination });
+
+            var ctx = new EffectContext(character);
+            AuraTriggerManager.Execute(ctx, EffectTrigger.OnMove, AuraType.Character | AuraType.Tile);
+
+            return true;
+        }
+
         public static bool ApplyAura(Game game, int ownerID, int targetID, int auraID, int stacksToAdd)
         {
             Character? owner = game.FindCharacter(ownerID);
@@ -178,6 +196,55 @@ namespace BOTB64.Entities
         public static void SpendAction(Game game, int characterID, bool fast)
         {
             game.RecordAndApply(new ActionSpentEvent { CharacterID = characterID, FastAction = fast });
+        }
+
+        public static bool IsEnemy(Game game, int charID1, int charID2)
+        {
+            Character? a = game.FindCharacter(charID1);
+            Character? b = game.FindCharacter(charID2);
+            if (a == null || b == null)
+                return false;
+            return a.Faction != b.Faction;
+        }
+
+        public static int HexDistance(int q1, int r1, int q2, int r2)
+        {
+            return HexAlgo.HexDistance(new Hex(q1, r1), new Hex(q2, r2));
+        }
+
+        public static List<Hex> GetHexesInRadius(int q, int r, int radius)
+        {
+            var center = new Hex(q, r);
+            var result = new List<Hex>();
+            for (int dq = -radius; dq <= radius; dq++)
+                for (int dr = -radius; dr <= radius; dr++)
+                {
+                    var h = new Hex(q + dq, r + dr);
+                    if (HexAlgo.HexDistance(center, h) <= radius)
+                        result.Add(h);
+                }
+            return result;
+        }
+
+        public static List<Hex> GetLine(int fromQ, int fromR, int toQ, int toR)
+        {
+            return HexAlgo.Beam(new Hex(fromQ, fromR), new Hex(toQ, toR));
+        }
+
+        public static bool TileBlocksLos(Game game, int q, int r)
+        {
+            Tile? tile = game.GetBoard().GetTile(new Hex(q, r));
+            return tile == null || !tile.AllowsLos();
+        }
+
+        public static bool MoveTileEffect(Game game, int ownerID, int fromQ, int fromR, int toQ, int toR, int tileEffectID, int duration)
+        {
+            var fromHex = new Hex(fromQ, fromR);
+            var fromTile = game.GetBoard().GetTile(fromHex);
+            if (fromTile != null && fromTile.Effects.Any(e => e.ID == tileEffectID))
+                game.RecordAndApply(new TileEffectExpiredEvent { Position = fromHex, TileEffectID = tileEffectID });
+
+            return ApplyTileEffect(game, ownerID, new Hex(toQ, toR), tileEffectID, duration);
         }
 
         private static int CalcDamage(Character atker, Character target, int bd, EffectDamageScaling scal)

@@ -3,6 +3,7 @@ using BOTB64.Shared.DTOs;
 using BOTB64.Runtime;
 using RL = Raylib_cs;
 using BOTB64.Shared.Files;
+using BOTB64.Graphics.G3D;
 
 namespace BOTB64.Engine
 {
@@ -21,6 +22,12 @@ namespace BOTB64.Engine
         private static List<Aura> AuraTemplates = new List<Aura>();
         private static List<TileEffect> TileEffectTemplates = new List<TileEffect>();
 
+        // Triggers currently being processed on the call stack. Guards against an effect
+        // running from a trigger (e.g. bonus damage on OnDamageDone) re-firing that same
+        // trigger and recursing without bound - whether it's the same effect re-entering
+        // itself or two separate effects chaining off each other's reactions.
+        private static readonly HashSet<EffectTrigger> ActiveTriggers = new();
+
         public static void Init(Game parent)
         {
             Parent = parent;
@@ -35,17 +42,32 @@ namespace BOTB64.Engine
             if(invoker == null)
                 throw new ArgumentNullException("Invoker not set!");
 
-            if (type.HasFlag(AuraType.Character))
+            if (!ActiveTriggers.Add(condition))
             {
-                foreach (var aura in invoker.CurrentAuras)
-                    aura.Execute(Parent, ctx, condition);
+                Logger.Log($"AuraTriggerManager: blocked a re-entrant {condition} trigger (an effect running from this trigger tried to fire it again).");
+                return;
             }
-            if(type.HasFlag(AuraType.Tile))
+
+            try
             {
-                Tile tile = Parent.GetBoard().GetTile(invoker.Position);
-                if (tile != null)
-                    foreach (var aura in tile.Effects)
+                if (type.HasFlag(AuraType.Character))
+                {
+                    // Snapshot - a triggered effect may itself apply/drop an aura on this
+                    // character, which would otherwise mutate CurrentAuras mid-iteration.
+                    foreach (var aura in invoker.CurrentAuras.ToList())
                         aura.Execute(Parent, ctx, condition);
+                }
+                if(type.HasFlag(AuraType.Tile))
+                {
+                    Tile tile = Parent.GetBoard().GetTile(invoker.Position);
+                    if (tile != null)
+                        foreach (var aura in tile.Effects.ToList())
+                            aura.Execute(Parent, ctx, condition);
+                }
+            }
+            finally
+            {
+                ActiveTriggers.Remove(condition);
             }
         }
 
@@ -110,6 +132,11 @@ namespace BOTB64.Engine
 
             teff.ID = tileD.ID;
             teff.Name = tileD.Name;
+
+            if (!string.IsNullOrEmpty(tileD.ImageURI))
+                teff.Texture = ResourceManager.LoadTexture(CommonURIs.GetTileEffectImage(tileD));
+            if (!string.IsNullOrEmpty(tileD.ModelURI))
+                teff.Asset = ResourceManager.GetModel(CommonURIs.GetTileEffectModel(tileD), ModelPurpose.Game);
 
             TileEffectTemplates.Add(teff);
             return teff.Instance();

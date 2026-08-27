@@ -38,7 +38,7 @@ namespace BOTB64.Graphics.UI
             Tooltip.SetContent(lines);
         }
 
-        private bool IsHovered() => RB.CheckCollisionPointRec(InputManager.MousePosition, Bounds);
+        private bool IsHovered() => RB.CheckCollisionPointRec(UIRenderer.ScreenToUI(InputManager.MousePosition), Bounds);
 
         public override void Draw()
         {

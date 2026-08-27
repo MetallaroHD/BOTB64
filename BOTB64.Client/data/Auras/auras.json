@@ -61,5 +61,19 @@
     "ScriptURI": "rootbonus",
     "IconURI": "dummy",
     "AnimationURI": ""
+  },
+  {
+    "ID": 9,
+    "Name": "Shockwave",
+    "ScriptURI": "shockwave",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  },
+  {
+    "ID": 10,
+    "Name": "Artillery Charging",
+    "ScriptURI": "artillerycharging",
+    "IconURI": "dummy",
+    "AnimationURI": ""
   }
 ]

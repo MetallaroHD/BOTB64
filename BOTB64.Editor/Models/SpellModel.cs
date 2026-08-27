@@ -16,6 +16,7 @@ namespace BOTB64.Editor.Models
         private TargetingType _explicitTarget = TargetingType.Direct;
         private string _tooltip = "";
         private bool _secret = false;
+        private int _trackedSourceAuraID = 0;
 
         public int Range { get => _range; set => Set(ref _range, value); }
         public int Cooldown { get => _cooldown; set => Set(ref _cooldown, value); }
@@ -27,6 +28,7 @@ namespace BOTB64.Editor.Models
         public TargetingType ExplicitTarget { get => _explicitTarget; set => Set(ref _explicitTarget, value); }
         public string Tooltip { get => _tooltip; set => Set(ref _tooltip, value ?? ""); }
         public bool Secret { get => _secret; set => Set(ref _secret, value); }
+        public int TrackedSourceAuraID { get => _trackedSourceAuraID; set => Set(ref _trackedSourceAuraID, value); }
 
         public ObservableCollection<ParameterModel> Parameters { get; } = new();
         public ObservableCollection<EffectModel> Effects { get; } = new();

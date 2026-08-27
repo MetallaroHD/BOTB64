@@ -84,7 +84,7 @@ namespace BOTB64.Editor.IO
             }
         }
 
-        public static void Write(string path, CharacterModel c)
+        public static string Serialize(CharacterModel c)
         {
             var sb = new StringBuilder();
             var inv = CultureInfo.InvariantCulture;
@@ -122,7 +122,9 @@ namespace BOTB64.Editor.IO
             foreach (var s in c.SpellLoadout)
                 sb.AppendLine($"{s.Keybind.ToString(inv)} {s.SpellId.ToString(inv)}");
 
-            File.WriteAllText(path, sb.ToString());
+            return sb.ToString();
         }
+
+        public static void Write(string path, CharacterModel c) => File.WriteAllText(path, Serialize(c));
     }
 }

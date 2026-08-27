@@ -9,3 +9,5 @@
 :PREP 0
 :SECRET false
 :TOOLTIP Expend an ally's fast action in order to have Scoper's scope cleaned, increasing Attack Power.
+:EFFECTS
+s_cleanscope | 0 | 2 | 0 | 0

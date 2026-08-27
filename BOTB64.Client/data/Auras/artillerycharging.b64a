@@ -1,0 +1,8 @@
+:BOTB64AURA
+:DURATION 1
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP Charging Artillery Strike - it will detonate at the Hotspot at the start of Oliver's next turn.
+:EFFECTS
+s_artillerystrike_explode | 4 | 3 | 3 | 2

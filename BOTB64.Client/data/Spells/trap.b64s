@@ -9,3 +9,5 @@
 :PREP 0
 :SECRET true
 :TOOLTIP Places a hidden trap which roots enemies upon contact. Scoper's attacks deal bonus damage to rooted enemies.
+:EFFECTS
+s_trap | 0 | 2 | 0 | 0

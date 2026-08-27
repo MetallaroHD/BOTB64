@@ -5,3 +5,5 @@
 :FLAGS 0
 :TYPE 2
 :SECRET true
+:EFFECTS
+t_trap | 1024 | 4 | 0 | 0

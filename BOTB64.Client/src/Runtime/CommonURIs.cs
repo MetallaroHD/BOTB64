@@ -79,5 +79,15 @@ namespace BOTB64.Runtime
         {
             return TileEffDir + teff.ScriptURI + TileEffEXT;
         }
+
+        public static string GetTileEffectImage(TileEffectDTO teff)
+        {
+            return GraphicsTextureDir + teff.ImageURI + ImageEXT;
+        }
+
+        public static string GetTileEffectModel(TileEffectDTO teff)
+        {
+            return GraphicsModelDir + teff.ModelURI + ModelEXT;
+        }
     }
 }

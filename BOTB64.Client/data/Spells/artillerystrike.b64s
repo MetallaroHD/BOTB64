@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 1
+:RANGE 0
+:COOLDOWN 5
+:CHARGES 1
+:COST 100
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Begins charging an artillery strike. At the start of Oliver's next turn it detonates around the Hotspot, dealing heavy damage in a radius.
+:EFFECTS
+s_artillerystrike | 0 | 2 | 0 | 0

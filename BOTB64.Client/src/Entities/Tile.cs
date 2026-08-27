@@ -62,7 +62,7 @@ namespace BOTB64.Entities
 
             for (int i = 0; i < Effects.Count(); i++)
             {
-                if (Effects[i].Type.HasFlag(TileEffectFlag.Impassable))
+                if (Effects[i].Flags.HasFlag(TileEffectFlag.Impassable))
                     return false;
             }
 

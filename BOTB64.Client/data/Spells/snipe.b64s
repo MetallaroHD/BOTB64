@@ -9,3 +9,5 @@
 :PREP 6
 :SECRET false
 :TOOLTIP Scoper takes aim, shooting a deadly shot at the start of her next turn.
+:EFFECTS
+s_snipe | 0 | 2 | 0 | 0

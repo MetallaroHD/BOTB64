@@ -24,6 +24,10 @@ namespace BOTB64.Entities
         // 0 = normal action, 1+ = cast, -1 = fast, -2 = free
         public int CastTime = 0;
         public bool Secret = false;
+        // 0 = target from the caster's own position/Range (default). Otherwise, the
+        // targeter's source and radius come from this aura's "Q"/"R"/"Budget" params
+        // instead (e.g. Oliver's Hotspot, aimed from the hotspot's tracked position).
+        public int TrackedSourceAuraID = 0;
 
         public string Tooltip = "";
 
@@ -61,12 +65,14 @@ namespace BOTB64.Entities
             ret.Range = Range;
             ret.Cooldown = Cooldown;
             ret.Charges = Charges;
+            ret.CurrentCharges = Charges;
             ret.Cost = Cost;
             ret.CostPct = CostPct;
             ret.Preparation = Preparation;
             ret.ExplicitTarget = ExplicitTarget;
             ret.CastTime = CastTime;
             ret.Secret = Secret;
+            ret.TrackedSourceAuraID = TrackedSourceAuraID;
             ret.Tooltip = Tooltip;
             ret.Parameters = Parameters;
             ret.Effects = Effects;

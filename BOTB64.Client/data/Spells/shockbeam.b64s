@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 1
+:RANGE 0
+:COOLDOWN 2
+:CHARGES 1
+:COST 60
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Unleashes a beam of energy hitting all enemies between Oliver and the Hotspot (including the Hotspot's own tile).
+:EFFECTS
+s_shockbeam | 0 | 2 | 3 | 2

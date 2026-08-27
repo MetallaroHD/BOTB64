@@ -1,0 +1,10 @@
+:BOTB64AURA
+:DURATION -1
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP At the start of each turn, knocks back adjacent enemies by 1 tile. On death, deals heavy damage to all enemies within 3 tiles.
+:EFFECTS
+s_shockwave_knockback | 4 | 3 | 0 | 0
+s_shockwave_hotspotreset | 4 | 3 | 0 | 0
+s_shockwave_ondeath | 16 | 3 | 3 | 2

@@ -8,7 +8,7 @@ function applydrop.run(charID, statName, add, mul)
             return false
         end
     else
-        if not ModifyStat(charID, statName, add, mul) then
+        if not ModifyStat(charID, statName, -add, -mul) then
             return false
         end
     end

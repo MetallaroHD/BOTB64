@@ -33,6 +33,8 @@ namespace BOTB64.Engine
             Lua.Globals["GetAuraParam"] = (Func<int, int, string, float>)((wearerId, auraId, key) => EffectProcessor.GetAuraParam(game, wearerId, auraId, key));
             Lua.Globals["SpendAction"] = (Action<int, bool>)((charId, fast) => EffectProcessor.SpendAction(game, charId, fast));
             Lua.Globals["DropAura"] = (Action<int, int, int>)((charId, auraId, stacks) => EffectProcessor.DropAura(game, charId, auraId, stacks));
+            Lua.Globals["ForceMove"] = (Func<int, int, int, bool>)((charId, q, r) => EffectProcessor.ForceMove(game, charId, new Hex(q, r)));
+            Lua.Globals["MoveTileEffect"] = (Func<int, int, int, int, int, int, int, bool>)((ownerID, fromQ, fromR, toQ, toR, tileEffectID, duration) => EffectProcessor.MoveTileEffect(game, ownerID, fromQ, fromR, toQ, toR, tileEffectID, duration));
 
             // OTHER
             Lua.Globals["Random"] = (Func<float, float, float>)((min, max) => EffectProcessor.Random(game, min, max));
@@ -57,6 +59,12 @@ namespace BOTB64.Engine
             Lua.Globals["IsSilenced"] = (Func<int, bool>)(charId => game.FindCharacter(charId)?.HasSpecialEffect(AuraSpecialEffect.Silence) ?? false);
             Lua.Globals["IsDisarmed"] = (Func<int, bool>)(charId => game.FindCharacter(charId)?.HasSpecialEffect(AuraSpecialEffect.Disarm) ?? false);
             Lua.Globals["HasLineOfSight"] = (Func<int, int, bool>)((fromChar, toChar) => EffectProcessor.CheckLOS(game, fromChar, toChar));
+            Lua.Globals["GetSpeed"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.Speed.GetF() ?? 0);
+            Lua.Globals["IsEnemy"] = (Func<int, int, bool>)((charId1, charId2) => EffectProcessor.IsEnemy(game, charId1, charId2));
+            Lua.Globals["HexDistance"] = (Func<int, int, int, int, int>)((q1, r1, q2, r2) => EffectProcessor.HexDistance(q1, r1, q2, r2));
+            Lua.Globals["GetHexesInRadius"] = (Func<int, int, int, List<Hex>>)((q, r, radius) => EffectProcessor.GetHexesInRadius(q, r, radius));
+            Lua.Globals["GetLine"] = (Func<int, int, int, int, List<Hex>>)((fromQ, fromR, toQ, toR) => EffectProcessor.GetLine(fromQ, fromR, toQ, toR));
+            Lua.Globals["TileBlocksLos"] = (Func<int, int, bool>)((q, r) => EffectProcessor.TileBlocksLos(game, q, r));
 
             // TYPES
             Lua.Globals["EffectTrigger"] = UserData.CreateStatic<EffectTrigger>();
@@ -67,6 +75,19 @@ namespace BOTB64.Engine
         public LuaResult Run(Effect effect, EffectContext context)
         {
             LuaResult ret = new LuaResult { Success = false, ErrorMessage = "Generic script error." };
+
+            // Effects can trigger other effects re-entrantly (e.g. ApplyAura firing an OnApply
+            // script mid-script), which run on this same Script/globals. Save and restore this
+            // frame's state so a nested Run() can't clobber the outer call's in-flight globals.
+            var prevContext = CurrentContext;
+            var prevEffect = CurrentEffect;
+            var prevSuccess = Lua.Globals["Success"];
+            var prevFail = Lua.Globals["Fail"];
+            var prevInvoker = Lua.Globals["Invoker"];
+            var prevCaster = Lua.Globals["Caster"];
+            var prevTargets = Lua.Globals["Targets"];
+            var prevPosition = Lua.Globals["Position"];
+
             CurrentContext = context;
             CurrentEffect = effect;
 
@@ -86,12 +107,20 @@ namespace BOTB64.Engine
             }
             catch (Exception e)
             {
+                ret.Success = false;
+                ret.ErrorMessage = e.Message;
                 Console.WriteLine("Lua exception: " + e.Message);
             }
-            finally 
+            finally
             {
-                CurrentContext = null;
-                CurrentEffect = null;
+                CurrentContext = prevContext;
+                CurrentEffect = prevEffect;
+                Lua.Globals["Success"] = prevSuccess;
+                Lua.Globals["Fail"] = prevFail;
+                Lua.Globals["Invoker"] = prevInvoker;
+                Lua.Globals["Caster"] = prevCaster;
+                Lua.Globals["Targets"] = prevTargets;
+                Lua.Globals["Position"] = prevPosition;
             }
 
             return ret;

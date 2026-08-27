@@ -65,9 +65,9 @@ namespace BOTB64.Entities
             gameOver = CheckGameOver(out Winner);
         }
 
-        public void Render()
+        public void Render(Faction? viewerFaction = null)
         {
-            Level.LevelBoard.Draw();
+            Level.LevelBoard.Draw(viewerFaction);
             foreach (var character in Characters)
                 if(character.Alive)
                     character.Draw();
@@ -186,7 +186,28 @@ namespace BOTB64.Entities
                 AuraTriggerManager.Execute(new EffectContext(CurrentCharacter), EffectTrigger.OnStartTurn, AuraType.Character | AuraType.Tile);
 
             foreach (Spell s in next.ActiveSpells.Values)
-                RecordAndApply(new SpellCooldownReduceEvent { CharacterID = next.GameID, SpellID = s.ID, NewRemaining = Math.Max(0, s.CurrentCD - 1) });
+                if (s.CurrentCD > 0)
+                    RecordAndApply(new SpellCooldownReduceEvent { CharacterID = next.GameID, SpellID = s.ID, NewRemaining = Math.Max(0, s.CurrentCD - 1) });
+
+            // Duration < 0 is the permanent-aura convention (mirrors ProcessWorldTick's tile effects).
+            foreach (Aura a in next.CurrentAuras.ToList())
+            {
+                if (a.Duration < 0)
+                    continue;
+
+                int newRemaining = Math.Max(0, a.Remaining - 1);
+                if (newRemaining <= 0)
+                {
+                    // Mirrors EffectProcessor.DropAura: run OnDrop while the aura is still
+                    // present so its own effects can react, then remove it.
+                    AuraTriggerManager.Execute(new ApplyAuraContext(a.Wearer, a.Owner, a.Wearer, a), EffectTrigger.OnDrop, AuraType.Character);
+                    RecordAndApply(new AuraExpiredEvent { CharacterID = next.GameID, AuraID = a.ID });
+                }
+                else
+                {
+                    RecordAndApply(new AuraDurationTickEvent { CharacterID = next.GameID, AuraID = a.ID, NewRemaining = newRemaining });
+                }
+            }
         }
 
         private void BeginRound()
@@ -324,13 +345,15 @@ namespace BOTB64.Entities
             foreach ((int key, int val) in character.SpellLoadout)
             {
                 Spell sp = AuraTriggerManager.GetSpell(val);
-
+                
                 character.ActiveSpells.Add(key, sp);
             }
             foreach (int id in character.PermanentAuras)
             {
                 Aura aura = AuraTriggerManager.GetAura(id);
-
+                aura.Owner = character;
+                aura.Wearer = character;
+                aura.Remaining = aura.Duration;
                 character.CurrentAuras.Add(aura);
             }
         }

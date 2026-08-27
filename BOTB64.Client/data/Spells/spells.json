@@ -40,5 +40,40 @@
     "ScriptURI": "snipe",
     "IconURI": "dummy",
     "AnimationURI": ""
+  },
+  {
+    "ID": 6,
+    "Name": "Hotspot",
+    "ScriptURI": "hotspot",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  },
+  {
+    "ID": 7,
+    "Name": "Shock Beam",
+    "ScriptURI": "shockbeam",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  },
+  {
+    "ID": 8,
+    "Name": "Barrage",
+    "ScriptURI": "barrage",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  },
+  {
+    "ID": 9,
+    "Name": "Artillery Strike",
+    "ScriptURI": "artillerystrike",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  },
+  {
+    "ID": 10,
+    "Name": "Shockwave",
+    "ScriptURI": "shockwave",
+    "IconURI": "dummy",
+    "AnimationURI": ""
   }
 ]

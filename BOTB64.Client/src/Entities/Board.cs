@@ -128,7 +128,7 @@ namespace BOTB64.Entities
             Tiles[row][col] = tile;
         }
 
-        public void Draw()
+        public void Draw(Faction? viewerFaction = null)
         {
             Model?.Draw();
             EnvModel?.Draw();
@@ -153,8 +153,28 @@ namespace BOTB64.Entities
 
                     if (tile.Type == TileType.Wall)
                         tile.WallModel.Draw();
+
+                    foreach (var fx in tile.Effects)
+                    {
+                        if (fx.Secret && !IsVisibleTo(fx, viewerFaction))
+                            continue;
+
+                        if (fx.Texture is RL.Texture2D tex)
+                            DrawHexTexture(tile.WorldPosition, tex);
+
+                        fx.Model?.Draw();
+
+                        // VFX intentionally not drawn - no particle/VFX system exists yet.
+                    }
                 }
             }
+        }
+
+        // Secret effects are only visible to the owner's team; local (Session == null) play
+        // passes viewerFaction == null, so secret effects never render for anyone.
+        private static bool IsVisibleTo(TileEffect fx, Faction? viewerFaction)
+        {
+            return viewerFaction != null && fx.Owner != null && fx.Owner.Faction == viewerFaction;
         }
 
         public void RestoreColor(int row, int col)
@@ -215,6 +235,42 @@ namespace BOTB64.Entities
             }
         }
 
+        // Draws a tile effect's image as a textured overlay on the hex's top face, using the
+        // same triangle-fan layout as DrawHex but with UVs so it can carry a texture (raw
+        // triangle draws have no UV channel). Sits slightly above the base hex fill to avoid
+        // z-fighting.
+        public void DrawHexTexture(Vector3 center, RL.Texture2D texture, float height = 0.03f)
+        {
+            Vector3 top = center with { Y = center.Y + height };
+
+            RL.Rlgl.SetTexture(texture.Id);
+            RL.Rlgl.Begin((int)RL.DrawMode.Triangles);
+            RL.Rlgl.Color4ub(255, 255, 255, 255);
+
+            for (int i = 0; i < 6; i++)
+            {
+                Vector3 b = HexOffsets[i];
+                Vector3 c = HexOffsets[(i + 1) % 6];
+
+                RL.Rlgl.TexCoord2f(0.5f, 0.5f);
+                RL.Rlgl.Vertex3f(top.X, top.Y, top.Z);
+
+                RL.Rlgl.TexCoord2f(HexUvOf(c).X, HexUvOf(c).Y);
+                RL.Rlgl.Vertex3f(top.X + c.X, top.Y + c.Y, top.Z + c.Z);
+
+                RL.Rlgl.TexCoord2f(HexUvOf(b).X, HexUvOf(b).Y);
+                RL.Rlgl.Vertex3f(top.X + b.X, top.Y + b.Y, top.Z + b.Z);
+            }
+
+            RL.Rlgl.End();
+            RL.Rlgl.SetTexture(0);
+        }
+
+        private static Vector2 HexUvOf(Vector3 offset)
+        {
+            return new Vector2(0.5f + offset.X / (2f * HexAlgo.HexSize), 0.5f + offset.Z / (2f * HexAlgo.HexSize));
+        }
+
         public bool IsValidIndex(int row, int col)
         {
             return (row >= 0 && row < TileCountRow) && (col >= 0 && col < TileCountCol);
@@ -270,6 +326,20 @@ namespace BOTB64.Entities
                 var last = path[^1];
                 character.Direction = new Hex(last.Q - prev.Q, last.R - prev.R);
             }
+        }
+
+        // Like MoveCharacter, but keeps the character's facing (Direction) unchanged -
+        // used for forced movement (leaps, knockback, etc) rather than a walked path.
+        public void ForceMoveCharacter(Character character, Hex destination)
+        {
+            Tile? oldTile = GetTile(character.Position);
+            Tile? newTile = GetTile(destination);
+            if (oldTile == null || newTile == null)
+                return;
+
+            oldTile.Character = null;
+            newTile.Character = character;
+            character.Position = destination;
         }
 
         public void SpawnCharacter(ref int alloc, Character character, Hex tile, Hex direction)

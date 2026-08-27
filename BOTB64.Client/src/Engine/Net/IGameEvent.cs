@@ -26,6 +26,7 @@ namespace BOTB64.Engine.Net
     [Union(17, typeof(AuraParamSetEvent))]
     [Union(18, typeof(SpellCooldownReduceEvent))]
     [Union(19, typeof(RoundStartedEvent))]
+    [Union(20, typeof(ForcedMoveEvent))]
     public interface IGameEvent
     {
         void Apply(Game game);
@@ -162,6 +163,28 @@ namespace BOTB64.Engine.Net
         }
     }
 
+    // Same tile-stepping shape as MoveEvent, but does not spend RemainMovement and
+    // does not change the character's facing (Direction) - used for leaps/knockback.
+    [MessagePackObject]
+    public struct ForcedMoveEvent : IGameEvent
+    {
+        [Key(0)] public int CharacterID;
+        [Key(1)] public Hex Step;
+
+        public void Apply(Game game)
+        {
+            var character = game.FindCharacter(CharacterID);
+            if (character == null) return;
+
+            var tile = game.GetBoard().GetTile(Step);
+            if (tile == null) return;
+
+            var anim = new CharacterMoveAnimation(character, new List<Hex> { character.Position, tile.AxialPosition });
+            game.GetBoard().ForceMoveCharacter(character, tile.AxialPosition);
+            AnimationManager.Play(anim);
+        }
+    }
+
     [MessagePackObject]
     public struct ActionSpentEvent : IGameEvent
     {
@@ -243,6 +266,8 @@ namespace BOTB64.Engine.Net
             var instance = template.Instance();
             instance.Owner = owner;
             instance.Remaining = Duration;
+            if (instance.Model != null)
+                instance.Model.Transform.Position = tile.WorldPosition;
             tile.Effects.Add(instance);
         }
     }
@@ -265,9 +290,18 @@ namespace BOTB64.Engine.Net
             var spell = character.ActiveSpells.Values.FirstOrDefault(s => s.ID == spellId);
             if (spell != null)
             {
-                spell.CurrentCD = spell.Cooldown;
-                if (spell.Charges != 0)
+                if (spell.Charges == 0)
+                {
+                    spell.CurrentCD = spell.Cooldown;
+                }
+                else
+                {
                     spell.CurrentCharges = Math.Max(0, spell.CurrentCharges - 1);
+                    // Only start the recharge timer if one isn't already running -
+                    // casting again mid-recharge doesn't reset/stack it.
+                    if (spell.CurrentCD <= 0)
+                        spell.CurrentCD = spell.Cooldown;
+                }
                 if (spell.Animation != null)
                     AnimationManager.Play(spell.Animation);
                 Logger.Log(character.Name + " casts " + spell.Name + "!");
@@ -305,9 +339,14 @@ namespace BOTB64.Engine.Net
             var spell = c?.ActiveSpells.FirstOrDefault(s => s.Value.ID == id).Value;
             if (spell == null)
                 return;
-            spell.Cooldown = NewRemaining;
-            if(NewRemaining <= 0)
-                spell.CurrentCharges = Math.Min(Math.Max(0, spell.CurrentCharges + 1), spell.Charges);
+            spell.CurrentCD = NewRemaining;
+            if (NewRemaining <= 0 && spell.Charges != 0 && spell.CurrentCharges < spell.Charges)
+            {
+                spell.CurrentCharges++;
+                // Still missing charges - start recharging the next one.
+                if (spell.CurrentCharges < spell.Charges)
+                    spell.CurrentCD = spell.Cooldown;
+            }
         }
     }
 

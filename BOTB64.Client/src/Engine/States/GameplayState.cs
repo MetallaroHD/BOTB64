@@ -77,7 +77,7 @@ namespace BOTB64.Engine.States
         {
             Viewport.Begin();
             ShaderManager.UpdateCameraPosition(Viewport.Camera.Position);
-            Game.Render();
+            Game.Render(LocalViewerFaction());
             Viewport.End();
             FloatingTextManager.Draw(Viewport);
             Screen.Draw();
@@ -117,11 +117,11 @@ namespace BOTB64.Engine.States
             RegisterBinding([Idle], null, RL.KeyboardKey.Escape, () => { Pause.Mode = PauseMode.Esc;  ChangeAction(Pause); }, KeyBindingType.Press);
             RegisterBinding([Idle], Screen.MoveButton, RL.KeyboardKey.M, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Move.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Move); }, KeyBindingType.Press);
             RegisterBinding([Idle], Screen.AttackButton, RL.KeyboardKey.K, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Atk); }, KeyBindingType.Press);
-            RegisterBinding([Idle], Screen.Spell1Button, RL.KeyboardKey.One, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Spell); }, KeyBindingType.Press);
-            RegisterBinding([Idle], Screen.Spell2Button, RL.KeyboardKey.Two, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Spell); }, KeyBindingType.Press);
-            RegisterBinding([Idle], Screen.Spell3Button, RL.KeyboardKey.Three, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Spell); }, KeyBindingType.Press);
-            RegisterBinding([Idle], Screen.Spell4Button, RL.KeyboardKey.Four, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Spell); }, KeyBindingType.Press);
-            RegisterBinding([Idle], Screen.Spell5Button, RL.KeyboardKey.Five, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; Atk.SetCurrentCharacter(Game.CurrentCharacter); ChangeAction(Spell); }, KeyBindingType.Press);
+            RegisterBinding([Idle], Screen.Spell1Button, RL.KeyboardKey.One, () => TryEnterSpellCast(1), KeyBindingType.Press);
+            RegisterBinding([Idle], Screen.Spell2Button, RL.KeyboardKey.Two, () => TryEnterSpellCast(2), KeyBindingType.Press);
+            RegisterBinding([Idle], Screen.Spell3Button, RL.KeyboardKey.Three, () => TryEnterSpellCast(3), KeyBindingType.Press);
+            RegisterBinding([Idle], Screen.Spell4Button, RL.KeyboardKey.Four, () => TryEnterSpellCast(4), KeyBindingType.Press);
+            RegisterBinding([Idle], Screen.Spell5Button, RL.KeyboardKey.Five, () => TryEnterSpellCast(5), KeyBindingType.Press);
             RegisterBinding([Idle], Screen.TurnButton, RL.KeyboardKey.Space, () => { if (!IsMyCharacter(Game.CurrentCharacter)) return; if (!Settings.AskEndTurn) { SubmitEndTurn(); } else { Pause.Mode = PauseMode.Turn; ChangeAction(Pause); } }, KeyBindingType.Press);
             RegisterBinding([Move], null, RL.KeyboardKey.Tab, () => { Move.CycleToNextPath(); }, KeyBindingType.Press);
             RegisterBinding([Move, Atk, Spell], null, RL.KeyboardKey.Escape, () => { InputManager.UseKey(); ChangeAction(Idle); }, KeyBindingType.Press);
@@ -135,9 +135,54 @@ namespace BOTB64.Engine.States
             Screen.YesButton.OnClick = () => { SubmitEndTurn(); InputManager.UseClick(); ChangeAction(Idle); };
         }
 
+        private void TryEnterSpellCast(int slot)
+        {
+            if (!IsMyCharacter(Game.CurrentCharacter))
+                return;
+            if (!Game.CurrentCharacter.ActiveSpells.TryGetValue(slot, out Spell spell))
+                return;
+
+            string? reason = GetSpellCastBlockReason(Game.CurrentCharacter, spell);
+            if (reason != null)
+            {
+                FloatingMessageManager.AddMessage(reason);
+                return;
+            }
+
+            Spell.SetCurrentCharacter(Game.CurrentCharacter);
+            Spell.SpellBind = slot;
+            ChangeAction(Spell);
+        }
+
+        // Client-side only pre-check so the targeter never even opens for a spell that
+        // SpellCastCommand.Validate would reject server/authoritative-side anyway.
+        private string? GetSpellCastBlockReason(Character caster, Spell spell)
+        {
+            if (spell.IsPassive)
+                return $"{spell.Name} is passive.";
+            if (Game.RoundNumber < spell.Preparation)
+                return $"{spell.Name} is not available until round {spell.Preparation}.";
+            if (spell.Charges == 0)
+            {
+                if (spell.CurrentCD > 0)
+                    return $"{spell.Name} is on cooldown ({spell.CurrentCD}).";
+            }
+            else if (spell.CurrentCharges <= 0)
+            {
+                return $"{spell.Name} has no charges left ({spell.CurrentCD} until next).";
+            }
+            if (caster.CurrentResource < spell.Cost)
+                return $"Not enough resource to cast {spell.Name}.";
+            if (spell.CastTime == 0 && caster.RemainAction <= 0)
+                return "No action remaining.";
+            if (spell.CastTime == -1 && caster.RemainFastAction <= 0)
+                return "No fast action remaining.";
+            return null;
+        }
+
         public void SubmitEndTurn()
         {
-            Channel.Submit(new EndTurnCommand { ActingCharacterID = Game.CurrentCharacter.GameID }); 
+            Channel.Submit(new EndTurnCommand { ActingCharacterID = Game.CurrentCharacter.GameID });
             Console.WriteLine("New Turn: " + Game.CurrentCharacter.Name);
         }
 
@@ -191,11 +236,13 @@ namespace BOTB64.Engine.States
         }
 
         public Hex GetMouseAxial(out bool valid)
-        {             
+        {
             Hex ret = HexAlgo.WorldToHex(Viewport.GetMouseXZ());
             valid = Game.GetBoard().IsValidHex(ret);
             return ret;
         }
+
+        public Game GetGame() => Game;
 
         public void TogglePauseOverlay(bool active)
         {
@@ -222,6 +269,10 @@ namespace BOTB64.Engine.States
         }
 
         private bool IsMyCharacter(Character c) => Session == null || c.OwnerID == Session.LocalPlayerID;
+
+        // null in local (hot-seat) play, where everyone shares one screen and secret tile
+        // effects should never render for anyone; the local player's Faction online.
+        private Faction? LocalViewerFaction() => Session?.LocalPlayer.Faction;
 
         private void UpdateGUI()
         {
@@ -253,10 +304,10 @@ namespace BOTB64.Engine.States
             Screen.TargetStatus.SetHealth(target.CurrentHP, target.MaxHP.GetI());
             Screen.TargetStatus.SetResource(target.CurrentResource, target.MaxRes.GetI());
             Screen.TargetStatus.SetName(target.Name);
-            Screen.PlayerStatus.Effects.Sync(target.CurrentAuras, a => new EffectDisplayInfo(a.ID, a.Name, a.Tooltip, a.CurrentStacks, a.Remaining, a.Icon));
+            Screen.TargetStatus.Effects.Sync(target.CurrentAuras, a => new EffectDisplayInfo(a.ID, a.Name, a.Tooltip, a.CurrentStacks, a.Remaining, a.Icon));
         }
 
-        public static List<string> BuildSpellTooltip(Spell spell)
+        public List<string> BuildSpellTooltip(Spell spell)
         {
             var lines = new List<string>();
 
@@ -283,6 +334,9 @@ namespace BOTB64.Engine.States
 
             if (spell.Charges > 1)
                 lines.Add($"Charges: {spell.CurrentCharges}/{spell.Charges}");
+
+            if (spell.Preparation > Game.RoundNumber)
+                lines.Add($"Unlocks at Round {spell.Preparation}");
 
             return lines;
         }

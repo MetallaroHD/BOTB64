@@ -20,6 +20,12 @@
 :AAAP 1
 :AASP 0
 :EFFECTS
-auto_generic | 0 | 1 | 1 | 1
+auto_oliver | 0 | 1 | 1 | 1
 :AURAS
+9
 :SPELLS
+1 10
+2 6
+3 7
+4 8
+5 9

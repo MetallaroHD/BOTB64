@@ -9,7 +9,9 @@ namespace BOTB64.Engine
         Direct = 1,
         BeamNoLos = 2,
         Area = 3,
-        Pathfinding = 4
+        Pathfinding = 4,
+        BeamLos = 5,
+        DirectLos = 6
     }
 
     public class TargetingData
@@ -69,6 +71,12 @@ namespace BOTB64.Engine
                     break;
                 case TargetingType.Pathfinding:
                     TargetPathfinding(pickedPoint);
+                    break;
+                case TargetingType.BeamLos:
+                    TargetBeam(pickedPoint, true);
+                    break;
+                case TargetingType.DirectLos:
+                    TargetDirect(pickedPoint, true);
                     break;
                 default:
                     break;

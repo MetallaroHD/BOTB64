@@ -40,6 +40,9 @@
 
                 <Label Content="Cast Time"/><TextBox Text="{Binding CastTime, UpdateSourceTrigger=PropertyChanged}"/>
                 <Label Content="Preparation"/><TextBox Text="{Binding Preparation, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Content="Tracked Source Aura" ToolTip="0 = target from caster's own position/Range. Otherwise, source/radius come from this aura's Q/R/Budget params (e.g. Oliver's Hotspot)."/>
+                <TextBox Text="{Binding TrackedSourceAuraID, UpdateSourceTrigger=PropertyChanged}"/>
                 <CheckBox Content="Secret (only visible to the creating team)" IsChecked="{Binding Secret, Mode=TwoWay}" Margin="0,10,0,0"/>
             </UniformGrid>
 

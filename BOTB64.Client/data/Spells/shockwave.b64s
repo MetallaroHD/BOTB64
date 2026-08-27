@@ -1,0 +1,11 @@
+:BOTB64SPELL
+:TARGET 0
+:RANGE 0
+:COOLDOWN 0
+:CHARGES 0
+:COST 0
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP At the start of each turn, knocks back adjacent enemies by 1 tile. On death, deals heavy damage to all enemies within 3 tiles.

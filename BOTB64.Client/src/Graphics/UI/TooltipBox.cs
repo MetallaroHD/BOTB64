@@ -62,9 +62,9 @@ namespace BOTB64.Graphics.UI
         }
 
         private void ClampToScreen()
-        { 
-            int screenW = RB.GetScreenWidth();
-            int screenH = RB.GetScreenHeight();
+        {
+            const int screenW = 1280;
+            const int screenH = 720;
 
             if(_bounds.X < 0)
                 _bounds.X = 0;

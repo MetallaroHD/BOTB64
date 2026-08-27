@@ -8,7 +8,7 @@ if HasTrigger(EffectTrigger.OnApply) then
         return
     end
     SetAuraParam(Invoker, 1, "Snapshot", rng)
-    Log("Scoper reloads and rolls " + rng * 100)
+    Log("Scoper reloads and rolls " .. (rng * 100))
 else
     local snap = GetAuraParam(Invoker, 1, "Snapshot")
     if not ModifyStat(Invoker, "AutoAttackAP", 0, -snap) then

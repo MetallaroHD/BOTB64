@@ -13,6 +13,10 @@ namespace BOTB64.Editor.ViewModels
         private string _currentPath;
         private string _statusText = "No file loaded.";
 
+        // Snapshot of the serialized entity as of the last load/save, used to detect
+        // unsaved edits before silently discarding CurrentEntity (switching files, etc).
+        private string _savedSnapshot;
+
         public object CurrentEntity
         {
             get => _currentEntity;
@@ -74,6 +78,9 @@ namespace BOTB64.Editor.ViewModels
 
         private void Open()
         {
+            if (!ConfirmDiscardCurrent())
+                return;
+
             var dlg = new OpenFileDialog
             {
                 Filter = "BOTB64 files (*.b64c;*.b64s;*.b64a;*.b64t)|*.b64c;*.b64s;*.b64a;*.b64t|All files (*.*)|*.*"
@@ -82,12 +89,20 @@ namespace BOTB64.Editor.ViewModels
             if (dlg.ShowDialog() != true)
                 return;
 
-            OpenPath(dlg.FileName);
+            OpenPathInternal(dlg.FileName);
         }
 
         // Loads an existing file into the editor. Shared by the File > Open
         // dialog and by double-clicking a row in the Database tab.
         public void OpenPath(string path)
+        {
+            if (!ConfirmDiscardCurrent())
+                return;
+
+            OpenPathInternal(path);
+        }
+
+        private void OpenPathInternal(string path)
         {
             try
             {
@@ -112,6 +127,7 @@ namespace BOTB64.Editor.ViewModels
                 CurrentEntity = entity;
                 CurrentKind = kind;
                 CurrentPath = path;
+                _savedSnapshot = Serialize(entity, kind);
                 StatusText = $"Loaded {kind}: {path}";
             }
             catch (Exception ex)
@@ -132,6 +148,9 @@ namespace BOTB64.Editor.ViewModels
                 return;
             }
 
+            if (!ConfirmDiscardCurrent())
+                return;
+
             var result = MessageBox.Show(
                 $"'{path}' doesn't exist yet.\n\nCreate a new blank {kind} there?",
                 "Create file", MessageBoxButton.YesNo, MessageBoxImage.Question);
@@ -139,7 +158,7 @@ namespace BOTB64.Editor.ViewModels
             if (result != MessageBoxResult.Yes)
                 return;
 
-            CurrentEntity = kind switch
+            object entity = kind switch
             {
                 FileKind.Character => new CharacterModel(),
                 FileKind.Spell => new SpellModel(),
@@ -147,14 +166,19 @@ namespace BOTB64.Editor.ViewModels
                 FileKind.TileEffect => new TileEffectModel(),
                 _ => null
             };
+            CurrentEntity = entity;
             CurrentKind = kind;
             CurrentPath = path;
+            _savedSnapshot = entity == null ? null : Serialize(entity, kind);
             StatusText = $"New {kind} (not yet saved to {path})";
         }
 
         private void New(FileKind kind)
         {
-            CurrentEntity = kind switch
+            if (!ConfirmDiscardCurrent())
+                return;
+
+            object entity = kind switch
             {
                 FileKind.Character => new CharacterModel(),
                 FileKind.Spell => new SpellModel(),
@@ -162,9 +186,66 @@ namespace BOTB64.Editor.ViewModels
                 FileKind.TileEffect => new TileEffectModel(),
                 _ => null
             };
+            CurrentEntity = entity;
             CurrentKind = kind;
             CurrentPath = null;
+            _savedSnapshot = entity == null ? null : Serialize(entity, kind);
             StatusText = $"New {kind} (unsaved)";
+        }
+
+        // True when the in-memory entity no longer matches what's on disk (or, for an
+        // unsaved new entity, is no longer the pristine default).
+        private bool IsCurrentDirty()
+        {
+            if (CurrentEntity == null)
+                return false;
+
+            try
+            {
+                return Serialize(CurrentEntity, CurrentKind) != _savedSnapshot;
+            }
+            catch
+            {
+                // Can't serialize (e.g. unknown kind) - be conservative and assume dirty.
+                return true;
+            }
+        }
+
+        private static string Serialize(object entity, FileKind kind) => kind switch
+        {
+            FileKind.Character => CharacterIO.Serialize((CharacterModel)entity),
+            FileKind.Spell => SpellIO.Serialize((SpellModel)entity),
+            FileKind.Aura => AuraIO.Serialize((AuraModel)entity),
+            FileKind.TileEffect => TileEffectIO.Serialize((TileEffectModel)entity),
+            _ => throw new NotSupportedException($"Cannot serialize entity of kind {kind}.")
+        };
+
+        // Exposed for the main window to call from its Closing handler, so quitting
+        // with unsaved edits goes through the same prompt as switching files.
+        public bool ConfirmDiscardCurrent() => ConfirmDiscardCurrentInternal();
+
+        // Prompts to save unsaved edits before the caller discards CurrentEntity
+        // (opening/creating another file). Returns false if the caller should abort.
+        private bool ConfirmDiscardCurrentInternal()
+        {
+            if (!IsCurrentDirty())
+                return true;
+
+            string name = CurrentPath != null ? Path.GetFileName(CurrentPath) : $"new {CurrentKind}";
+            var result = MessageBox.Show(
+                $"Save changes to {name} before continuing?",
+                "Unsaved changes", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    Save();
+                    return !IsCurrentDirty();
+                case MessageBoxResult.No:
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         private void Save()
@@ -209,6 +290,7 @@ namespace BOTB64.Editor.ViewModels
                     case FileKind.Aura: AuraIO.Write(path, (AuraModel)CurrentEntity); break;
                     case FileKind.TileEffect: TileEffectIO.Write(path, (TileEffectModel)CurrentEntity); break;
                 }
+                _savedSnapshot = Serialize(CurrentEntity, CurrentKind);
                 StatusText = $"Saved {CurrentKind}: {path}";
             }
             catch (Exception ex)

@@ -60,10 +60,11 @@ namespace BOTB64.Editor.IO
                 case "TILETYPE": fx.TileType = (TileEffectApplicableTile)int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "FLAGS": fx.Flags = (TileEffectFlag)int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "TYPE": fx.Type = (TileEffectType)int.Parse(rest, CultureInfo.InvariantCulture); break;
+                case "SECRET": fx.Secret = bool.Parse(rest); break;
             }
         }
 
-        public static void Write(string path, TileEffectModel fx)
+        public static string Serialize(TileEffectModel fx)
         {
             var sb = new StringBuilder();
             var inv = CultureInfo.InvariantCulture;
@@ -90,7 +91,9 @@ namespace BOTB64.Editor.IO
                     sb.AppendLine(e.ToLine());
             }
 
-            File.WriteAllText(path, sb.ToString());
+            return sb.ToString();
         }
+
+        public static void Write(string path, TileEffectModel fx) => File.WriteAllText(path, Serialize(fx));
     }
 }

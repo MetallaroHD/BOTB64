@@ -9,3 +9,5 @@
 :PREP 0
 :SECRET false
 :TOOLTIP Scoper quickly leaps to target location.
+:EFFECTS
+s_disengage | 0 | 2 | 0 | 0

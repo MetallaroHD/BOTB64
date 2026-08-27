@@ -64,11 +64,13 @@ namespace BOTB64.Editor.IO
                 case "CAST": spell.CastTime = int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "PREP": spell.Preparation = int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "TARGET": spell.ExplicitTarget = (TargetingType)int.Parse(rest, CultureInfo.InvariantCulture); break;
+                case "SECRET": spell.Secret = rest.Trim().ToLowerInvariant() is "true" or "1" or "yes"; break;
+                case "TRACKEDSOURCEAURA": spell.TrackedSourceAuraID = int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "TOOLTIP": spell.Tooltip = BotbParsing.ParseQuotedOrRaw(rest); break;
             }
         }
 
-        public static void Write(string path, SpellModel s)
+        public static string Serialize(SpellModel s)
         {
             var sb = new StringBuilder();
             var inv = CultureInfo.InvariantCulture;
@@ -83,6 +85,8 @@ namespace BOTB64.Editor.IO
             sb.AppendLine($":CAST {s.CastTime.ToString(inv)}");
             sb.AppendLine($":PREP {s.Preparation.ToString(inv)}");
             sb.AppendLine($":SECRET {(s.Secret ? "true" : "false")}");
+            if (s.TrackedSourceAuraID != 0)
+                sb.AppendLine($":TRACKEDSOURCEAURA {s.TrackedSourceAuraID.ToString(inv)}");
 
             if (s.Parameters.Count > 0)
             {
@@ -100,7 +104,9 @@ namespace BOTB64.Editor.IO
                     sb.AppendLine(e.ToLine());
             }
 
-            File.WriteAllText(path, sb.ToString());
+            return sb.ToString();
         }
+
+        public static void Write(string path, SpellModel s) => File.WriteAllText(path, Serialize(s));
     }
 }

@@ -118,13 +118,23 @@ namespace BOTB64.Engine.Net
 
             int spellId = SpellID;
             spell = caster.ActiveSpells.Values.FirstOrDefault(s => s.ID == spellId);
-            if (spell == null) 
+            if (spell == null)
                 return false;
-            if (spell.CurrentCD > 0) 
+            if (game.RoundNumber < spell.Preparation)
                 return false;
-            if (spell.CurrentCharges <= 0) 
+            // Charges != 0: charge-gated - CurrentCD only tracks recharge-in-progress, it
+            // doesn't block casting on its own as long as a charge is available.
+            // Charges == 0 (unlimited): CurrentCD is a plain per-cast cooldown gate.
+            if (spell.Charges == 0)
+            {
+                if (spell.CurrentCD > 0)
+                    return false;
+            }
+            else if (spell.CurrentCharges <= 0)
+            {
                 return false;
-            if (caster.CurrentResource < spell.Cost) 
+            }
+            if (caster.CurrentResource < spell.Cost)
                 return false;
             if (spell.CastTime == 0 && caster.RemainAction <= 0) 
                 return false;

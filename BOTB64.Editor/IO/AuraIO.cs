@@ -63,7 +63,7 @@ namespace BOTB64.Editor.IO
             }
         }
 
-        public static void Write(string path, AuraModel a)
+        public static string Serialize(AuraModel a)
         {
             var sb = new StringBuilder();
             var inv = CultureInfo.InvariantCulture;
@@ -90,7 +90,9 @@ namespace BOTB64.Editor.IO
                     sb.AppendLine(e.ToLine());
             }
 
-            File.WriteAllText(path, sb.ToString());
+            return sb.ToString();
         }
+
+        public static void Write(string path, AuraModel a) => File.WriteAllText(path, Serialize(a));
     }
 }
