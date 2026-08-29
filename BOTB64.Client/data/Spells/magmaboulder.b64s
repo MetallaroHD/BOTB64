@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 8
+:RANGE 6
+:COOLDOWN 3
+:CHARGES 1
+:COST 0
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Costs Health. Hurls a boulder in a straight line up to 6 tiles, or until it hits a wall. Damages anyone in its path and leaves Scorched Earth behind. If it hits a wall, Scorched Earth also spreads to all tiles adjacent to the wall.
+:EFFECTS
+s_rassarang_magmaboulder | 0 | 2 | 2 | 2

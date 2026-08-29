@@ -43,6 +43,8 @@
 
                 <Label Content="Tracked Source Aura" ToolTip="0 = target from caster's own position/Range. Otherwise, source/radius come from this aura's Q/R/Budget params (e.g. Oliver's Hotspot)."/>
                 <TextBox Text="{Binding TrackedSourceAuraID, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Content="Area Radius" ToolTip="TargetingType.Area only: size of the AoE disk around the picked tile."/>
+                <TextBox Text="{Binding AreaRadius, UpdateSourceTrigger=PropertyChanged}"/>
                 <CheckBox Content="Secret (only visible to the creating team)" IsChecked="{Binding Secret, Mode=TwoWay}" Margin="0,10,0,0"/>
             </UniformGrid>
 

@@ -1,0 +1,8 @@
+:BOTB64AURA
+:DURATION 3
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP Tethered to another entity for a few turns. When either of them takes damage, the other is healed if it's Gravitus's ally, or damaged if it's his enemy.
+:EFFECTS
+s_gravitus_unstablegravity_ondamage | 64 | 3 | 0 | 0

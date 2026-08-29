@@ -18,11 +18,20 @@ namespace BOTB64.Graphics.UI
         public ActionButton Spell4Button = new ActionButton { Bounds = new RL.Rectangle(713, 628, 64, 64), TopRightText = "4" };
         public ActionButton Spell5Button = new ActionButton { Bounds = new RL.Rectangle(783, 628, 64, 64), TopRightText = "5" };
         public ActionButton TurnButton = new ActionButton { Bounds = new RL.Rectangle(853, 628, 64, 64), TopRightText = "Space" };
+        public TextButton ShowSecretsButton = new TextButton { Visible = false, Bounds = new RL.Rectangle(1120, 522, 160, 32), Text = "Show Secrets" };
         public TextButton ExitButton = new TextButton { Visible = false, Bounds = new RL.Rectangle(540, 365, 200, 60), Text = "Exit Game", OnClick = () => { InputManager.WantsClose = true; } };
         public TextButton ResumeButton = new TextButton { Visible = false, Bounds = new RL.Rectangle(540, 290, 200, 60), Text = "Resume" };
         public Label EndTurnQuestion = new Label { Visible = false, Position = new Vector2(540, 290), Text = "End Turn?", FontSize = 36 };
         public TextButton YesButton = new TextButton { Visible = false, Bounds = new RL.Rectangle(540, 365, 80, 50), Text = "Yes" };
         public TextButton NoButton = new TextButton { Visible = false, Bounds = new RL.Rectangle(660, 365, 80, 50), Text = "No" };
+
+        // Not added via AddElement - GameplayState drives its content/position directly
+        // from the hovered board tile each frame, then draws it after the rest of the UI.
+        public TooltipBox TileTooltip = new();
+
+        // Only local (hot-seat) play has a single shared screen where holding this to peek
+        // at your own team's secrets makes sense - online play never shows the button at all.
+        public bool ShowSecretsAvailable = false;
 
         public GameOverlayScreen()
         {
@@ -50,6 +59,7 @@ namespace BOTB64.Graphics.UI
             AddElement(Spell4Button);
             AddElement(Spell5Button);
             AddElement(TurnButton);
+            AddElement(ShowSecretsButton);
             AddElement(ExitButton);
             AddElement(ResumeButton);
             AddElement(EndTurnQuestion);
@@ -70,6 +80,7 @@ namespace BOTB64.Graphics.UI
             Spell4Button.Visible = !yes;
             Spell5Button.Visible = !yes;
             TurnButton.Visible = !yes;
+            ShowSecretsButton.Visible = !yes && ShowSecretsAvailable;
             ExitButton.Visible = yes;
             ResumeButton.Visible = yes;
         }
@@ -97,6 +108,7 @@ namespace BOTB64.Graphics.UI
             Spell4Button.Visible = !yes;
             Spell5Button.Visible = !yes;
             TurnButton.Visible = !yes;
+            ShowSecretsButton.Visible = !yes && ShowSecretsAvailable;
             EndTurnQuestion.Visible = yes;
             YesButton.Visible = yes;
             NoButton.Visible = yes;

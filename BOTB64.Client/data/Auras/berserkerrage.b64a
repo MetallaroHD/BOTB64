@@ -1,0 +1,10 @@
+:BOTB64AURA
+:DURATION -1
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP Attacking generates Rage based on the target's missing health. Passively gains Attack Power and Crit Chance scaling with current Rage. Upon death, all allies gain Attack Power and Spell Power scaling with Pilaf's Rage at the time of death.
+:EFFECTS
+s_pilaf_berserkerrage_onautoattack | 262144 | 3 | 0 | 0
+s_pilaf_berserkerrage_rescale | 262660 | 3 | 0 | 0
+s_pilaf_berserkerrage_ondeath | 16 | 3 | 0 | 0

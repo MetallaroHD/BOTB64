@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 1
+:RANGE 5
+:COOLDOWN 1
+:CHARGES 0
+:COST 4
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Costs 4 combo points. Sets an enemy's Defense and Magic Defense to 0 for 2 turns.
+:EFFECTS
+s_exposeweakness | 0 | 2 | 0 | 0

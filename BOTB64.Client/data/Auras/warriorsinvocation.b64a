@@ -1,0 +1,9 @@
+:BOTB64AURA
+:DURATION 3
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP Increases Speed.
+:EFFECTS
+s_pilaf_invoke_apply | 1 | 3 | 0 | 0
+s_pilaf_invoke_drop | 2 | 3 | 0 | 0

@@ -1,0 +1,8 @@
+:BOTB64AURA
+:DURATION 3
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP Heals Pilaf over time.
+:EFFECTS
+s_pilaf_bloodthirst_tick | 4 | 3 | 0 | 0

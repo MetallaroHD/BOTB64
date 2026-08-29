@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 0
+:RANGE 0
+:COOLDOWN 6
+:CHARGES 1
+:COST 0
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Self buff: triples Bloodwell generation and raises maximum Bloodwell to 150 for 3 turns. While active, Trappus's linked ally deals and takes 50% more damage.
+:EFFECTS
+s_crimsonblossom | 0 | 2 | 0 | 0

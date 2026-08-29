@@ -1,0 +1,9 @@
+:BOTB64AURA
+:DURATION 2
+:MAXSTACKS 20
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP Increases Spell Power and Defense, scaling with the number of Scorched Earth zones removed.
+:EFFECTS
+s_rassarang_fierycall_apply | 1 | 3 | 0 | 0
+s_rassarang_fierycall_drop | 2 | 3 | 0 | 0

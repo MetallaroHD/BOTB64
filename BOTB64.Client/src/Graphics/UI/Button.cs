@@ -14,6 +14,10 @@ namespace BOTB64.Graphics.UI
         protected bool IsHovered;
         protected bool WasHovered;
 
+        // Continuous "mouse held down over this button" state, for hold-to-reveal style
+        // interactions (as opposed to OnClick, which fires once on press).
+        public bool IsHeld => Visible && IsHovered && InputManager.IsLMD;
+
         protected RL.Color BackgroundColor = RL.Color.LightGray;
         protected RL.Color HoverOutlineColor = RL.Color.Gold;
         protected float HoverOutlineThickness = 4f;

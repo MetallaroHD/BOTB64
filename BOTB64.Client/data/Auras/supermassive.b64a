@@ -1,0 +1,8 @@
+:BOTB64AURA
+:DURATION -1
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 16
+:TOOLTIP Immune to all forced movements. Upon death, attracts all enemies toward his position - anyone stopped by a wall takes damage. Can be activated to grant a target ally increased Defense and Magic Defense.
+:EFFECTS
+s_gravitus_supermassive_death | 16 | 3 | 1 | 2

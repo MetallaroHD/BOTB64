@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 1
+:RANGE 5
+:COOLDOWN 4
+:CHARGES 1
+:COST 30
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Grants a target ally increased Defense and Magic Defense for 3 turns.
+:EFFECTS
+s_gravitus_supermassiveactivate | 0 | 2 | 0 | 0

@@ -5,3 +5,6 @@
 :FLAGS 0
 :TYPE 2
 :SECRET false
+:EFFECTS
+t_blackhole_pull | 524288 | 4 | 0 | 0
+t_blackhole_explode | 1024 | 4 | 0 | 2

@@ -1,0 +1,10 @@
+:BOTB64AURA
+:DURATION -1
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP Every autoattack permanently gains 4 Spell Power (stacks indefinitely). Storm Shield: every time Lei Stess takes damage, she gains 2 more stacks and strikes the attacker back. On death, all stacks transfer to the nearest ally.
+:EFFECTS
+s_leistess_ritual_stack | 262144 | 3 | 0 | 0
+s_leistess_ritual_ondeath | 16 | 3 | 0 | 0
+s_leistess_stormshield | 64 | 3 | 3 | 2

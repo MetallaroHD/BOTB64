@@ -1,0 +1,8 @@
+:BOTB64AURA
+:DURATION 3
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 2
+:TOOLTIP Stunned. Deals Spell Power damage to all enemies at the start of each of Rassarang's turns.
+:EFFECTS
+s_rassarang_cataclysm_tick | 4 | 3 | 2 | 2

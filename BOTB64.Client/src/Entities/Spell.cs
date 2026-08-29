@@ -28,6 +28,8 @@ namespace BOTB64.Entities
         // targeter's source and radius come from this aura's "Q"/"R"/"Budget" params
         // instead (e.g. Oliver's Hotspot, aimed from the hotspot's tracked position).
         public int TrackedSourceAuraID = 0;
+        // TargetingType.Area only: size of the AoE disk around the picked tile.
+        public int AreaRadius = 0;
 
         public string Tooltip = "";
 
@@ -73,6 +75,7 @@ namespace BOTB64.Entities
             ret.CastTime = CastTime;
             ret.Secret = Secret;
             ret.TrackedSourceAuraID = TrackedSourceAuraID;
+            ret.AreaRadius = AreaRadius;
             ret.Tooltip = Tooltip;
             ret.Parameters = Parameters;
             ret.Effects = Effects;

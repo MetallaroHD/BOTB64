@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 1
+:RANGE 5
+:COOLDOWN 2
+:CHARGES 1
+:COST 0
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Spends half of Trappus's current Bloodwell, dealing that much damage to an enemy and healing Trappus for half of what was spent.
+:EFFECTS
+s_forbiddenritual | 0 | 2 | 0 | 0

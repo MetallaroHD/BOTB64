@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 0
+:RANGE 0
+:COOLDOWN 3
+:CHARGES 1
+:COST 0
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Removes all shuriken statues from the field; each hits everything in a line from its position back to Akano, scaling on Attack Power, and grants 1 combo point per enemy hit.
+:EFFECTS
+s_recall | 0 | 2 | 1 | 1

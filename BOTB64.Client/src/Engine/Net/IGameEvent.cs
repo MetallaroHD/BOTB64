@@ -27,6 +27,9 @@ namespace BOTB64.Engine.Net
     [Union(18, typeof(SpellCooldownReduceEvent))]
     [Union(19, typeof(RoundStartedEvent))]
     [Union(20, typeof(ForcedMoveEvent))]
+    [Union(21, typeof(TileEffectParamSetEvent))]
+    [Union(22, typeof(ResourceModifiedEvent))]
+    [Union(23, typeof(HealthCostEvent))]
     public interface IGameEvent
     {
         void Apply(Game game);
@@ -128,7 +131,7 @@ namespace BOTB64.Engine.Net
             var target = game.FindCharacter(TargetID);
             if (target != null)
             {
-                target.CurrentHP = Math.Max(target.CurrentHP + Amount, target.MaxHP.GetI());
+                target.CurrentHP = Math.Min(target.CurrentHP + Amount, target.MaxHP.GetI());
                 FloatingTextManager.Add(Amount.ToString(), HexAlgo.HexToWorld(target.Position), color: Raylib_cs.Color.Green);
                 Logger.Log(target.Name + " heals " + Amount + " damage." + (Crit ? " A critical hit!" : ""));
             }
@@ -433,6 +436,7 @@ namespace BOTB64.Engine.Net
             StatType.SpellVamp => c.SpellVamp,
             StatType.AutoAttackAP => c.AutoAttackAP,
             StatType.AutoAttackSP => c.AutoAttackSP,
+            StatType.AutoAttackRange => c.AutoAttackRange,
             _ => null
         };
     }
@@ -458,6 +462,66 @@ namespace BOTB64.Engine.Net
                 existing.Set(Value); // Parameter.Set(float) — retypes to Float and stores the value, mutates in place
             else
                 aura.Parameters.Add(Parameter.FromFloat(Key, Value)); // Parameter's constructor is private; FromFloat is the correct factory
+        }
+    }
+
+    // Mirrors AuraParamSetEvent, but keyed by board position + tile effect ID rather than
+    // a character's aura - used for tile effects that need to remember data set at
+    // placement time (e.g. Storm's damage/owner, Blood Blossom's heal amount).
+    [MessagePackObject]
+    public struct TileEffectParamSetEvent : IGameEvent
+    {
+        [Key(0)] public Hex Position;
+        [Key(1)] public int TileEffectID;
+        [Key(2)] public string Key;
+        [Key(3)] public float Value;
+
+        public void Apply(Game game)
+        {
+            var tile = game.GetBoard().GetTile(Position);
+            int id = TileEffectID;
+            var effect = tile?.Effects.FirstOrDefault(e => e.ID == id);
+            if (effect == null) return;
+
+            string key = Key;
+            var existing = effect.Parameters.FirstOrDefault(p => p.Name == key);
+            if (existing != null)
+                existing.Set(Value);
+            else
+                effect.Parameters.Add(Parameter.FromFloat(Key, Value));
+        }
+    }
+
+    // Direct resource gain/spend outside the normal spell-cost path (e.g. combo points
+    // generated per enemy hit, bloodwell generated from damage dealt).
+    [MessagePackObject]
+    public struct ResourceModifiedEvent : IGameEvent
+    {
+        [Key(0)] public int CharacterID;
+        [Key(1)] public int Delta;
+
+        public void Apply(Game game)
+        {
+            var c = game.FindCharacter(CharacterID);
+            if (c == null) return;
+            c.CurrentResource = Math.Clamp(c.CurrentResource + Delta, 0, c.MaxRes.GetI());
+        }
+    }
+
+    // A spell paying HP as a cost (not damage - no mitigation, no on-damage triggers).
+    // EffectProcessor.PayHealthCost already floors the amount so this can't kill.
+    [MessagePackObject]
+    public struct HealthCostEvent : IGameEvent
+    {
+        [Key(0)] public int CharacterID;
+        [Key(1)] public int Amount;
+        public void Apply(Game game)
+        {
+            var c = game.FindCharacter(CharacterID);
+            if (c == null) return;
+            c.CurrentHP -= Amount;
+            FloatingTextManager.Add(Amount.ToString(), HexAlgo.HexToWorld(c.Position), color: Raylib_cs.Color.Orange);
+            Logger.Log(c.Name + " pays " + Amount + " health.");
         }
     }
 

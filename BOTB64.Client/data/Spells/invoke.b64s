@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 0
+:RANGE 0
+:COOLDOWN 6
+:CHARGES 1
+:COST 0
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Immediately obtains 100 Rage and a Speed buff for 3 turns.
+:EFFECTS
+s_pilaf_invoke | 0 | 2 | 0 | 0

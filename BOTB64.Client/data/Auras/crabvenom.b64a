@@ -1,0 +1,8 @@
+:BOTB64AURA
+:DURATION -1
+:MAXSTACKS 30
+:DISPEL 2
+:SPECIALEFFECT 0
+:TOOLTIP Deals damage at the start of your turn, scaling with stacks.
+:EFFECTS
+s_crabvenom_tick | 4 | 3 | 5 | 0

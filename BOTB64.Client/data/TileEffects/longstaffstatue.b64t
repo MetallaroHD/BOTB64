@@ -1,0 +1,9 @@
+:BOTB64TILEEFFECT
+:DURATION -1
+:DISPEL 0
+:TILETYPE 1
+:FLAGS 1
+:TYPE 2
+:SECRET false
+:EFFECTS
+t_longstaffstatue | 524288 | 4 | 1 | 1

@@ -20,7 +20,8 @@ namespace BOTB64.Entities
         LifeSteal,
         SpellVamp,
         AutoAttackAP,
-        AutoAttackSP
+        AutoAttackSP,
+        AutoAttackRange
     }
 
     public class CharacterStat
@@ -51,10 +52,7 @@ namespace BOTB64.Entities
 
         public void Add(float val)
         {
-            if (val > 0)
-                Mod_Add += val;
-            else
-                Mod_Add = Math.Max(0, Mod_Add + val);
+            Mod_Add += val;
         }
 
         public void Mul(float val)
@@ -62,7 +60,7 @@ namespace BOTB64.Entities
             if (val > 0)
                 Mod_Mul += val;
             else
-                Mod_Mul = Math.Max(0, Mod_Add + val);
+                Mod_Mul = Math.Max(0, Mod_Mul + val);
         }
 
         public void Reset()

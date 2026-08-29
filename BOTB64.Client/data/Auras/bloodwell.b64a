@@ -1,0 +1,9 @@
+:BOTB64AURA
+:DURATION -1
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP Autoattacks generate 5 Bloodwell (tripled while Crimson Blossom is active). On death, creates an unbreakable Blood Blossom statue at the spot, lasting 3 turns, healing allies within 2 tiles each turn by whatever Bloodwell Trappus had when he died.
+:EFFECTS
+s_trappus_bloodwell_gain | 262144 | 3 | 0 | 0
+s_trappus_bloodwell_ondeath | 16 | 3 | 0 | 0

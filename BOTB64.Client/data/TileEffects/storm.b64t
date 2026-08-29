@@ -5,3 +5,6 @@
 :FLAGS 0
 :TYPE 3
 :SECRET false
+:EFFECTS
+t_storm | 4 | 4 | 3 | 2
+t_storm | 1024 | 4 | 3 | 2

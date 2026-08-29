@@ -1,0 +1,14 @@
+:BOTB64SPELL
+:TARGET 3
+:RANGE 4
+:AREARADIUS 2
+:COOLDOWN 3
+:CHARGES 1
+:COST 70
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Converts existing Venom Trail tiles in the selected area into Enhanced Venom Trail, which applies 3 stacks of Crab Venom instead of 1.
+:EFFECTS
+s_enhancedvenom | 0 | 2 | 0 | 0

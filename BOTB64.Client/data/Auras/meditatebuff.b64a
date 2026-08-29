@@ -1,0 +1,9 @@
+:BOTB64AURA
+:DURATION 3
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP Increases Attack Power.
+:EFFECTS
+s_leesis_meditate_apply | 1 | 3 | 0 | 0
+s_leesis_meditate_drop | 2 | 3 | 0 | 0

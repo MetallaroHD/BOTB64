@@ -1,0 +1,9 @@
+:BOTB64AURA
+:DURATION -1
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP Walking leaves behind a Venom Trail. While active (see the Venom Trail ability), walking also creates trail on all adjacent tiles for 2 turns.
+:EFFECTS
+s_soldato_venomtrail_move | 1024 | 3 | 0 | 0
+s_soldato_venomtrail_tick | 4 | 3 | 0 | 0

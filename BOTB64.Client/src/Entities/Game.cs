@@ -276,6 +276,7 @@ namespace BOTB64.Entities
         public Character? FindCharacter(int id) => Characters.FirstOrDefault(c => c.GameID == id);
         public Character? FindCharacter(int q, int r) => Characters.FirstOrDefault(c => ((c.Position.Q == q) && (c.Position.R == r)));
         public List<Character> GetCharactersOwnedBy(int playerId) => Characters.Where(c => c.OwnerID == playerId).ToList();
+        public List<int> GetAllCharacterIDs() => Characters.Select(c => c.GameID).ToList();
         public void RecordAndApplyExternal(IGameEvent evt) => RecordAndApply(evt);
 
         public void ForceGameOver(Faction winner)

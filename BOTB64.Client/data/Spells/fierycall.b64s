@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 0
+:RANGE 0
+:COOLDOWN 4
+:CHARGES 1
+:COST 40
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Removes all Scorched Earth within 3 tiles of Rassarang, gaining Spell Power and Defense for 2 turns, scaling with the number of zones removed.
+:EFFECTS
+s_rassarang_fierycall | 0 | 2 | 0 | 0

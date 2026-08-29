@@ -1,0 +1,10 @@
+:BOTB64AURA
+:DURATION -1
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP While standing on Scorched Earth, gains Spell Power. Upon death, all Scorched Earth on the board transforms into Ashen Earth.
+:EFFECTS
+s_rassarang_firelord_tick | 1024 | 3 | 0 | 0
+s_rassarang_firelord_tick | 4 | 3 | 0 | 0
+s_rassarang_firelord_death | 16 | 3 | 0 | 0

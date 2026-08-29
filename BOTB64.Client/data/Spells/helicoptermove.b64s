@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 0
+:RANGE 0
+:COOLDOWN 4
+:CHARGES 1
+:COST 45
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Damages all enemies at exactly range 2 and applies Head Trauma (reduced Attack Power and Crit Chance).
+:EFFECTS
+s_leesis_helicoptermove | 0 | 2 | 1 | 1

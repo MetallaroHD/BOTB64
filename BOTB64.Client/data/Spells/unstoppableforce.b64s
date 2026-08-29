@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 0
+:RANGE 0
+:COOLDOWN 4
+:CHARGES 1
+:COST 20
+:COSTPCT 0
+:CAST -2
+:PREP 0
+:SECRET false
+:TOOLTIP Spends Rage to remove all rooting and slowing effects from himself.
+:EFFECTS
+s_pilaf_unstoppableforce | 0 | 2 | 0 | 0

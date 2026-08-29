@@ -1,0 +1,10 @@
+:BOTB64AURA
+:DURATION -1
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP Physical attacks against Soldatosolitario inflict 2 stacks of Crab Venom on the attacker; his autoattacks inflict 1 stack on the target. On death, he explodes and creates a Venom Trail in a radius of 3.
+:EFFECTS
+s_soldato_putridaura_ondamagetaken | 64 | 3 | 0 | 0
+s_soldato_putridaura_onautoattack | 262144 | 3 | 0 | 0
+s_soldato_putridaura_ondeath | 16 | 3 | 5 | 0

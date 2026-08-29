@@ -11,7 +11,18 @@ namespace BOTB64.Engine
         Area = 3,
         Pathfinding = 4,
         BeamLos = 5,
-        DirectLos = 6
+        DirectLos = 6,
+        // Direct-clamped center tile plus two flanking tiles one hex to either side
+        // (e.g. Akano's Shuriken Toss).
+        TripleShot = 7,
+        // Walks the beam toward the picked tile up to Radius tiles (not counting the
+        // source), stopping early at the first wall tile (e.g. Rassarang's Magma Boulder).
+        BeamWall = 8,
+        // Two independently picked single-hex targets (e.g. Gravitus's Gravity Tether).
+        // Resolved as two sequential Direct picks by the calling UI (SpellCastingAction/
+        // GameplayState) - Targeter itself just runs Direct picking twice in a row, so
+        // there's no dedicated case for this in UpdateTarget's switch.
+        DualDirect = 9
     }
 
     public class TargetingData
@@ -20,6 +31,8 @@ namespace BOTB64.Engine
         public Hex? Source;
         public int Radius;
         public bool Secret;
+        // Area only: size of the AoE disk centered on the (Radius-clamped) picked tile.
+        public int AreaRadius;
     }
 
     public static class Targeter
@@ -52,6 +65,11 @@ namespace BOTB64.Engine
 
         public static void Reset()
         {
+            // Unhighlight before clearing - once Targeted is empty there's no way back to
+            // the tiles that need their Highlighted flag turned back off (matters for a
+            // mid-cast reset like the first pick of a DualDirect spell, not just the
+            // redundant-but-harmless call already made from UpdateTarget below).
+            SetHighlightStatus(false);
             Targeted.Clear();
         }
 
@@ -72,11 +90,20 @@ namespace BOTB64.Engine
                 case TargetingType.Pathfinding:
                     TargetPathfinding(pickedPoint);
                     break;
+                case TargetingType.Area:
+                    TargetArea(pickedPoint);
+                    break;
                 case TargetingType.BeamLos:
                     TargetBeam(pickedPoint, true);
                     break;
                 case TargetingType.DirectLos:
                     TargetDirect(pickedPoint, true);
+                    break;
+                case TargetingType.TripleShot:
+                    TargetTripleShot(pickedPoint);
+                    break;
+                case TargetingType.BeamWall:
+                    TargetBeamWall(pickedPoint);
                     break;
                 default:
                     break;
@@ -84,6 +111,59 @@ namespace BOTB64.Engine
 
             if(!Data.Secret)
                 SetHighlightStatus(true);
+        }
+
+        // Clamps to Radius from Source (like TargetDirect) to get the center tile, then
+        // walks the ring at that same distance from Source (HexAlgo.Circle) and takes
+        // the tiles 2 steps clockwise and counterclockwise from the center along it.
+        public static void TargetTripleShot(Hex picked)
+        {
+            if (Data.Source == null || Board == null)
+                return;
+
+            var line = HexAlgo.Beam(Data.Source.Value, picked);
+            if (line.Count == 0)
+                return;
+
+            int dist = Math.Min(Data.Radius, line.Count - 1);
+            Hex center = line[dist];
+
+            void AddIfValid(Hex h)
+            {
+                Tile? t = Board.GetTile(h);
+                if (t != null)
+                    Targeted.Add(t);
+            }
+
+            AddIfValid(center);
+
+            if (dist <= 0)
+                return;
+
+            var ring = HexAlgo.Circle(Data.Source.Value, dist);
+            int ringIdx = ring.FindIndex(h => h.Q == center.Q && h.R == center.R);
+            if (ringIdx < 0 || ring.Count == 0)
+                return;
+
+            AddIfValid(ring[(ringIdx + 2) % ring.Count]);
+            AddIfValid(ring[((ringIdx - 2) % ring.Count + ring.Count) % ring.Count]);
+        }
+
+        // Walks the beam from Source toward dst, skipping the source tile itself, up to
+        // Radius tiles, stopping (without including) the first wall tile it meets.
+        public static void TargetBeamWall(Hex dst)
+        {
+            if (Data.Source == null || Board == null)
+                return;
+
+            var line = HexAlgo.Beam(Data.Source.Value, dst);
+            for (int i = 1; i <= Data.Radius && i < line.Count; i++)
+            {
+                Tile? tile = Board.GetTile(line[i]);
+                if (tile == null || tile.Type == TileType.Wall)
+                    break;
+                Targeted.Add(tile);
+            }
         }
 
         public static void TargetDirect(Hex picked, bool lineOfSight)
@@ -116,6 +196,36 @@ namespace BOTB64.Engine
             }
 
             Targeted.Add(tile);
+        }
+
+        // Clamps the pick point to Radius from Source (same as TargetDirect), then fills a
+        // disk of AreaRadius around that point - this is both the preview highlight and
+        // what the spell script sees as Targets, so no separate AoE query is needed there.
+        public static void TargetArea(Hex picked)
+        {
+            if (Data.Source == null || Board == null)
+                return;
+
+            var line = HexAlgo.Beam(Data.Source.Value, picked);
+            if (line.Count == 0)
+                return;
+
+            int idx = Math.Min(Data.Radius, line.Count - 1);
+            Hex center = line[idx];
+
+            for (int dq = -Data.AreaRadius; dq <= Data.AreaRadius; dq++)
+            {
+                for (int dr = -Data.AreaRadius; dr <= Data.AreaRadius; dr++)
+                {
+                    var h = new Hex(center.Q + dq, center.R + dr);
+                    if (HexAlgo.HexDistance(center, h) <= Data.AreaRadius)
+                    {
+                        Tile? tile = Board.GetTile(h);
+                        if (tile != null)
+                            Targeted.Add(tile);
+                    }
+                }
+            }
         }
 
         public static void TargetBeam(Hex dst, bool lineOfSight)

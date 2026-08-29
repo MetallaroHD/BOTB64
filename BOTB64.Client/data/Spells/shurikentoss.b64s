@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 7
+:RANGE 6
+:COOLDOWN 2
+:CHARGES 1
+:COST 0
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Tosses 3 shurikens - one at the targeted tile and two flanking it. Each deals Attack Power damage to an enemy hit and grants 1 combo point, then leaves a shuriken statue behind.
+:EFFECTS
+s_shurikentoss | 0 | 2 | 1 | 1

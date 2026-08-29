@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 2
+:RANGE 8
+:COOLDOWN 5
+:CHARGES 1
+:COST 120
+:COSTPCT 0
+:CAST 0
+:PREP 3
+:SECRET false
+:TOOLTIP Big Spell Power scaling damage in a straight line.
+:EFFECTS
+s_thunderbeam | 0 | 2 | 3 | 2

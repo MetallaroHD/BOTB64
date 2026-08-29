@@ -11,7 +11,7 @@ namespace BOTB64.Graphics.UI
         public RL.Rectangle Bounds;
         public RL.Texture2D Icon;
         public bool HasIcon = false;
-        public int Stacks = 0;      // shown on the icon, only if > 1
+        public int Stacks = 0;      // shown below the square, only if > 1
         public RL.Color BackgroundColor = new RL.Color(50, 50, 50, 255);
         public RL.Color BorderColor = RL.Color.Black;
         public int BorderThickness = 1;
@@ -59,17 +59,17 @@ namespace BOTB64.Graphics.UI
                     Vector2.Zero, 0f, RL.Color.White);
             }
 
+            if (BorderThickness > 0)
+                RB.DrawRectangleLinesEx(Bounds, BorderThickness, BorderColor);
+
             if (Stacks > 1)
             {
                 string text = Stacks.ToString();
                 int textWidth = RB.MeasureText(text, StackFontSize);
-                float textX = Bounds.X + Bounds.Width - textWidth - 2;
-                float textY = Bounds.Y + Bounds.Height - StackFontSize - 2;
+                float textX = Bounds.X + (Bounds.Width - textWidth) * 0.5f;
+                float textY = Bounds.Y + Bounds.Height + 2;
                 RB.DrawText(text, (int)textX, (int)textY, StackFontSize, StackColor);
             }
-
-            if (BorderThickness > 0)
-                RB.DrawRectangleLinesEx(Bounds, BorderThickness, BorderColor);
 
             if (HasTooltip && IsHovered())
             {

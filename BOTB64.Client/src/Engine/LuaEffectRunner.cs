@@ -34,7 +34,24 @@ namespace BOTB64.Engine
             Lua.Globals["SpendAction"] = (Action<int, bool>)((charId, fast) => EffectProcessor.SpendAction(game, charId, fast));
             Lua.Globals["DropAura"] = (Action<int, int, int>)((charId, auraId, stacks) => EffectProcessor.DropAura(game, charId, auraId, stacks));
             Lua.Globals["ForceMove"] = (Func<int, int, int, bool>)((charId, q, r) => EffectProcessor.ForceMove(game, charId, new Hex(q, r)));
+            Lua.Globals["PullToward"] = (Func<int, int, int, int, bool>)((charId, towardQ, towardR, steps) => EffectProcessor.PullToward(game, charId, towardQ, towardR, steps));
             Lua.Globals["MoveTileEffect"] = (Func<int, int, int, int, int, int, int, bool>)((ownerID, fromQ, fromR, toQ, toR, tileEffectID, duration) => EffectProcessor.MoveTileEffect(game, ownerID, fromQ, fromR, toQ, toR, tileEffectID, duration));
+            Lua.Globals["DamageAs"] = (Func<int, int, int, bool>)((doerID, targetID, amount) => EffectProcessor.DamageAs(game, CurrentEffect, doerID, targetID, amount));
+            Lua.Globals["SetTileEffectParam"] = (Action<int, int, int, string, float>)((q, r, tileEffectId, key, value) => EffectProcessor.SetTileEffectParam(game, q, r, tileEffectId, key, value));
+            Lua.Globals["GetTileEffectParam"] = (Func<int, int, int, string, float>)((q, r, tileEffectId, key) => EffectProcessor.GetTileEffectParam(game, q, r, tileEffectId, key));
+            Lua.Globals["ModifyResource"] = (Action<int, int>)((charId, delta) => EffectProcessor.ModifyResource(game, charId, delta));
+            Lua.Globals["GetResource"] = (Func<int, int>)(charId => game.FindCharacter(charId)?.CurrentResource ?? 0);
+            Lua.Globals["Heal"] = (Action<int, int>)((charId, amount) => EffectProcessor.Heal(game, charId, amount));
+            // Only meaningful from an OnPreDamageDealt/OnPreDamageTaken script - scales the
+            // in-flight damage amount before mitigation/crit are applied.
+            Lua.Globals["ScaleDamage"] = (Action<float>)(mult => { if (CurrentContext is DamageContext dc) dc.DamageDone = (int)(dc.DamageDone * mult); });
+            Lua.Globals["FindTileEffectPositions"] = (Func<int, List<Hex>>)(tileEffectId => EffectProcessor.FindTileEffectPositions(game, tileEffectId));
+            Lua.Globals["RemoveTileEffect"] = (Action<int, int, int>)((q, r, tileEffectId) => EffectProcessor.RemoveTileEffect(game, q, r, tileEffectId));
+            Lua.Globals["GetAuraStacks"] = (Func<int, int, int>)((charId, auraId) => EffectProcessor.GetAuraStacks(game, charId, auraId));
+            Lua.Globals["HasTileEffect"] = (Func<int, int, int, bool>)((q, r, tileEffectId) => EffectProcessor.HasTileEffect(game, q, r, tileEffectId));
+            Lua.Globals["IsWall"] = (Func<int, int, bool>)((q, r) => EffectProcessor.IsWall(game, q, r));
+            Lua.Globals["PayHealthCost"] = (Action<int, int>)((charId, amount) => EffectProcessor.PayHealthCost(game, charId, amount));
+            Lua.Globals["RemoveAurasWithSpecialEffect"] = (Action<int, AuraSpecialEffect>)((charId, effect) => EffectProcessor.RemoveAurasWithSpecialEffect(game, charId, effect));
 
             // OTHER
             Lua.Globals["Random"] = (Func<float, float, float>)((min, max) => EffectProcessor.Random(game, min, max));
@@ -46,11 +63,13 @@ namespace BOTB64.Engine
             Lua.Globals["HasTrigger"] = (Func<EffectTrigger, bool>)(t => { return CurrentEffect.Trigger.HasFlag(t); });
             Lua.Globals["GetCharacterAt"] = (Func<int, int, int>)((q, r) => { var c = game.FindCharacter(q, r); if (c != null) return c.GameID; return -1; });
             Lua.Globals["GetHP"] = (Func<int, int>)(charId => game.FindCharacter(charId)?.CurrentHP ?? 0);
+            Lua.Globals["GetMaxHP"] = (Func<int, int>)(charId => game.FindCharacter(charId)?.MaxHP.GetI() ?? 0);
             Lua.Globals["GetAttackPower"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.AttackPower.GetF() ?? 0);
             Lua.Globals["GetSpellPower"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.SpellPower.GetF() ?? 0);
             Lua.Globals["GetAutoAttackAP"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.AutoAttackAP.GetF() ?? 0);
             Lua.Globals["GetAutoAttackSP"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.AutoAttackSP.GetF() ?? 0);
             Lua.Globals["GetDefense"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.Defense.GetF() ?? 0);
+            Lua.Globals["GetMagicDefense"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.MagicDefense.GetF() ?? 0);
             Lua.Globals["GetCritChance"] = (Func<int, float>)(charId => game.FindCharacter(charId)?.Crit.GetF() ?? 0);
             Lua.Globals["GetPosition"] = (Func<int, Hex>)(charId => game.FindCharacter(charId)?.Position ?? new Hex(-999, -999));
             Lua.Globals["IsAlive"] = (Func<int, bool>)(charId => game.FindCharacter(charId)?.Alive ?? false);
@@ -65,9 +84,12 @@ namespace BOTB64.Engine
             Lua.Globals["GetHexesInRadius"] = (Func<int, int, int, List<Hex>>)((q, r, radius) => EffectProcessor.GetHexesInRadius(q, r, radius));
             Lua.Globals["GetLine"] = (Func<int, int, int, int, List<Hex>>)((fromQ, fromR, toQ, toR) => EffectProcessor.GetLine(fromQ, fromR, toQ, toR));
             Lua.Globals["TileBlocksLos"] = (Func<int, int, bool>)((q, r) => EffectProcessor.TileBlocksLos(game, q, r));
+            Lua.Globals["GetAllCharacterIDs"] = (Func<List<int>>)(() => game.GetAllCharacterIDs());
 
             // TYPES
             Lua.Globals["EffectTrigger"] = UserData.CreateStatic<EffectTrigger>();
+            Lua.Globals["EffectDamageType"] = UserData.CreateStatic<EffectDamageType>();
+            Lua.Globals["AuraSpecialEffect"] = UserData.CreateStatic<AuraSpecialEffect>();
 
             Lua.Options.ScriptLoader = new ArchiveScriptLoader(LoadScript);
         }
@@ -87,6 +109,11 @@ namespace BOTB64.Engine
             var prevCaster = Lua.Globals["Caster"];
             var prevTargets = Lua.Globals["Targets"];
             var prevPosition = Lua.Globals["Position"];
+            var prevAttacker = Lua.Globals["Attacker"];
+            var prevDamageTarget = Lua.Globals["DamageTarget"];
+            var prevDamageAmount = Lua.Globals["DamageAmount"];
+            var prevIsCrit = Lua.Globals["IsCrit"];
+            var prevDamageType = Lua.Globals["DamageType"];
 
             CurrentContext = context;
             CurrentEffect = effect;
@@ -100,6 +127,14 @@ namespace BOTB64.Engine
             else if (context is TileEffectContext tc)
             {
                 Lua.Globals["Position"] = tc.Position;
+            }
+            if (context is DamageContext dc)
+            {
+                Lua.Globals["Attacker"] = dc.DamageDoer.GameID;
+                Lua.Globals["DamageTarget"] = dc.DamageTaker.GameID;
+                Lua.Globals["DamageAmount"] = dc.DamageDone;
+                Lua.Globals["IsCrit"] = dc.Crit;
+                Lua.Globals["DamageType"] = dc.DamageType;
             }
             try
             {
@@ -121,6 +156,11 @@ namespace BOTB64.Engine
                 Lua.Globals["Caster"] = prevCaster;
                 Lua.Globals["Targets"] = prevTargets;
                 Lua.Globals["Position"] = prevPosition;
+                Lua.Globals["Attacker"] = prevAttacker;
+                Lua.Globals["DamageTarget"] = prevDamageTarget;
+                Lua.Globals["DamageAmount"] = prevDamageAmount;
+                Lua.Globals["IsCrit"] = prevIsCrit;
+                Lua.Globals["DamageType"] = prevDamageType;
             }
 
             return ret;
@@ -130,6 +170,8 @@ namespace BOTB64.Engine
         {
             UserData.RegisterType<Hex>();
             UserData.RegisterType<EffectTrigger>();
+            UserData.RegisterType<EffectDamageType>();
+            UserData.RegisterType<AuraSpecialEffect>();
         }
 
         public void End()

@@ -1,0 +1,9 @@
+:BOTB64AURA
+:DURATION 2
+:MAXSTACKS 1
+:DISPEL 1
+:SPECIALEFFECT 0
+:TOOLTIP Defense and Magic Defense reduced to 0.
+:EFFECTS
+s_exposeweakness_apply | 1 | 3 | 0 | 0
+s_exposeweakness_drop | 2 | 3 | 0 | 0

@@ -66,6 +66,7 @@ namespace BOTB64.Editor.IO
                 case "TARGET": spell.ExplicitTarget = (TargetingType)int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "SECRET": spell.Secret = rest.Trim().ToLowerInvariant() is "true" or "1" or "yes"; break;
                 case "TRACKEDSOURCEAURA": spell.TrackedSourceAuraID = int.Parse(rest, CultureInfo.InvariantCulture); break;
+                case "AREARADIUS": spell.AreaRadius = int.Parse(rest, CultureInfo.InvariantCulture); break;
                 case "TOOLTIP": spell.Tooltip = BotbParsing.ParseQuotedOrRaw(rest); break;
             }
         }
@@ -87,6 +88,8 @@ namespace BOTB64.Editor.IO
             sb.AppendLine($":SECRET {(s.Secret ? "true" : "false")}");
             if (s.TrackedSourceAuraID != 0)
                 sb.AppendLine($":TRACKEDSOURCEAURA {s.TrackedSourceAuraID.ToString(inv)}");
+            if (s.AreaRadius != 0)
+                sb.AppendLine($":AREARADIUS {s.AreaRadius.ToString(inv)}");
 
             if (s.Parameters.Count > 0)
             {

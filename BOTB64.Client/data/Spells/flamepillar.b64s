@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 1
+:RANGE 4
+:COOLDOWN 3
+:CHARGES 1
+:COST 50
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Places an invisible trap. Whoever steps on it takes Spell Power damage, and the tile plus all adjacent tiles become Scorched Earth.
+:EFFECTS
+s_rassarang_flamepillar | 0 | 2 | 2 | 2

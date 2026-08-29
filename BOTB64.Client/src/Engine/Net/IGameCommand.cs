@@ -25,7 +25,7 @@ namespace BOTB64.Engine.Net
         {
             if (game.CurrentCharacter.GameID != ActingCharacterID) return false;
             var character = game.FindCharacter(ActingCharacterID);
-            return character != null && character.Alive && Path.Count > 1;
+            return character != null && character.Alive && Path.Count > 1 && !character.HasSpecialEffect(AuraSpecialEffect.Stun);
         }
 
         public void Resolve(Game game)
@@ -80,6 +80,8 @@ namespace BOTB64.Engine.Net
             if (attacker.Faction == target.Faction) 
                 return false;
             if (!attacker.Alive || !target.Alive)
+                return false;
+            if (attacker.HasSpecialEffect(AuraSpecialEffect.Stun))
                 return false;
             return true;
         }

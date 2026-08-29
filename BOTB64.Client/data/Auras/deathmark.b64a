@@ -1,0 +1,8 @@
+:BOTB64AURA
+:DURATION 1
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP Marked for death - when this expires, all shurikens on the field fly toward the marked target (stopping at obstructions) and detonate.
+:EFFECTS
+s_deathmark_expire | 2 | 3 | 1 | 0

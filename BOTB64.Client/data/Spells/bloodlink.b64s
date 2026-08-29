@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 1
+:RANGE 4
+:COOLDOWN 2
+:CHARGES 1
+:COST 0
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Links Trappus to an ally (only one at a time - casting on someone else moves the link). Trappus generates Bloodwell equal to half the damage the linked ally deals.
+:EFFECTS
+s_bloodlink | 0 | 2 | 0 | 0

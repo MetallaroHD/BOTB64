@@ -154,7 +154,7 @@ namespace BOTB64.Entities
                     if (tile.Type == TileType.Wall)
                         tile.WallModel.Draw();
 
-                    foreach (var fx in tile.Effects)
+                    foreach (var fx in tile.Effects.ToList())
                     {
                         if (fx.Secret && !IsVisibleTo(fx, viewerFaction))
                             continue;

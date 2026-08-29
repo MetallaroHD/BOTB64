@@ -1,0 +1,9 @@
+:BOTB64AURA
+:DURATION 3
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP Triples Bloodwell generation and raises maximum Bloodwell to 150 while active.
+:EFFECTS
+s_crimsonblossom_apply | 1 | 3 | 0 | 0
+s_crimsonblossom_drop | 2 | 3 | 0 | 0

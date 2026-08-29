@@ -1,8 +1,10 @@
-﻿using BOTB64.Graphics.G3D;
+﻿using System.Numerics;
+using BOTB64.Graphics.G3D;
 using BOTB64.Runtime;
 using BOTB64.Entities;
 using RL = Raylib_cs;
 using BOTB64.Graphics.UI;
+using BOTB64.Engine;
 using BOTB64.Engine.Actions;
 using BOTB64.Graphics.Animations;
 using BOTB64.Engine.Net;
@@ -41,6 +43,8 @@ namespace BOTB64.Engine.States
             ShaderManager.UpdateWorld();
             Channel = Session == null ? new LocalCommandChannel(Game) : new NetworkedCommandChannel(Game, Session);
             Targeter.SetBoard(Game.GetBoard());
+            Screen.ShowSecretsAvailable = Session == null;
+            Screen.ShowSecretsButton.Visible = Screen.ShowSecretsAvailable;
             InitActions();
         }
 
@@ -77,10 +81,11 @@ namespace BOTB64.Engine.States
         {
             Viewport.Begin();
             ShaderManager.UpdateCameraPosition(Viewport.Camera.Position);
-            Game.Render(LocalViewerFaction());
+            Game.Render(VisibleSecretFaction());
             Viewport.End();
             FloatingTextManager.Draw(Viewport);
             Screen.Draw();
+            Screen.TileTooltip.Draw();
         }
 
         public void ChangeAction(IAction action)
@@ -130,6 +135,9 @@ namespace BOTB64.Engine.States
             Move.SetLMBinding(SubmitMove);
             Atk.SetLMBinding(SubmitAttack);
             Spell.SetLMBinding(SubmitSpellCast);
+            Move.SetRMBinding(() => ChangeAction(Idle));
+            Atk.SetRMBinding(() => ChangeAction(Idle));
+            Spell.SetRMBinding(() => ChangeAction(Idle));
             Screen.ResumeButton.OnClick = () => { ChangeAction(Idle); };
             Screen.NoButton.OnClick = () => { ChangeAction(Idle); };
             Screen.YesButton.OnClick = () => { SubmitEndTurn(); InputManager.UseClick(); ChangeAction(Idle); };
@@ -146,6 +154,16 @@ namespace BOTB64.Engine.States
             if (reason != null)
             {
                 FloatingMessageManager.AddMessage(reason);
+                return;
+            }
+
+            // No real aim needed (e.g. a self-cast beam/nova) - skip the targeter and the
+            // extra click-to-confirm entirely, and fire immediately now that validation passed.
+            if (spell.ExplicitTarget == TargetingType.None)
+            {
+                if (!Enabled)
+                    return;
+                Channel.Submit(new SpellCastCommand { ActingCharacterID = Game.CurrentCharacter.GameID, ExplicitTarget = new List<Hex>(), SpellID = spell.ID });
                 return;
             }
 
@@ -222,23 +240,33 @@ namespace BOTB64.Engine.States
 
         public void SubmitSpellCast()
         {
-            if (!Enabled) 
-                return; 
-            if (Screen.IsMouseBlocked()) 
+            if (!Enabled)
+                return;
+            if (Screen.IsMouseBlocked())
                 return;
             if (!Game.CurrentCharacter.ActiveSpells.TryGetValue(Spell.SpellBind, out Spell sp))
                 return;
-            List<Hex>? tg = Spell.GetExplicitTarget(); 
-            if (tg != null) 
-                Channel.Submit(new SpellCastCommand { ActingCharacterID = Game.CurrentCharacter.GameID, ExplicitTarget = Spell.GetExplicitTarget(), SpellID = sp.ID }); 
-            InputManager.UseClick(); 
+
+            // DualDirect spells need two confirm-clicks - the first one just locks in the
+            // first pick and stays in the Spell action for the second, instead of submitting.
+            if (Spell.NeedsFirstPick(sp))
+            {
+                Spell.ConfirmFirstPick();
+                InputManager.UseClick();
+                return;
+            }
+
+            List<Hex>? tg = sp.ExplicitTarget == TargetingType.DualDirect ? Spell.GetDualExplicitTarget() : Spell.GetExplicitTarget();
+            if (tg != null)
+                Channel.Submit(new SpellCastCommand { ActingCharacterID = Game.CurrentCharacter.GameID, ExplicitTarget = tg, SpellID = sp.ID });
+            InputManager.UseClick();
             ChangeAction(Idle);
         }
 
         public Hex GetMouseAxial(out bool valid)
         {
             Hex ret = HexAlgo.WorldToHex(Viewport.GetMouseXZ());
-            valid = Game.GetBoard().IsValidHex(ret);
+            valid = !Screen.IsMouseBlocked() && Game.GetBoard().IsValidHex(ret);
             return ret;
         }
 
@@ -274,11 +302,53 @@ namespace BOTB64.Engine.States
         // effects should never render for anyone; the local player's Faction online.
         private Faction? LocalViewerFaction() => Session?.LocalPlayer.Faction;
 
+        // Online play always defers to the local player's own team. Local (hot-seat) play has
+        // no fixed "local team" since everyone shares the screen, so secrets stay hidden
+        // unless the Show Secrets button is being held - in which case they're revealed for
+        // whichever team is currently taking its turn.
+        private Faction? VisibleSecretFaction()
+        {
+            if (Session != null)
+                return LocalViewerFaction();
+
+            return Screen.ShowSecretsButton.IsHeld ? Game.CurrentCharacter.Faction : null;
+        }
+
         private void UpdateGUI()
         {
             UpdateSpellButtons();
             UpdatePlayerGUI();
             UpdateTargetGUI();
+            UpdateTileTooltip();
+        }
+
+        // Lists the name of every tile effect on the hovered board tile, vertically,
+        // one per line - hidden entirely when there are none. Respects the same
+        // secret-effect visibility rule as rendering (Board.Draw/IsVisibleTo).
+        private void UpdateTileTooltip()
+        {
+            var names = new List<string>();
+
+            if (!Screen.IsMouseBlocked())
+            {
+                Hex hex = GetMouseAxial(out bool valid);
+                Tile? tile = valid ? Game.GetBoard().GetTile(hex) : null;
+
+                if (tile != null)
+                {
+                    Faction? viewerFaction = VisibleSecretFaction();
+                    foreach (var fx in tile.Effects.ToList())
+                    {
+                        if (fx.Secret && (viewerFaction == null || fx.Owner == null || fx.Owner.Faction != viewerFaction))
+                            continue;
+                        names.Add(fx.Name);
+                    }
+                }
+            }
+
+            Screen.TileTooltip.SetContent(names);
+            if (names.Count > 0)
+                Screen.TileTooltip.SetPosition(UIRenderer.ScreenToUI(InputManager.MousePosition) + new Vector2(16, 16));
         }
 
         private void UpdatePlayerGUI()
@@ -286,6 +356,7 @@ namespace BOTB64.Engine.States
             var current = CurrentCharacter;
             Screen.PlayerStatus.SetHealth(current.CurrentHP, current.MaxHP.GetI());
             Screen.PlayerStatus.SetResource(current.CurrentResource, current.MaxRes.GetI());
+            Screen.PlayerStatus.SetResourceColor(current.ResourceColor());
             Screen.PlayerStatus.SetName(current.Name);
             Screen.PlayerStatus.Effects.Sync(current.CurrentAuras, a => new EffectDisplayInfo(a.ID, a.Name, a.Tooltip, a.CurrentStacks, a.Remaining, a.Icon));
             UpdateSpellButtons();
@@ -303,6 +374,7 @@ namespace BOTB64.Engine.States
             Screen.TargetStatus.Visible = true;
             Screen.TargetStatus.SetHealth(target.CurrentHP, target.MaxHP.GetI());
             Screen.TargetStatus.SetResource(target.CurrentResource, target.MaxRes.GetI());
+            Screen.TargetStatus.SetResourceColor(target.ResourceColor());
             Screen.TargetStatus.SetName(target.Name);
             Screen.TargetStatus.Effects.Sync(target.CurrentAuras, a => new EffectDisplayInfo(a.ID, a.Name, a.Tooltip, a.CurrentStacks, a.Remaining, a.Icon));
         }

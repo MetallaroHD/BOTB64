@@ -18,6 +18,9 @@ namespace BOTB64.Entities
     public enum ResourceType
     {
         Mana = 0,
+        ComboPoints = 1,
+        Bloodwell = 2,
+        Rage = 3,
     }
 
     public class Character : IReadable
@@ -108,8 +111,13 @@ namespace BOTB64.Entities
         {
             switch (ResType)
             {
+                case ResourceType.ComboPoints:
+                    return RL.Color.Yellow;
+                case ResourceType.Bloodwell:
+                    return new RL.Color(139, 0, 0, 255);
+                case ResourceType.Rage:
+                    return new RL.Color(255, 90, 90, 255);
                 case ResourceType.Mana:
-                    return RL.Color.Blue;
                 default:
                     return RL.Color.Blue;
             }

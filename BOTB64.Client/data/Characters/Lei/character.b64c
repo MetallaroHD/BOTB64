@@ -20,6 +20,11 @@
 :AAAP 1
 :AASP 0
 :EFFECTS
-auto_generic | 0 | 1 | 1 | 1
+auto_leistess | 0 | 1 | 1 | 1
 :AURAS
+11
 :SPELLS
+1 11
+2 12
+3 13
+4 14

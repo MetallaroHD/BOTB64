@@ -1,0 +1,14 @@
+:BOTB64SPELL
+:TARGET 3
+:RANGE 3
+:AREARADIUS 2
+:COOLDOWN 4
+:CHARGES 1
+:COST 90
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP AoE Spell Power damage, placed up to 3 tiles away, affecting a radius of 2. Drops Storm terrain in the affected tiles for 2 turns - it deals damage at the start of a turn spent on it, and whenever someone moves onto it.
+:EFFECTS
+s_storm | 0 | 2 | 3 | 2

@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 0
+:RANGE 0
+:COOLDOWN 3
+:CHARGES 1
+:COST 40
+:COSTPCT 0
+:CAST -2
+:PREP 0
+:SECRET false
+:TOOLTIP Damages and knocks back all adjacent enemies.
+:EFFECTS
+s_leesis_survivalinstinct | 0 | 2 | 1 | 1

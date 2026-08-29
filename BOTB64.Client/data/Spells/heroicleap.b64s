@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 1
+:RANGE 5
+:COOLDOWN 3
+:CHARGES 1
+:COST 30
+:COSTPCT 0
+:CAST -2
+:PREP 0
+:SECRET false
+:TOOLTIP Spends Rage to leap to the target location.
+:EFFECTS
+s_pilaf_heroicleap | 0 | 2 | 0 | 0

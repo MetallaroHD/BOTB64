@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 0
+:RANGE 0
+:COOLDOWN 6
+:CHARGES 1
+:COST 100
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Stuns Rassarang for up to 3 of her own turns; at the start of each, deals Spell Power damage to all enemies. Cast again while active to deactivate.
+:EFFECTS
+s_rassarang_cataclysm | 0 | 2 | 0 | 0

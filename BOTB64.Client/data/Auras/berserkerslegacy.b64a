@@ -1,0 +1,9 @@
+:BOTB64AURA
+:DURATION -1
+:MAXSTACKS 100
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP Gains Attack Power and Spell Power, scaling with how much Rage Pilaf had when he died.
+:EFFECTS
+s_pilaf_legacy_apply | 1 | 3 | 0 | 0
+s_pilaf_legacy_drop | 2 | 3 | 0 | 0

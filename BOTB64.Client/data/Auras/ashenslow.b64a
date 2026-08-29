@@ -1,0 +1,9 @@
+:BOTB64AURA
+:DURATION 2
+:MAXSTACKS 1
+:DISPEL 2
+:SPECIALEFFECT 8
+:TOOLTIP Reduces Speed, Attack Power, and Spell Power.
+:EFFECTS
+s_ashenslow_apply | 1 | 3 | 0 | 0
+s_ashenslow_drop | 2 | 3 | 0 | 0

@@ -1,0 +1,11 @@
+:BOTB64AURA
+:DURATION -1
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP Linked to Trappus. Trappus generates Bloodwell equal to half the damage this character deals. At 50+ Bloodwell both gain 10% more Attack Power and Spell Power; at 100+, 25%. While Crimson Blossom is active, this character deals and takes 50% more damage.
+:EFFECTS
+s_bloodlink_ondamage | 32 | 3 | 0 | 0
+s_bloodlink_tick | 4 | 3 | 0 | 0
+s_bloodlink_predamage | 131072 | 3 | 0 | 0
+s_bloodlink_predamage | 1048576 | 3 | 0 | 0

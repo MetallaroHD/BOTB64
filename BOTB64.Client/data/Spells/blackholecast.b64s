@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 1
+:RANGE 6
+:COOLDOWN 5
+:CHARGES 1
+:COST 55
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Creates a black hole that pulls enemies toward it for 3 turns. Touching it triggers an explosion that deals damage.
+:EFFECTS
+s_gravitus_blackhole | 0 | 2 | 0 | 0

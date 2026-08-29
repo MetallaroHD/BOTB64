@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 1
+:RANGE 1
+:COOLDOWN 2
+:CHARGES 1
+:COST 35
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Spends Rage to deal melee damage and apply a heal over time to himself.
+:EFFECTS
+s_pilaf_bloodthirst | 0 | 2 | 1 | 1

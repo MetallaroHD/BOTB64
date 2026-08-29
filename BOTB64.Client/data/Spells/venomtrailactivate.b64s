@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 0
+:RANGE 0
+:COOLDOWN 5
+:CHARGES 1
+:COST 60
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Activate: for the next 2 turns, walking also creates Venom Trail on all adjacent tiles.
+:EFFECTS
+s_soldato_venomtrail_activate | 0 | 2 | 0 | 0

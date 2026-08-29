@@ -110,5 +110,13 @@
         "ImageURI" : "",
         "AnimationURI" : "",
         "ModelURI" : ""
+    },
+    {
+        "ID" : 14,
+        "Name" : "Long Staff Statue",
+        "ScriptURI" : "longstaffstatue",
+        "ImageURI" : "",
+        "AnimationURI" : "",
+        "ModelURI" : ""
     }
 ]

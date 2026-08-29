@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 9
+:RANGE 6
+:COOLDOWN 5
+:CHARGES 1
+:COST 60
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Applies a permanent tether between two targeted entities. Recasting on two new targets removes the previous tether.
+:EFFECTS
+s_gravitus_gravitytether | 0 | 2 | 0 | 0

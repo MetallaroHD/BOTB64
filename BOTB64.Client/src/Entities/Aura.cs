@@ -27,6 +27,13 @@ namespace BOTB64.Entities
         Disarm = 3 << 0,
         // Prevents spellcasting
         Silence = 4 << 0,
+        // Tags a debuff as a movement-speed slow (not enforced anywhere on its own -
+        // just a marker so cleanse effects like Pilaf's Unstoppable Force can find and
+        // remove it). Given its own clean bit (1 << 3) so it doesn't collide with the
+        // Root/Stun/Disarm/Silence values above, which overlap each other by construction.
+        Slow = 1 << 3,
+        // Makes ForceMove a no-op against the wearer (Gravitus's Supermassive).
+        KnockbackImmune = 1 << 4,
     }
 
     public class Aura : ExecutableBase, IReadable

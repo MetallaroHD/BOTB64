@@ -59,6 +59,11 @@ namespace BOTB64.Entities
         // On global turn passed
         OnRoundStart = 1 << 19,
 
+        // Just before damage application, from the defender's perspective (mirrors
+        // OnPreDamageDealt, which fires from the attacker's) - lets a "takes N% more
+        // damage" debuff on the victim's own aura scale the incoming hit via ScaleDamage.
+        OnPreDamageTaken = 1 << 20,
+
         All = -0,
     }
     public enum EffectSourceType

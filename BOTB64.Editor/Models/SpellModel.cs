@@ -17,6 +17,7 @@ namespace BOTB64.Editor.Models
         private string _tooltip = "";
         private bool _secret = false;
         private int _trackedSourceAuraID = 0;
+        private int _areaRadius = 0;
 
         public int Range { get => _range; set => Set(ref _range, value); }
         public int Cooldown { get => _cooldown; set => Set(ref _cooldown, value); }
@@ -29,6 +30,7 @@ namespace BOTB64.Editor.Models
         public string Tooltip { get => _tooltip; set => Set(ref _tooltip, value ?? ""); }
         public bool Secret { get => _secret; set => Set(ref _secret, value); }
         public int TrackedSourceAuraID { get => _trackedSourceAuraID; set => Set(ref _trackedSourceAuraID, value); }
+        public int AreaRadius { get => _areaRadius; set => Set(ref _areaRadius, value); }
 
         public ObservableCollection<ParameterModel> Parameters { get; } = new();
         public ObservableCollection<EffectModel> Effects { get; } = new();

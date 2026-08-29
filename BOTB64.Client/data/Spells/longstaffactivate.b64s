@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 0
+:RANGE 0
+:COOLDOWN 0
+:CHARGES 1
+:COST 0
+:COSTPCT 0
+:CAST -2
+:PREP 0
+:SECRET false
+:TOOLTIP Activate: increases auto-attack range from 2 to 3, but reduces auto-attack damage. Cast again to revert.
+:EFFECTS
+s_leesis_longstaff_activate | 0 | 2 | 0 | 0

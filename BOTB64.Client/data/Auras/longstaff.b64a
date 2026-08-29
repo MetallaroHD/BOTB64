@@ -1,0 +1,8 @@
+:BOTB64AURA
+:DURATION -1
+:MAXSTACKS 1
+:DISPEL 0
+:SPECIALEFFECT 0
+:TOOLTIP Auto attacks have range 2 and deal bonus damage to targets at exactly range 2. Can be activated (free) to increase range to 3, reducing base damage. Upon death, the staff becomes an indestructible statue that attacks nearby enemies every round.
+:EFFECTS
+s_leesis_longstaff_death | 16 | 3 | 0 | 0

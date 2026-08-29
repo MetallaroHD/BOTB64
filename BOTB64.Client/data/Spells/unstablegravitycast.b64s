@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 9
+:RANGE 6
+:COOLDOWN 4
+:CHARGES 1
+:COST 45
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Creates a temporary tether (3 turns) between two targeted entities, working like Gravity Tether. Recasting on two new targets removes the previous one.
+:EFFECTS
+s_gravitus_unstablegravity | 0 | 2 | 0 | 0

@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 6
+:RANGE 5
+:COOLDOWN 4
+:CHARGES 1
+:COST 35
+:COSTPCT 0
+:CAST -2
+:PREP 0
+:SECRET false
+:TOOLTIP Pulls an enemy to exactly range 2 and slows them.
+:EFFECTS
+s_leesis_grab | 0 | 2 | 0 | 0

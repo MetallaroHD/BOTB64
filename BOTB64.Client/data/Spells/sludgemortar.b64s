@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 1
+:RANGE 6
+:COOLDOWN 2
+:CHARGES 1
+:COST 50
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Shoots dealing Spell Power damage and creating a Venom Trail tile at the impact point.
+:EFFECTS
+s_sludgemortar | 0 | 2 | 5 | 2
