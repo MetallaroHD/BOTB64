@@ -14,11 +14,11 @@
     "Type": "Instant",
     "Animation": "slash_h_red",
     "ImpactVfx": "",
-    "Width": 0.6,
-    "Height": 0.6,
+    "Width": 2,
+    "Height": 2,
     "TravelDuration": 0,
     "TintHex": "FFFFFFFF",
-    "HeightOffset": 0.6
+    "HeightOffset": 1
   },
   {
     "ID": "slash_v_red",
@@ -49,6 +49,17 @@
     "ImpactVfx": "",
     "Width": 0.6,
     "Height": 0.6,
+    "TravelDuration": 0,
+    "TintHex": "FFFFFFFF",
+    "HeightOffset": 0.6
+  },
+  {
+    "ID": "shockbeam",
+    "Type": "Beam",
+    "Animation": "shockbeam",
+    "ImpactVfx": "",
+    "Width": 0.6,
+    "Height": 1,
     "TravelDuration": 0,
     "TintHex": "FFFFFFFF",
     "HeightOffset": 0.6

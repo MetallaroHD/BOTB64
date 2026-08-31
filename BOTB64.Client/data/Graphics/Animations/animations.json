@@ -43,5 +43,14 @@
     "FrameCount": 5,
     "FPS": 10,
     "Loop": false
+  },
+  {
+    "ID": "shockbeam",
+    "Texture": "shockbeam.png",
+    "FrameWidth": 256,
+    "FrameHeight": 128,
+    "FrameCount": 4,
+    "FPS": 8,
+    "Loop": false
   }
 ]

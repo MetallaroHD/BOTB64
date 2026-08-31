@@ -277,8 +277,8 @@
   },
   {
     "ID": 46,
-    "Name": "Unstable Gravity",
-    "ScriptURI": "unstablegravitycast",
+    "Name": "Singularity Collapse",
+    "ScriptURI": "singularitycollapse",
     "IconURI": "dummy"
   },
   {

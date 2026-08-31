@@ -7,6 +7,8 @@ local pos = GetPosition(Invoker)
 
 local line = GetLine(pos.Q, pos.R, hq, hr)
 
+PlayVfxBeam("shockbeam", pos.Q, pos.R, hq, hr)
+
 for i = 1, #line do
     local h = line[i]
     local target = GetCharacterAt(h.Q, h.R)
