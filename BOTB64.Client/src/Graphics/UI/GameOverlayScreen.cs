@@ -29,9 +29,18 @@ namespace BOTB64.Graphics.UI
         // from the hovered board tile each frame, then draws it after the rest of the UI.
         public TooltipBox TileTooltip = new();
 
+        // Toggled by pressing C - a full stat dump for the current turn's character, and
+        // (stacked underneath) the current target if any. Unlike TileTooltip these sit at
+        // a fixed position rather than following the mouse, so they're regular Elements.
+        public TooltipBox PlayerStatsPanel = new() { FontSize = 14, LineSpacing = 2, Visible = false };
+        public TooltipBox TargetStatsPanel = new() { FontSize = 14, LineSpacing = 2, Visible = false };
+
         // Only local (hot-seat) play has a single shared screen where holding this to peek
         // at your own team's secrets makes sense - online play never shows the button at all.
         public bool ShowSecretsAvailable = false;
+
+        public Label MovementLabel = new Label { Visible = true, Position = new Vector2(365, 604), FontSize = 20 };
+        public Label ActionLabel = new Label { Visible = true, Position = new Vector2(787, 604), FontSize = 20 };
 
         public GameOverlayScreen()
         {
@@ -65,6 +74,8 @@ namespace BOTB64.Graphics.UI
             AddElement(EndTurnQuestion);
             AddElement(YesButton);
             AddElement(NoButton);
+            AddElement(PlayerStatsPanel);
+            AddElement(TargetStatsPanel);
         }
 
         public void TogglePause(bool yes)

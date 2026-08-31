@@ -13,7 +13,10 @@ public abstract class UIScreen : IUIScreen
 
     public virtual void Update(float dt)
     {
-        foreach (var element in Elements)
+        // Snapshot before iterating - an element's Update/OnClick can add or remove
+        // elements (e.g. FloatingMessageManager.AddMessage), which would otherwise
+        // mutate Elements mid-enumeration and throw.
+        foreach (var element in Elements.ToArray())
         {
             if (element.Visible)
                 element.Update(dt);

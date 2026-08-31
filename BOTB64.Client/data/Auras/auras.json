@@ -259,16 +259,16 @@
     "AnimationURI": ""
   },
   {
-    "ID": 37,
-    "Name": "Unstable Gravity",
-    "ScriptURI": "unstablegravity",
+    "ID": 38,
+    "Name": "Supermassive Buff",
+    "ScriptURI": "supermassivebuff",
     "IconURI": "dummy",
     "AnimationURI": ""
   },
   {
-    "ID": 38,
-    "Name": "Supermassive Buff",
-    "ScriptURI": "supermassivebuff",
+    "ID": 39,
+    "Name": "Storm Shield",
+    "ScriptURI": "stormshield",
     "IconURI": "dummy",
     "AnimationURI": ""
   }

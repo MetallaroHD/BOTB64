@@ -34,6 +34,8 @@ namespace BOTB64.Engine.States
         private Character CurrentCharacter => Game.CurrentCharacter;
         private Character? Target;
 
+        private bool ShowStatsPanel = false;
+
         public void OnEnter()
         {
             Logger.Init(Screen.Log);
@@ -60,6 +62,8 @@ namespace BOTB64.Engine.States
         {
             Session?.PumpMainThreadActions();
             bool gameOver = false;
+            if (InputManager.IsKeyPressed(RL.KeyboardKey.C))
+                ShowStatsPanel = !ShowStatsPanel;
             CurrentAction?.Update();
             Game.Update(dt, out gameOver);
             UpdateGUI();
@@ -85,7 +89,15 @@ namespace BOTB64.Engine.States
             Viewport.End();
             FloatingTextManager.Draw(Viewport);
             Screen.Draw();
+
+            // TileTooltip isn't in Screen's own Elements list (see GameOverlayScreen), so
+            // it doesn't get the Camera2D transform Screen.Draw() wraps its elements in.
+            // Its _bounds are set in UI-space (via UIRenderer.ScreenToUI), so without this
+            // it drew at the right spot only when UI-space == screen-space, i.e. windowed
+            // at 1280x720 - any other resolution/fullscreen scale threw it off entirely.
+            UIRenderer.Begin();
             Screen.TileTooltip.Draw();
+            UIRenderer.End();
         }
 
         public void ChangeAction(IAction action)
@@ -319,7 +331,61 @@ namespace BOTB64.Engine.States
             UpdateSpellButtons();
             UpdatePlayerGUI();
             UpdateTargetGUI();
+            UpdateStatsPanel();
             UpdateTileTooltip();
+        }
+
+        // Toggled by pressing C - a full stat dump for the current turn's character, and
+        // (to its right) the current target's if one is selected. Suppressed while
+        // paused/confirming end turn (CurrentAction == Pause) so it doesn't visually clash
+        // with that overlay. Starts below y=116 - TargetStatus's aura icon row (EffectsLine)
+        // sits at y=92, 24px tall, so anything higher would overlap it.
+        private void UpdateStatsPanel()
+        {
+            bool show = ShowStatsPanel && CurrentAction != Pause;
+
+            Screen.PlayerStatsPanel.Visible = show;
+            Screen.TargetStatsPanel.Visible = show && Target != null && Target.Alive;
+
+            if (!show)
+                return;
+
+            const float y = 135f;
+            Screen.PlayerStatsPanel.SetContent(BuildStatLines(CurrentCharacter));
+            Screen.PlayerStatsPanel.SetPosition(new Vector2(1000, y));
+
+            if (Screen.TargetStatsPanel.Visible)
+            {
+                Screen.TargetStatsPanel.SetContent(BuildStatLines(Target));
+                float x = Screen.PlayerStatsPanel.Bounds.X + Screen.PlayerStatsPanel.Bounds.Width + 10;
+                Screen.TargetStatsPanel.SetPosition(new Vector2(x, y));
+            }
+        }
+
+        private static List<string> BuildStatLines(Character c)
+        {
+            return new List<string>
+            {
+                c.Name,
+                $"HP: {c.CurrentHP} / {c.MaxHP.GetI()}",
+                $"{c.ResType}: {c.CurrentResource} / {c.MaxRes.GetI()}",
+                $"Attack Power: {c.AttackPower.GetF():0.##}",
+                $"Spell Power: {c.SpellPower.GetF():0.##}",
+                $"Defense: {c.Defense.GetF():0.##}",
+                $"Magic Defense: {c.MagicDefense.GetF():0.##}",
+                $"Haste: {c.Haste.GetF():0.##}",
+                $"Speed: {c.Speed.GetF():0.##}",
+                $"Armor Pen: {c.ArmorPen.GetF():0.##}",
+                $"Spell Pen: {c.SpellPen.GetF():0.##}",
+                $"Crit: {c.Crit.GetF():0.##}",
+                $"Lifesteal: {c.LifeSteal.GetF():0.##}",
+                $"Spell Vamp: {c.SpellVamp.GetF():0.##}",
+                $"HP Regen: {c.HPRegen.GetF():0.##}",
+                $"Res Regen: {c.ResRegen.GetF():0.##}",
+                $"AA Range: {c.AutoAttackRange.GetF():0.##}",
+                $"AA AP: {c.AutoAttackAP.GetF():0.##}",
+                $"AA SP: {c.AutoAttackSP.GetF():0.##}",
+            };
         }
 
         // Lists the name of every tile effect on the hovered board tile, vertically,
@@ -358,6 +424,8 @@ namespace BOTB64.Engine.States
             Screen.PlayerStatus.SetResource(current.CurrentResource, current.MaxRes.GetI());
             Screen.PlayerStatus.SetResourceColor(current.ResourceColor());
             Screen.PlayerStatus.SetName(current.Name);
+            Screen.MovementLabel.Text = current.RemainMovement.ToString();
+            Screen.ActionLabel.Text = current.RemainAction.ToString() + "/" + current.RemainFastAction.ToString();
             Screen.PlayerStatus.Effects.Sync(current.CurrentAuras, a => new EffectDisplayInfo(a.ID, a.Name, a.Tooltip, a.CurrentStacks, a.Remaining, a.Icon));
             UpdateSpellButtons();
         }

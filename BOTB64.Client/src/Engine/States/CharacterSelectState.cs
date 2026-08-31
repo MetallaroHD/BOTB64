@@ -76,6 +76,16 @@ namespace BOTB64.Engine.States
             Screen.StartButton.Visible = Session == null || Session.IsHost;
             Screen.StartButton.OnClick = () => StartGame();
 
+            Screen.BackButton.OnClick = () =>
+            {
+                if (Session != null)
+                {
+                    Session.OnMatchStartReceived -= OnMatchStart;
+                    Session.Disconnect();
+                }
+                StateManager.ChangeState(new MainMenuState());
+            };
+
             if (Session != null)
                 Session.OnMatchStartReceived += OnMatchStart;
 

@@ -46,6 +46,8 @@ namespace BOTB64.Graphics
                 RB.SetWindowSize(RB.GetMonitorWidth(monitor), RB.GetMonitorHeight(monitor));
 
                 RB.SetWindowPosition(0, 0);
+
+                BOTB64.Runtime.ResourceManager.RefreshTextureFilters();
             }
             else
             {

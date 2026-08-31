@@ -323,8 +323,8 @@
   },
   {
     "ID": 46,
-    "Name": "Unstable Gravity",
-    "ScriptURI": "unstablegravitycast",
+    "Name": "Singularity Collapse",
+    "ScriptURI": "singularitycollapse",
     "IconURI": "dummy",
     "AnimationURI": ""
   },
@@ -332,6 +332,27 @@
     "ID": 47,
     "Name": "Supermassive",
     "ScriptURI": "supermassiveactivate",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  },
+  {
+    "ID": 48,
+    "Name": "Flame Aura",
+    "ScriptURI": "firelord",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  },
+  {
+    "ID": 49,
+    "Name": "Berserker Rage",
+    "ScriptURI": "berserkerrage",
+    "IconURI": "dummy",
+    "AnimationURI": ""
+  },
+  {
+    "ID": 50,
+    "Name": "Storm Shield",
+    "ScriptURI": "stormshieldcast",
     "IconURI": "dummy",
     "AnimationURI": ""
   }

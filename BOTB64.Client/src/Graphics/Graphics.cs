@@ -40,6 +40,7 @@ namespace BOTB64.Graphics
             int width = (int)(1280 * scale);
             int height = (int)(720 * scale);
             RB.SetWindowSize(width, height);
+            BOTB64.Runtime.ResourceManager.RefreshTextureFilters();
         }
 
         public static void ApplyVSync(bool enabled)

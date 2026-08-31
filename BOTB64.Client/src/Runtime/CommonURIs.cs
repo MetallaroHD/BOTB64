@@ -1,5 +1,4 @@
-﻿using BOTB64.Entities;
-using BOTB64.Shared.DTOs;
+﻿using BOTB64.Shared.DTOs;
 
 namespace BOTB64.Runtime
 {

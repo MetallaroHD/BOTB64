@@ -67,6 +67,10 @@ namespace BOTB64.Graphics.UI
 
             RB.BeginTextureMode(RenderTarget);
             RB.ClearBackground(new RL.Color(20, 20, 28, 255));
+            // Same fix as the gameplay Viewport - this camera only ever sits ~3.2 units
+            // from the model, so Raylib's default 1000-unit far plane wastes almost all
+            // depth precision on distances never used here.
+            RL.Rlgl.SetClipPlanes(0.1, 20);
             RB.BeginMode3D(Camera);
             ShaderManager.UpdateCharSelect(Camera.Position);
             RB.BeginShaderMode(ShaderManager.CS.GetShader());

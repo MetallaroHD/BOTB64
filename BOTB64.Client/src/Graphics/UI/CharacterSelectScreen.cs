@@ -15,6 +15,7 @@ namespace BOTB64.Graphics.UI
         public TeamStripDisplay RedStrip;
         public ModelPreviewPanel CharacterPreview;
         public Label CharacterNameLabel;
+        public TextButton BackButton;
 
         public CharacterSelectScreen()
         {
@@ -58,6 +59,10 @@ namespace BOTB64.Graphics.UI
             LockButton = new TextButton { Bounds = new RL.Rectangle(880, 530, 200, 100), Text = "Lock in" };
             StartButton = new TextButton { Bounds = new RL.Rectangle(1080, 530, 200, 100), Text = "Start" };
 
+            // Top-right corner, on top of CharacterPreview's viewport (which spans
+            // x:880-1280, y:0-480) - added to Elements after it so it draws over it.
+            BackButton = new TextButton { Bounds = new RL.Rectangle(1240, 5, 35, 35), Text = "<" };
+
             AddElement(background);
             AddElement(BlueStrip);
             AddElement(RedStrip);
@@ -66,6 +71,7 @@ namespace BOTB64.Graphics.UI
             AddElement(LockButton);
             AddElement(CharacterPreview);
             AddElement(CharacterNameLabel);
+            AddElement(BackButton);
         }
 
         public override void Draw()

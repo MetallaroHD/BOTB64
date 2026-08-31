@@ -114,7 +114,8 @@ namespace BOTB64.Engine.Net
             if (target != null)
             {
                 target.CurrentHP -= Amount;
-                FloatingTextManager.Add(Amount.ToString(), HexAlgo.HexToWorld(target.Position));
+                if (Amount != 0)
+                    FloatingTextManager.Add(Amount.ToString(), HexAlgo.HexToWorld(target.Position));
                 Logger.Log(target.Name + " receives " + Amount + " damage." + (Crit ? " A critical hit!" : ""));
             }
         }
@@ -132,7 +133,8 @@ namespace BOTB64.Engine.Net
             if (target != null)
             {
                 target.CurrentHP = Math.Min(target.CurrentHP + Amount, target.MaxHP.GetI());
-                FloatingTextManager.Add(Amount.ToString(), HexAlgo.HexToWorld(target.Position), color: Raylib_cs.Color.Green);
+                if (Amount != 0)
+                    FloatingTextManager.Add(Amount.ToString(), HexAlgo.HexToWorld(target.Position), color: Raylib_cs.Color.Green);
                 Logger.Log(target.Name + " heals " + Amount + " damage." + (Crit ? " A critical hit!" : ""));
             }
         }
@@ -520,7 +522,8 @@ namespace BOTB64.Engine.Net
             var c = game.FindCharacter(CharacterID);
             if (c == null) return;
             c.CurrentHP -= Amount;
-            FloatingTextManager.Add(Amount.ToString(), HexAlgo.HexToWorld(c.Position), color: Raylib_cs.Color.Orange);
+            if (Amount != 0)
+                FloatingTextManager.Add(Amount.ToString(), HexAlgo.HexToWorld(c.Position), color: Raylib_cs.Color.Orange);
             Logger.Log(c.Name + " pays " + Amount + " health.");
         }
     }

@@ -194,4 +194,13 @@ public static class ResourceManager
 
         return model;
     }
+
+    // Re-applies each cached model's texture filter for the current Settings.Scale -
+    // call this whenever Scale changes at runtime (fullscreen toggle, settings screen),
+    // since already-loaded models otherwise keep whatever filter they were created with.
+    public static void RefreshTextureFilters()
+    {
+        foreach (var model in Models.Values)
+            model.RefreshTextureFilter();
+    }
 }

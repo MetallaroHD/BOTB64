@@ -263,6 +263,11 @@ namespace BOTB64.Entities
             }
 
             RL.Rlgl.End();
+            // Without an explicit flush here, this textured draw's texture switch leaves the
+            // render batch in a state where every untextured RB.DrawTriangle3D call for the
+            // rest of the frame (i.e. every later tile's flat hex fill) silently stops
+            // rendering - confirmed by isolated repro; flushing immediately avoids it.
+            RL.Rlgl.DrawRenderBatchActive();
             RL.Rlgl.SetTexture(0);
         }
 

@@ -46,6 +46,24 @@ namespace BOTB64.Graphics.G3D
                     }
                 }
             }
+
+            RefreshTextureFilter();
+        }
+
+        // Point filtering keeps the intended pixel-art look at the native 1280x720
+        // canvas; above that (e.g. 1920x1080 fullscreen, Settings.Scale 1.5), the same
+        // low-res textures get magnified across more physical pixels and point filtering's
+        // hard texel edges become visibly blocky ("crispy") - bilinear softens just that
+        // magnification without touching how things look at native resolution.
+        public void RefreshTextureFilter()
+        {
+            RL.TextureFilter filter = Settings.Scale > 1.0f ? RL.TextureFilter.Bilinear : RL.TextureFilter.Point;
+
+            unsafe
+            {
+                for (int i = 0; i < Model.MaterialCount; i++)
+                    RB.SetTextureFilter(Model.Materials[i].Maps[(int)RL.MaterialMapIndex.Albedo].Texture, filter);
+            }
         }
 
         public void Dispose()

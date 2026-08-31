@@ -37,7 +37,7 @@
         "ScriptURI" : "storm",
         "ImageURI" : "",
         "AnimationURI" : "",
-        "ModelURI" : ""
+        "ModelURI" : "storm"
     },
     {
         "ID" : 5,
@@ -45,7 +45,7 @@
         "ScriptURI" : "shuriken",
         "ImageURI" : "",
         "AnimationURI" : "",
-        "ModelURI" : ""
+        "ModelURI" : "shuriken"
     },
     {
         "ID" : 6,
@@ -53,13 +53,13 @@
         "ScriptURI" : "bloodblossom",
         "ImageURI" : "",
         "AnimationURI" : "",
-        "ModelURI" : ""
+        "ModelURI" : "bloodblossom"
     },
     {
         "ID" : 7,
         "Name" : "Venom Trail",
         "ScriptURI" : "venomtrail",
-        "ImageURI" : "",
+        "ImageURI" : "venomtrail",
         "AnimationURI" : "",
         "ModelURI" : ""
     },
@@ -75,7 +75,7 @@
         "ID" : 9,
         "Name" : "Scorched Earth",
         "ScriptURI" : "scorchedearth",
-        "ImageURI" : "",
+        "ImageURI" : "scorchedearth",
         "AnimationURI" : "",
         "ModelURI" : ""
     },
