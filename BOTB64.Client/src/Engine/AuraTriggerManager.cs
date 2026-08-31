@@ -109,6 +109,7 @@ namespace BOTB64.Engine
             aura.ID = auraD.ID;
             aura.Name = auraD.Name;
             aura.Icon = ResourceManager.GetSpellIcon(aura.ID);
+            aura.VfxID = auraD.AnimationURI ?? "";
 
             AuraTemplates.Add(aura);
             return aura.Instance();
@@ -132,6 +133,7 @@ namespace BOTB64.Engine
 
             teff.ID = tileD.ID;
             teff.Name = tileD.Name;
+            teff.VfxID = tileD.AnimationURI ?? "";
 
             if (!string.IsNullOrEmpty(tileD.ImageURI))
                 teff.Texture = ResourceManager.LoadTexture(CommonURIs.GetTileEffectImage(tileD));

@@ -1,8 +1,10 @@
 ﻿using BOTB64.Entities;
 using BOTB64.Graphics.Animations;
 using BOTB64.Graphics.UI;
+using BOTB64.Graphics.Vfx;
 using BOTB64.Runtime;
 using MessagePack;
+using System.Numerics;
 
 namespace BOTB64.Engine.Net
 {
@@ -30,6 +32,7 @@ namespace BOTB64.Engine.Net
     [Union(21, typeof(TileEffectParamSetEvent))]
     [Union(22, typeof(ResourceModifiedEvent))]
     [Union(23, typeof(HealthCostEvent))]
+    [Union(24, typeof(PlayVfxEvent))]
     public interface IGameEvent
     {
         void Apply(Game game);
@@ -234,7 +237,11 @@ namespace BOTB64.Engine.Net
                 aura.CurrentStacks = FinalStacks;
                 aura.Remaining = aura.Duration;
                 if (FinalStacks > 0)
+                {
                     t.CurrentAuras.Add(aura);
+                    aura.Animation = new AuraVfxAnimation(t, aura);
+                    AnimationManager.Play(aura.Animation);
+                }
             }
         }
     }
@@ -274,6 +281,9 @@ namespace BOTB64.Engine.Net
             if (instance.Model != null)
                 instance.Model.Transform.Position = tile.WorldPosition;
             tile.Effects.Add(instance);
+
+            instance.Animation = new TileVfxAnimation(tile, instance);
+            AnimationManager.Play(instance.Animation);
         }
     }
 
@@ -307,8 +317,6 @@ namespace BOTB64.Engine.Net
                     if (spell.CurrentCD <= 0)
                         spell.CurrentCD = spell.Cooldown;
                 }
-                if (spell.Animation != null)
-                    AnimationManager.Play(spell.Animation);
                 Logger.Log(character.Name + " casts " + spell.Name + "!");
             }
         }
@@ -534,5 +542,35 @@ namespace BOTB64.Engine.Net
         [Key(0)] public int RoundNumber;
         [Key(1)] public List<int> TurnOrder;
         public void Apply(Game game) => game.ApplyRoundStart(RoundNumber, TurnOrder);
+    }
+
+    // Fired by Lua effect scripts (via EffectProcessor.PlayVfxXxx) so a spell's VFX plays
+    // identically for every client - Lua only runs on the host, so the actual VfxManager
+    // call has to happen inside Apply(), which every peer replays from the broadcast event log.
+    [MessagePackObject]
+    public struct PlayVfxEvent : IGameEvent
+    {
+        [Key(0)] public string VfxID;
+        [Key(1)] public VfxType Mode;
+        [Key(2)] public Hex From;
+        [Key(3)] public Hex To;
+
+        public void Apply(Game game)
+        {
+            Vector3 from = HexAlgo.HexToWorld(From);
+
+            switch (Mode)
+            {
+                case VfxType.Instant:
+                    VfxManager.PlayInstant(VfxID, from);
+                    break;
+                case VfxType.Projectile:
+                    VfxManager.PlayProjectile(VfxID, from, HexAlgo.HexToWorld(To));
+                    break;
+                case VfxType.Beam:
+                    VfxManager.PlayBeam(VfxID, from, HexAlgo.HexToWorld(To));
+                    break;
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BOTB64.Engine;
 using BOTB64.Engine.Net;
+using BOTB64.Graphics.Vfx;
 using BOTB64.Runtime;
 
 namespace BOTB64.Entities
@@ -386,6 +387,25 @@ namespace BOTB64.Entities
             if (actual <= 0)
                 return;
             game.RecordAndApply(new HealthCostEvent { CharacterID = charId, Amount = actual });
+        }
+
+        // Lua-facing VFX triggers. These must go through an IGameEvent (like every other
+        // action here) rather than calling VfxManager directly - Lua effect scripts only
+        // execute on the host, so the actual playback has to happen in Apply(), which every
+        // client (including the host) replays from the broadcast event log.
+        public static void PlayVfxInstant(Game game, string vfxId, int q, int r)
+        {
+            game.RecordAndApply(new PlayVfxEvent { VfxID = vfxId, Mode = VfxType.Instant, From = new Hex(q, r) });
+        }
+
+        public static void PlayVfxProjectile(Game game, string vfxId, int fromQ, int fromR, int toQ, int toR)
+        {
+            game.RecordAndApply(new PlayVfxEvent { VfxID = vfxId, Mode = VfxType.Projectile, From = new Hex(fromQ, fromR), To = new Hex(toQ, toR) });
+        }
+
+        public static void PlayVfxBeam(Game game, string vfxId, int fromQ, int fromR, int toQ, int toR)
+        {
+            game.RecordAndApply(new PlayVfxEvent { VfxID = vfxId, Mode = VfxType.Beam, From = new Hex(fromQ, fromR), To = new Hex(toQ, toR) });
         }
 
         public static bool MoveTileEffect(Game game, int ownerID, int fromQ, int fromR, int toQ, int toR, int tileEffectID, int duration)

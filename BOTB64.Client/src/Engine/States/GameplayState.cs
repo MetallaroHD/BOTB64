@@ -7,6 +7,7 @@ using BOTB64.Graphics.UI;
 using BOTB64.Engine;
 using BOTB64.Engine.Actions;
 using BOTB64.Graphics.Animations;
+using BOTB64.Graphics.Vfx;
 using BOTB64.Engine.Net;
 
 namespace BOTB64.Engine.States
@@ -54,6 +55,7 @@ namespace BOTB64.Engine.States
         {
             Game.Unload();
             AnimationManager.Clear();
+            VfxManager.Clear();
             Logger.Unload();
             AuraTriggerManager.ClearCache();
         }
@@ -73,6 +75,7 @@ namespace BOTB64.Engine.States
             FloatingTextManager.Update(dt);
             FloatingMessageManager.Update(dt);
             AnimationManager.Update(dt);
+            VfxManager.Update(dt);
 
             if (gameOver)
             {
@@ -86,6 +89,7 @@ namespace BOTB64.Engine.States
             Viewport.Begin();
             ShaderManager.UpdateCameraPosition(Viewport.Camera.Position);
             Game.Render(VisibleSecretFaction());
+            VfxManager.Draw(Viewport.Camera.Camera);
             Viewport.End();
             FloatingTextManager.Draw(Viewport);
             Screen.Draw();

@@ -1,5 +1,4 @@
 ﻿using BOTB64.Engine;
-using BOTB64.Graphics.Animations;
 using BOTB64.Runtime;
 using System.Text;
 using RL = Raylib_cs;
@@ -9,7 +8,6 @@ namespace BOTB64.Entities
     public class Spell : ExecutableBase, IReadable
     {
         public RL.Texture2D Icon;
-        public SpellVfxAnimation? Animation;
 
         // --- Base data (does not change during game) --- //
         public int ID = 0;
@@ -60,7 +58,6 @@ namespace BOTB64.Entities
         public Spell Instance()
         {
             Spell ret = new Spell();
-            ret.Animation = Animation;
             ret.ID = ID;
             ret.Name = Name;
             ret.Icon = Icon;

@@ -52,6 +52,9 @@ namespace BOTB64.Engine
             Lua.Globals["IsWall"] = (Func<int, int, bool>)((q, r) => EffectProcessor.IsWall(game, q, r));
             Lua.Globals["PayHealthCost"] = (Action<int, int>)((charId, amount) => EffectProcessor.PayHealthCost(game, charId, amount));
             Lua.Globals["RemoveAurasWithSpecialEffect"] = (Action<int, AuraSpecialEffect>)((charId, effect) => EffectProcessor.RemoveAurasWithSpecialEffect(game, charId, effect));
+            Lua.Globals["PlayVfxInstant"] = (Action<string, int, int>)((vfxId, q, r) => EffectProcessor.PlayVfxInstant(game, vfxId, q, r));
+            Lua.Globals["PlayVfxProjectile"] = (Action<string, int, int, int, int>)((vfxId, fromQ, fromR, toQ, toR) => EffectProcessor.PlayVfxProjectile(game, vfxId, fromQ, fromR, toQ, toR));
+            Lua.Globals["PlayVfxBeam"] = (Action<string, int, int, int, int>)((vfxId, fromQ, fromR, toQ, toR) => EffectProcessor.PlayVfxBeam(game, vfxId, fromQ, fromR, toQ, toR));
 
             // OTHER
             Lua.Globals["Random"] = (Func<float, float, float>)((min, max) => EffectProcessor.Random(game, min, max));

@@ -1,0 +1,47 @@
+[
+  {
+    "ID": "dummy",
+    "Texture": "dummy.png",
+    "FrameWidth": 24,
+    "FrameHeight": 24,
+    "FrameCount": 1,
+    "FPS": 1,
+    "Loop": false
+  },
+  {
+    "ID": "slash_h_red",
+    "Texture": "slash_h_red.png",
+    "FrameWidth": 48,
+    "FrameHeight": 48,
+    "FrameCount": 5,
+    "FPS": 10,
+    "Loop": false
+  },
+  {
+    "ID": "slash_v_red",
+    "Texture": "slash_v_red.png",
+    "FrameWidth": 48,
+    "FrameHeight": 48,
+    "FrameCount": 5,
+    "FPS": 10,
+    "Loop": false
+  },
+  {
+    "ID": "slash_h_green",
+    "Texture": "slash_h_green.png",
+    "FrameWidth": 48,
+    "FrameHeight": 48,
+    "FrameCount": 5,
+    "FPS": 10,
+    "Loop": false
+  },
+  {
+    "ID": "slash_v_green",
+    "Texture": "slash_v_green.png",
+    "FrameWidth": 48,
+    "FrameHeight": 48,
+    "FrameCount": 5,
+    "FPS": 10,
+    "Loop": false
+  }
+]

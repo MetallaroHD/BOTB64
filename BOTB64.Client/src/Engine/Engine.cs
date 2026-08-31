@@ -9,7 +9,11 @@ namespace BOTB64.Engine
         private static TimeSpan PreviousTime;
         private static Stopwatch Clock = new Stopwatch();
 
-        public static float DeltaTime => (float)(CurrentTime - PreviousTime).TotalSeconds;
+        // Capped so a debugger pause (or a real multi-second hitch) can't produce a single
+        // huge dt that instantly completes time-based effects (animations, VFX, etc.).
+        private const float MaxDeltaTime = 0.1f;
+
+        public static float DeltaTime => Math.Min((float)(CurrentTime - PreviousTime).TotalSeconds, MaxDeltaTime);
 
         public static void Initialize()
         {

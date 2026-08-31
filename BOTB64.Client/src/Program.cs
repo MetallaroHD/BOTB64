@@ -1,6 +1,7 @@
 ﻿using BOTB64.Engine;
 using BOTB64.Graphics;
 using BOTB64.Graphics.UI;
+using BOTB64.Graphics.Vfx;
 using BOTB64.Runtime;
 using BOTB64.Shared;
 using BOTB64.Shared.Files;
@@ -22,6 +23,7 @@ namespace BOTB64
             ResourceManager.Initialize();
             ResourceArchive.Initialize(DataFile.DataDir);
             DatabaseFileManager.Init();
+            VfxDatabase.Init();
             LuaEffectRunner.RegisterTypes();
             Graphics.Graphics.Initialize(1280, 720, "BOTB64");
             Engine.Engine.Initialize();

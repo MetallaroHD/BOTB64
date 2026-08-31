@@ -14,6 +14,5 @@ namespace BOTB64.Shared.DTOs
         [Key(1)] public string Name { get; set; }
         [Key(2)] public string ScriptURI { get; set; }
         [Key(3)] public string IconURI { get; set; }
-        [Key(4)] public string AnimationURI { get; set; }
     }
 }

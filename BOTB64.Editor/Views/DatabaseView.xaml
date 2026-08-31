@@ -120,16 +120,6 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn Header="Animation (Graphics\Animations\)" Width="200">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <DockPanel LastChildFill="True">
-                                        <Button DockPanel.Dock="Right" Content="..." Style="{StaticResource BrowseButton}" Click="BrowseSpellAnimation_Click"/>
-                                        <TextBox Text="{Binding AnimationURI, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" BorderThickness="0" Background="Transparent"/>
-                                    </DockPanel>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </DockPanel>

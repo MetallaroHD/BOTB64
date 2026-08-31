@@ -1,5 +1,7 @@
 ﻿using BOTB64.Engine;
 using BOTB64.Engine.Net;
+using BOTB64.Graphics;
+using BOTB64.Graphics.Animations;
 using BOTB64.Graphics.G3D;
 using BOTB64.Runtime;
 using BOTB64.Shared.DTOs;
@@ -352,6 +354,8 @@ namespace BOTB64.Entities
                 aura.Wearer = character;
                 aura.Remaining = aura.Duration;
                 character.CurrentAuras.Add(aura);
+                aura.Animation = new AuraVfxAnimation(character, aura);
+                AnimationManager.Play(aura.Animation);
             }
         }
     }

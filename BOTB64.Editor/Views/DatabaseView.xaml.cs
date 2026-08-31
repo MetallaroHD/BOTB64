@@ -133,8 +133,7 @@ namespace BOTB64.Editor.Views
                 ID = Db.NextSpellId(),
                 Name = "New Spell",
                 ScriptURI = "spell",
-                IconURI = "dummy",
-                AnimationURI = ""
+                IconURI = "dummy"
             });
         }
 
@@ -161,14 +160,6 @@ namespace BOTB64.Editor.Views
             BrowseInto(EditorPaths.GraphicsIconsDir(Db.DataRoot),
                 "Image files (*.png)|*.png|All files (*.*)|*.*",
                 v => row.IconURI = v, SpellsGrid);
-        }
-
-        private void BrowseSpellAnimation_Click(object sender, RoutedEventArgs e)
-        {
-            if (!RequireDataRoot() || (sender as FrameworkElement)?.DataContext is not SpellDTO row) return;
-            BrowseInto(EditorPaths.GraphicsAnimationsDir(Db.DataRoot),
-                "All files (*.*)|*.*",
-                v => row.AnimationURI = v, SpellsGrid);
         }
 
         private void SpellsGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)

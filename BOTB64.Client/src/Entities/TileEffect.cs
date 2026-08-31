@@ -56,6 +56,7 @@ namespace BOTB64.Entities
         // Usually only assign 1 of the three visuals
         // Terrain tiles may have animated visuals or static pngs
         public TileVfxAnimation? Animation { get; set; }
+        public string VfxID = "";
         public RL.Texture2D? Texture { get; set; }
 
         // Statues always use non-animated 3d models (special tiles do what they want)
@@ -83,7 +84,7 @@ namespace BOTB64.Entities
         public TileEffect Instance()
         {
             TileEffect ret = new TileEffect();
-            ret.Animation = Animation;
+            ret.VfxID = VfxID;
             ret.Texture = Texture;
             ret.Asset = Asset;
             ret.Model = Asset != null ? new ModelInstance(Asset) : null;

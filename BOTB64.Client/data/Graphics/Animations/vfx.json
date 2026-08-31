@@ -1,0 +1,56 @@
+[
+  {
+    "ID": "dummy",
+    "Type": "Instant",
+    "Animation": "dummy",
+    "ImpactVfx": "",
+    "Width": 0.6,
+    "Height": 0.6,
+    "TravelDuration": 0,
+    "TintHex": "FFFFFFFF"
+  },
+  {
+    "ID": "slash_h_red",
+    "Type": "Instant",
+    "Animation": "slash_h_red",
+    "ImpactVfx": "",
+    "Width": 0.6,
+    "Height": 0.6,
+    "TravelDuration": 0,
+    "TintHex": "FFFFFFFF",
+    "HeightOffset": 0.6
+  },
+  {
+    "ID": "slash_v_red",
+    "Type": "Instant",
+    "Animation": "slash_v_red",
+    "ImpactVfx": "",
+    "Width": 0.6,
+    "Height": 0.6,
+    "TravelDuration": 0,
+    "TintHex": "FFFFFFFF",
+    "HeightOffset": 0.6
+  },
+  {
+    "ID": "slash_h_green",
+    "Type": "Instant",
+    "Animation": "slash_h_green",
+    "ImpactVfx": "",
+    "Width": 0.6,
+    "Height": 0.6,
+    "TravelDuration": 0,
+    "TintHex": "FFFFFFFF",
+    "HeightOffset": 0.6
+  },
+  {
+    "ID": "slash_v_green",
+    "Type": "Instant",
+    "Animation": "slash_v_green",
+    "ImpactVfx": "",
+    "Width": 0.6,
+    "Height": 0.6,
+    "TravelDuration": 0,
+    "TintHex": "FFFFFFFF",
+    "HeightOffset": 0.6
+  }
+]

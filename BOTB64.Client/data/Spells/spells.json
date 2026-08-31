@@ -3,330 +3,283 @@
     "ID": 0,
     "Name": "Dummy",
     "ScriptURI": "Dummy",
-    "IconURI": "dummy",
-    "AnimationURI": "dummy"
+    "IconURI": "dummy"
   },
   {
     "ID": 1,
     "Name": "Reload",
     "ScriptURI": "reload",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 2,
     "Name": "Clean Scope",
     "ScriptURI": "cleanscope",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 3,
     "Name": "Disengage",
     "ScriptURI": "disengage",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 4,
     "Name": "Trap",
     "ScriptURI": "trap",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 5,
     "Name": "Snipe",
     "ScriptURI": "snipe",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 6,
     "Name": "Hotspot",
     "ScriptURI": "hotspot",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 7,
     "Name": "Shock Beam",
     "ScriptURI": "shockbeam",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 8,
     "Name": "Barrage",
     "ScriptURI": "barrage",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 9,
     "Name": "Artillery Strike",
     "ScriptURI": "artillerystrike",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 10,
     "Name": "Shockwave",
     "ScriptURI": "shockwave",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 11,
     "Name": "Thunder Ritual",
     "ScriptURI": "thunderritual",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 12,
     "Name": "Thunder Bolt",
     "ScriptURI": "thunderbolt",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 13,
     "Name": "Storm",
     "ScriptURI": "storm",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 14,
     "Name": "Thunder Beam",
     "ScriptURI": "thunderbeam",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 15,
     "Name": "Shuriken Toss",
     "ScriptURI": "shurikentoss",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 16,
     "Name": "Recall",
     "ScriptURI": "recall",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 17,
     "Name": "Expose Weakness",
     "ScriptURI": "exposeweakness",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 18,
     "Name": "Shadow Step",
     "ScriptURI": "shadowstep",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 19,
     "Name": "Death Storm",
     "ScriptURI": "deathstorm",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 20,
     "Name": "Bloodwell",
     "ScriptURI": "bloodwell",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 21,
     "Name": "Bloodlink",
     "ScriptURI": "bloodlink",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 22,
     "Name": "Forbidden Ritual",
     "ScriptURI": "forbiddenritual",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 23,
     "Name": "Revitalize",
     "ScriptURI": "revitalize",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 24,
     "Name": "Crimson Blossom",
     "ScriptURI": "crimsonblossom",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 25,
     "Name": "Putrid Aura",
     "ScriptURI": "putridaura",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 26,
     "Name": "Venom Trail",
     "ScriptURI": "venomtrailactivate",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 27,
     "Name": "Extend",
     "ScriptURI": "extend",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 28,
     "Name": "Sludge Mortar",
     "ScriptURI": "sludgemortar",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 29,
     "Name": "Enhanced Venom",
     "ScriptURI": "enhancedvenom",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 30,
     "Name": "Magma Boulder",
     "ScriptURI": "magmaboulder",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 31,
     "Name": "Fiery Call",
     "ScriptURI": "fierycall",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 32,
     "Name": "Flame Pillar",
     "ScriptURI": "flamepillar",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 33,
     "Name": "Cataclysm",
     "ScriptURI": "cataclysm",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 34,
     "Name": "Long Staff",
     "ScriptURI": "longstaffactivate",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 35,
     "Name": "Survival Instinct",
     "ScriptURI": "survivalinstinct",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 36,
     "Name": "Grab",
     "ScriptURI": "grab",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 37,
     "Name": "Meditate",
     "ScriptURI": "meditate",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 38,
     "Name": "Helicopter Move",
     "ScriptURI": "helicoptermove",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 39,
     "Name": "Heroic Leap",
     "ScriptURI": "heroicleap",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 40,
     "Name": "Unstoppable Force",
     "ScriptURI": "unstoppableforce",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 41,
     "Name": "Bloodthirst",
     "ScriptURI": "bloodthirst",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 42,
     "Name": "Invoke the Warrior Gods",
     "ScriptURI": "invoke",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 43,
     "Name": "Gravity Tether",
     "ScriptURI": "gravitytether",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 44,
     "Name": "Gravitational Pull",
     "ScriptURI": "gravitationalpull",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 45,
     "Name": "Black Hole",
     "ScriptURI": "blackholecast",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "IconURI": "dummy"
   },
   {
     "ID": 46,
-    "Name": "Singularity Collapse",
-    "ScriptURI": "singularitycollapse",
-    "IconURI": "dummy",
-    "AnimationURI": ""
+    "Name": "Unstable Gravity",
+    "ScriptURI": "unstablegravitycast",
+    "IconURI": "dummy"
   },
   {
     "ID": 47,

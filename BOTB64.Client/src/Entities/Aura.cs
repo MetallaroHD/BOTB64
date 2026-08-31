@@ -39,6 +39,7 @@ namespace BOTB64.Entities
     public class Aura : ExecutableBase, IReadable
     {
         public AuraVfxAnimation Animation { get; set; }
+        public string VfxID = "";
         public RL.Texture2D Icon;
 
         // --- Base data (does not change during game) --- //
@@ -63,7 +64,7 @@ namespace BOTB64.Entities
         public Aura Instance()
         {
             Aura ret = new Aura();
-            ret.Animation = Animation;
+            ret.VfxID = VfxID;
             ret.Icon = Icon;
             ret.ID = ID;
             ret.Name = Name;
