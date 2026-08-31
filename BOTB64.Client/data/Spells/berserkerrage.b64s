@@ -1,0 +1,11 @@
+:BOTB64SPELL
+:TARGET 0
+:RANGE 0
+:COOLDOWN 0
+:CHARGES 0
+:COST 0
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Attacking generates Rage based on the target's missing health. Passively gains Attack Power and Crit Chance scaling with current Rage. Upon death, all allies gain Attack Power and Spell Power scaling with Pilaf's Rage at the time of death.

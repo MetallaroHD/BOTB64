@@ -1,0 +1,11 @@
+:BOTB64SPELL
+:TARGET 0
+:RANGE 0
+:COOLDOWN 0
+:CHARGES 0
+:COST 0
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP While standing on Scorched Earth, gains Spell Power. Upon death, all Scorched Earth on the board transforms into Ashen Earth.

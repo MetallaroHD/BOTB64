@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 0
+:RANGE 0
+:COOLDOWN 4
+:CHARGES 1
+:COST 30
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP For a few turns, every time Lei Stess takes damage, she gains 2 more Thunder Ritual stacks and strikes the attacker back.
+:EFFECTS
+s_leistess_stormshieldcast | 0 | 2 | 0 | 0

@@ -1,0 +1,13 @@
+:BOTB64SPELL
+:TARGET 0
+:RANGE 0
+:COOLDOWN 6
+:CHARGES 1
+:COST 0
+:COSTPCT 0
+:CAST 0
+:PREP 0
+:SECRET false
+:TOOLTIP Costs Health. Pulls every enemy on the board toward Gravitus by several tiles (stopping at walls), then damages each - the closer they end up, the more damage they take.
+:EFFECTS
+s_gravitus_singularitycollapse | 0 | 2 | 1 | 2
