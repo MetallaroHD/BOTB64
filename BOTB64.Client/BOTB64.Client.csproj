@@ -8,6 +8,10 @@
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<RootNamespace>BOTB64</RootNamespace>
 		<!-->DefineConstants>$(DefineConstants);DEVELOPMENT</DefineConstants-->
+		<!-- Relaunches the game once at startup with env vars set so the .NET runtime
+		     writes a minidump on native/CLR-fatal crashes (see Program.cs). Remove this
+		     line to disable if it ever causes startup issues or perf trouble. -->
+		<DefineConstants>$(DefineConstants);ENABLE_NATIVE_CRASH_DUMPS</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>

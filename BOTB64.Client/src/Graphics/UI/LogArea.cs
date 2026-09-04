@@ -21,6 +21,10 @@ namespace BOTB64.Graphics.UI
 
         private readonly List<string> _lines = new();
 
+        // Logger.Log() can be called from the network poll thread as well as the
+        // main thread, so all access to _lines/_scroll needs to be synchronized.
+        private readonly object _lock = new();
+
         // 0 = bottom (latest logs), higher = scrolling up
         private int _scroll = 0;
 
@@ -28,20 +32,23 @@ namespace BOTB64.Graphics.UI
 
         public void Append(string text)
         {
-            bool wasAtBottom = IsAtBottom();
+            lock (_lock)
+            {
+                bool wasAtBottom = IsAtBottom();
 
-            var wrapped = WrapText(text);
+                var wrapped = WrapText(text);
 
-            foreach (var line in wrapped)
-                _lines.Add(line);
+                foreach (var line in wrapped)
+                    _lines.Add(line);
 
-            while (_lines.Count > MaxLines)
-                _lines.RemoveAt(0);
+                while (_lines.Count > MaxLines)
+                    _lines.RemoveAt(0);
 
-            if (wasAtBottom)
-                _scroll = 0; // stay pinned to bottom
-            else
-                ClampScroll();
+                if (wasAtBottom)
+                    _scroll = 0; // stay pinned to bottom
+                else
+                    ClampScroll();
+            }
         }
 
         public void Update()
@@ -58,8 +65,11 @@ namespace BOTB64.Graphics.UI
 
             if (scrollDelta != 0)
             {
-                _scroll += scrollDelta;
-                ClampScroll();
+                lock (_lock)
+                {
+                    _scroll += scrollDelta;
+                    ClampScroll();
+                }
             }
         }
 
@@ -74,27 +84,30 @@ namespace BOTB64.Graphics.UI
                 (int)(Bounds.Height * Settings.Scale)
             );
 
-            int visibleLines = (int)(Bounds.Height / LineHeight);
-
-            int startIndex = _lines.Count - visibleLines - _scroll;
-            startIndex = Math.Max(0, startIndex);
-
-            float y = Bounds.Y + 4;
-
-            for (int i = startIndex; i < _lines.Count; i++)
+            lock (_lock)
             {
-                RB.DrawText(
-                    _lines[i],
-                    (int)Bounds.X + 4,
-                    (int)y,
-                    FontSize,
-                    TextColor
-                );
+                int visibleLines = (int)(Bounds.Height / LineHeight);
 
-                y += LineHeight;
+                int startIndex = _lines.Count - visibleLines - _scroll;
+                startIndex = Math.Max(0, startIndex);
 
-                if (y > Bounds.Y + Bounds.Height)
-                    break;
+                float y = Bounds.Y + 4;
+
+                for (int i = startIndex; i < _lines.Count; i++)
+                {
+                    RB.DrawText(
+                        _lines[i],
+                        (int)Bounds.X + 4,
+                        (int)y,
+                        FontSize,
+                        TextColor
+                    );
+
+                    y += LineHeight;
+
+                    if (y > Bounds.Y + Bounds.Height)
+                        break;
+                }
             }
 
             RB.EndScissorMode();

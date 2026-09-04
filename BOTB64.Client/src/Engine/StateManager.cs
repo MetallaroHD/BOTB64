@@ -12,6 +12,8 @@ namespace BOTB64.Engine
         private static IGameState CurrentState;
         public static IGameState PendingState;
 
+        public static string CurrentStateName => CurrentState?.GetType().Name ?? "(none)";
+
         public static void ChangeState(IGameState newState)
         {
             PendingState = newState;

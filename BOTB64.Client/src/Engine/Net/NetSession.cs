@@ -51,7 +51,7 @@ namespace BOTB64.Engine.Net
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"NetSession receive error: {ex}");
+                    Logger.Log($"NetSession receive error: {ex}");
                 }
                 finally
                 {
@@ -74,7 +74,7 @@ namespace BOTB64.Engine.Net
             };
 
             Listener.PeerDisconnectedEvent += (peer, info) =>
-                Console.WriteLine($"Disconnected from relay: {info.Reason}");
+                Logger.Log($"Disconnected from relay: {info.Reason}");
 
             NetManager = new NetManager(Listener) { DisconnectTimeout = 15000 };
             NetManager.Start();
@@ -101,7 +101,16 @@ namespace BOTB64.Engine.Net
         {
             while (!token.IsCancellationRequested && NetManager is { IsRunning: true })
             {
-                NetManager.PollEvents(); // this thread invokes NetworkReceiveEvent -> OnEnvelopeReceived -> just enqueues now
+                try
+                {
+                    NetManager.PollEvents(); // this thread invokes NetworkReceiveEvent -> OnEnvelopeReceived -> just enqueues now
+                }
+                catch (Exception ex)
+                {
+                    // Keep the poll loop alive - an uncaught exception here would silently
+                    // stop all networking without ever surfacing as a crash.
+                    Logger.Log($"NetSession poll error: {ex}");
+                }
                 try { await Task.Delay(15, token); } catch (TaskCanceledException) { }
             }
         }
@@ -159,10 +168,10 @@ namespace BOTB64.Engine.Net
 
         private void Send(RelayEnvelope envelope)
         {
-            Console.WriteLine($"[{LocalPlayerID}] SEND type={envelope.Type} peerState={ServerPeer?.ConnectionState}");
+            Logger.Log($"[{LocalPlayerID}] SEND type={envelope.Type} peerState={ServerPeer?.ConnectionState}");
             if (ServerPeer == null || ServerPeer.ConnectionState != ConnectionState.Connected)
             {
-                Console.WriteLine($"Send skipped — ServerPeer state: {ServerPeer?.ConnectionState.ToString() ?? "null"}");
+                Logger.Log($"Send skipped — ServerPeer state: {ServerPeer?.ConnectionState.ToString() ?? "null"}");
                 return;
             }
             ServerPeer.Send(MessagePackSerializer.Serialize(envelope), DeliveryMethod.ReliableOrdered);
@@ -170,7 +179,7 @@ namespace BOTB64.Engine.Net
 
         public void OnEnvelopeReceived(RelayEnvelope envelope)
         {
-            Console.WriteLine($"[{LocalPlayerID}] RECV type={envelope.Type}");
+            Logger.Log($"[{LocalPlayerID}] RECV type={envelope.Type}");
             switch (envelope.Type)
             {
                 case RelayMessageType.Command:
